@@ -36,6 +36,8 @@ export interface Restroom {
   f: string; // floor
   x: number;
   y: number;
+  lat?: number;
+  lng?: number;
   all: boolean;    // all-gender
   acc: boolean;    // ADA accessible
   per: boolean;    // period products
