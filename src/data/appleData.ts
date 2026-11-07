@@ -78,6 +78,13 @@ export const FILTERS = [
   { id: "baby", label: "🍼 Changing table" },
 ];
 
+export function calculateCheckInPoints(entry: { water: number; sleep: number }): number {
+  let pts = 10;
+  if (entry.water >= 6) pts += 5;
+  if (entry.sleep >= 7) pts += 5;
+  return pts;
+}
+
 export function seedReports(): Record<string, RestroomReport> {
   const h = 3600e3;
   const now = Date.now();

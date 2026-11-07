@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { AppSettings } from '../types';
-import { HOUSES } from '../data/appleData';
+import { HOUSES, calculateCheckInPoints } from '../data/appleData';
 
 interface HouseTabProps {
   settings: AppSettings;
@@ -9,75 +9,88 @@ interface HouseTabProps {
 export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
   const currentHouse = HOUSES.find((h) => h.id === settings.house) || HOUSES[0];
 
-  // Headcount map from plan.md Section 7.1
-  const dormHeadcounts: Record<string, number> = {
-    Weis: 210,
-    Bonchek: 220,
-    Roschel: 230,
-    Brooks: 240,
-    Ware: 260,
-  };
+  const {
+    userLoggedDays,
+    hydrationDays,
+    userPts,
+    streak,
+    sortedHouses,
+    rank,
+  } = useMemo(() => {
+    // Headcount map from plan.md Section 7.1
+    const dormHeadcounts: Record<string, number> = {
+      Weis: 210,
+      Bonchek: 220,
+      Roschel: 230,
+      Brooks: 240,
+      Ware: 260,
+    };
 
-  const getHandicapMultiplier = (houseId: string) => {
-    const n = dormHeadcounts[houseId] || 250;
-    // plan.md sub-linear formula: sqrt(250 / N)
-    return +(Math.sqrt(250 / n)).toFixed(2);
-  };
+    const getHandicapMultiplier = (houseId: string) => {
+      const n = dormHeadcounts[houseId] || 250;
+      return +(Math.sqrt(250 / n)).toFixed(2);
+    };
 
-  // Calculate user streak & weekly points
-  const dayKeyOf = (ts: number) => {
-    const d = new Date(ts);
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-  };
+    const dayKeyOf = (ts: number) => {
+      const d = new Date(ts);
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    };
 
-  const map: Record<string, typeof settings.logs[0]> = {};
-  for (const l of settings.logs) {
-    map[dayKeyOf(l.ts)] = l;
-  }
+    const map: Record<string, typeof settings.logs[0]> = {};
+    for (const l of settings.logs) {
+      map[dayKeyOf(l.ts)] = l;
+    }
 
-  // Last 7 days check-in count
-  let userLoggedDays = 0;
-  let userPts = 0;
-  let hydrationDays = 0;
+    const now = new Date();
+    let userLoggedDays = 0;
+    let hydrationDays = 0;
 
-  for (let i = 0; i < 7; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const k = dayKeyOf(d.getTime());
-    if (map[k]) {
-      userLoggedDays++;
-      userPts += 10;
-      if (map[k].water >= 6) {
-        userPts += 5;
-        hydrationDays++;
-      }
-      if (map[k].sleep >= 7) {
-        userPts += 5;
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(now.getTime());
+      d.setDate(d.getDate() - i);
+      const k = dayKeyOf(d.getTime());
+      if (map[k]) {
+        userLoggedDays++;
+        if (map[k].water >= 6) {
+          hydrationDays++;
+        }
       }
     }
-  }
 
-  // Streak
-  let streak = 0;
-  const d = new Date();
-  if (!map[dayKeyOf(d.getTime())]) {
-    d.setDate(d.getDate() - 1);
-  }
-  while (map[dayKeyOf(d.getTime())]) {
-    streak++;
-    d.setDate(d.getDate() - 1);
-  }
+    const sevenDaysAgo = now.getTime() - 7 * 864e5;
+    const recentLogs = settings.logs.filter((l) => l.ts >= sevenDaysAgo);
+    const userPts = recentLogs.reduce((acc, cur) => acc + calculateCheckInPoints(cur), 0);
 
-  // User contribution to house participation
-  const mineBonus = userLoggedDays >= 3 ? 0.4 : 0;
-  const sortedHouses = HOUSES.map((h) => ({
-    ...h,
-    headcount: dormHeadcounts[h.id] || 240,
-    multiplier: getHandicapMultiplier(h.id),
-    part: h.id === currentHouse.id ? +(h.part + mineBonus).toFixed(1) : h.part,
-  })).sort((a, b) => b.part - a.part);
+    // Streak
+    let streak = 0;
+    const d = new Date(now.getTime());
+    if (!map[dayKeyOf(d.getTime())]) {
+      d.setDate(d.getDate() - 1);
+    }
+    while (map[dayKeyOf(d.getTime())]) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    }
 
-  const rank = sortedHouses.findIndex((h) => h.id === currentHouse.id) + 1;
+    const mineBonus = userLoggedDays >= 3 ? 0.4 : 0;
+    const sortedHouses = HOUSES.map((h) => ({
+      ...h,
+      headcount: dormHeadcounts[h.id] || 240,
+      multiplier: getHandicapMultiplier(h.id),
+      part: h.id === currentHouse.id ? +(h.part + mineBonus).toFixed(1) : h.part,
+    })).sort((a, b) => b.part - a.part);
+
+    const rank = sortedHouses.findIndex((h) => h.id === currentHouse.id) + 1;
+
+    return {
+      userLoggedDays,
+      hydrationDays,
+      userPts,
+      streak,
+      sortedHouses,
+      rank,
+    };
+  }, [settings.logs, currentHouse.id]);
 
   return (
     <div className="apple-view space-y-3">
@@ -267,13 +280,13 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
             </div>
             <div className="flex-1">
               <b className="text-[14px] font-extrabold text-[var(--ink)] block">
-                Streak bonus
+                Daily Consistency
               </b>
               <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                +2 per day in a row (up to +10 max)
+                Boosts your House participation % and unlocks weekly badges
               </p>
             </div>
-            <b className="text-[15px] font-black text-[var(--ink)]">+2</b>
+            <b className="text-[14px] font-black text-[var(--ink)]">Active</b>
           </div>
         </div>
 

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { AppSettings } from '../types';
-import { BRISTOL, ZONE, FACTS, HOUSES } from '../data/appleData';
+import { BRISTOL, ZONE, FACTS, HOUSES, calculateCheckInPoints } from '../data/appleData';
 import { AppleBristolSVG } from './AppleBristolSVG';
 
 interface TodayTabProps {
@@ -19,38 +19,48 @@ export const TodayTab: React.FC<TodayTabProps> = ({
   onHideInstall,
 }) => {
   const isPlayful = settings.mode === 'playful';
-  const hours = new Date().getHours();
-  const greeting = hours < 12 ? 'Good morning' : hours < 18 ? 'Good afternoon' : 'Good evening';
-  const dateStr = new Date().toLocaleDateString(undefined, {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  });
 
-  const todayKey = () => {
-    const d = new Date();
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-  };
+  const {
+    greeting,
+    dateStr,
+    todayLogs,
+    last,
+    lastBM,
+    lastZone,
+    streakCount,
+    weekPoints,
+    isFlagged,
+    fact,
+    currentHouse,
+  } = useMemo(() => {
+    const now = new Date();
+    const hours = now.getHours();
+    const greeting = hours < 12 ? 'Good morning' : hours < 18 ? 'Good afternoon' : 'Good evening';
+    const dateStr = now.toLocaleDateString(undefined, {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+    });
 
-  const dayKeyOf = (ts: number) => {
-    const d = new Date(ts);
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-  };
+    const dayKeyOf = (ts: number) => {
+      const d = new Date(ts);
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    };
 
-  const todayLogs = settings.logs.filter((l) => dayKeyOf(l.ts) === todayKey());
-  const lastBM = [...settings.logs].reverse().find((l) => l.pooped && l.bristol);
-  const last = settings.logs[settings.logs.length - 1];
+    const todayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+    const todayLogs = settings.logs.filter((l) => dayKeyOf(l.ts) === todayKey);
+    const last = settings.logs[settings.logs.length - 1];
+    const lastBM = [...settings.logs].reverse().find((l) => l.pooped && l.bristol);
 
-  const currentHouse = HOUSES.find((h) => h.id === settings.house) || HOUSES[0];
+    const currentHouse = HOUSES.find((h) => h.id === settings.house) || HOUSES[0];
 
-  // Calculate streak
-  const streakCount = (() => {
+    // Streak
     const map: Record<string, boolean> = {};
     for (const l of settings.logs) {
       map[dayKeyOf(l.ts)] = true;
     }
     let s = 0;
-    const d = new Date();
+    const d = new Date(now.getTime());
     if (!map[dayKeyOf(d.getTime())]) {
       d.setDate(d.getDate() - 1);
     }
@@ -58,31 +68,33 @@ export const TodayTab: React.FC<TodayTabProps> = ({
       s++;
       d.setDate(d.getDate() - 1);
     }
-    return s;
-  })();
 
-  // Calculate week points
-  const weekPoints = (() => {
-    const now = Date.now();
-    const sevenDaysAgo = now - 7 * 864e5;
+    // Week points
+    const sevenDaysAgo = now.getTime() - 7 * 864e5;
     const recent = settings.logs.filter((l) => l.ts >= sevenDaysAgo);
-    let pts = 0;
-    for (const r of recent) {
-      pts += 10;
-      if (r.water >= 6) pts += 5;
-      if (r.sleep >= 7) pts += 5;
-    }
-    return pts;
-  })();
+    const weekPoints = recent.reduce((acc, cur) => acc + calculateCheckInPoints(cur), 0);
 
-  const isFlagged = (() => {
-    const recent = settings.logs.filter((l) => Date.now() - l.ts < 14 * 864e5);
-    const redFlagIds = ['blood', 'black', 'pain'];
-    return recent.some((l) => (l.symptoms || []).some((s) => redFlagIds.includes(s)));
-  })();
+    const isFlagged = settings.logs.some(
+      (l) => now.getTime() - l.ts < 14 * 864e5 && (l.symptoms || []).some((sym) => ['blood', 'black', 'pain'].includes(sym))
+    );
 
-  const fact = FACTS[new Date().getDate() % FACTS.length];
-  const lastZone = lastBM && lastBM.bristol ? ZONE[BRISTOL[lastBM.bristol].zone] : null;
+    const fact = FACTS[now.getDate() % FACTS.length];
+    const lastZone = lastBM && lastBM.bristol ? ZONE[BRISTOL[lastBM.bristol].zone] : null;
+
+    return {
+      greeting,
+      dateStr,
+      todayLogs,
+      last,
+      lastBM,
+      lastZone,
+      streakCount: s,
+      weekPoints,
+      isFlagged,
+      fact,
+      currentHouse,
+    };
+  }, [settings.logs, settings.house]);
 
   return (
     <div className="apple-view space-y-3">
@@ -134,7 +146,7 @@ export const TodayTab: React.FC<TodayTabProps> = ({
             </div>
             <p className="text-[13px] text-[var(--ink2)] font-semibold mb-3">
               {todayLogs.length} check-in{todayLogs.length > 1 ? 's' : ''} · +
-              {todayLogs.reduce((acc, cur) => acc + (10 + (cur.water >= 6 ? 5 : 0) + (cur.sleep >= 7 ? 5 : 0)), 0)} pts for {currentHouse.id}
+              {todayLogs.reduce((acc, cur) => acc + calculateCheckInPoints(cur), 0)} pts for {currentHouse.id}
             </p>
             <button className="apple-btn ghost" onClick={onOpenCheckIn}>
               + Add another check-in

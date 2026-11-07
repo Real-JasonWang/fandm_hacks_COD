@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import type { BristolNumber, CheckInEntry, ModeType } from '../types';
-import { BRISTOL, ZONE, SYMPTOMS, STRESS } from '../data/appleData';
+import { BRISTOL, ZONE, SYMPTOMS, STRESS, calculateCheckInPoints } from '../data/appleData';
 import { AppleBristolSVG } from './AppleBristolSVG';
 import {
   analyzeStoolImageWithGemma,
   parseNaturalLanguageLogWithGemini,
   getStoredApiKey,
+  formatAiErrorMessage,
   type VisionAnalysisResult,
 } from '../lib/geminiAI';
 
@@ -36,17 +37,18 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 }) => {
   const isPlayful = mode === 'playful';
 
-  // Active method: manual (default), vision (opt-in), nlp (opt-in)
+  // Active check-in modality: manual (default), vision (opt-in), nlp (opt-in)
   const [activeTab, setActiveTab] = useState<CheckInTab>('manual');
 
   // Core Form State
   const [pooped, setPooped] = useState<boolean>(true);
   const [bristol, setBristol] = useState<BristolNumber | null>(null);
   const [symptoms, setSymptoms] = useState<string[]>([]);
-  const [sleep, setSleep] = useState<number>(lastSleep || 7);
-  const [water, setWater] = useState<number>(lastWater || 5);
-  const [veg, setVeg] = useState<number>(lastVeg || 2);
-  const [stress, setStress] = useState<number>(lastStress || 1);
+  const [sleep, setSleep] = useState<number>(typeof lastSleep === 'number' ? lastSleep : 7);
+  const [water, setWater] = useState<number>(typeof lastWater === 'number' ? lastWater : 5);
+  const [veg, setVeg] = useState<number>(typeof lastVeg === 'number' ? lastVeg : 2);
+  const [stress, setStress] = useState<number>(typeof lastStress === 'number' ? lastStress : 1);
+  const [formError, setFormError] = useState<string | null>(null);
 
   // Vision AI State
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -62,23 +64,22 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
   if (!isOpen) return null;
 
   const toggleSymptom = (id: string) => {
+    setFormError(null);
     setSymptoms((prev) =>
       prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
     );
   };
 
   const calculatePoints = () => {
-    let pts = 10;
-    if (water >= 6) pts += 5;
-    if (sleep >= 7) pts += 5;
-    return pts;
+    return calculateCheckInPoints({ water, sleep });
   };
 
   const handleSave = () => {
     if (pooped && !bristol) {
-      alert('Please pick a stool type on the Bristol Scale first 👆');
+      setFormError('Please pick a stool type on the Bristol Scale first 👆');
       return;
     }
+    setFormError(null);
     onSave({
       pooped,
       bristol: pooped ? bristol : null,
@@ -105,7 +106,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
       const hasApiKey = Boolean(getStoredApiKey());
       if (!hasApiKey) {
-        setVisionError('Please set your Google Gemini / Gemma API key in Settings first.');
+        setVisionError('Please configure your Google Gemini / Gemma API key in Settings.');
         return;
       }
 
@@ -121,7 +122,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
           }
         }
       } catch (err: unknown) {
-        setVisionError(err instanceof Error ? err.message : 'Visual analysis failed.');
+        setVisionError(formatAiErrorMessage(err));
       } finally {
         setIsVisionLoading(false);
       }
@@ -134,7 +135,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
     if (!nlpText.trim()) return;
     const hasApiKey = Boolean(getStoredApiKey());
     if (!hasApiKey) {
-      alert('Please set your Google Gemini API key in Settings first.');
+      setVisionError('Please configure your Google Gemini API key in Settings first.');
       return;
     }
 
@@ -152,7 +153,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
       setNlpMessage(res.summary);
       setActiveTab('manual'); // return to review form
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Semantic parsing failed.');
+      setVisionError(formatAiErrorMessage(err));
     } finally {
       setIsNlpLoading(false);
     }
@@ -170,7 +171,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
         <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2">
           <div>
             <h2 className="text-[21px] font-black tracking-tight text-[var(--ink)]">
-              {isPlayful ? 'Check-in 💩' : 'Check-in'}
+              {isPlayful ? 'Daily Check-in 💩' : 'Wellness Check-in'}
             </h2>
             <small className="text-[12px] text-[var(--muted)] font-bold">
               Private check-in · Saved locally
@@ -189,36 +190,36 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
         <div className="flex gap-1.5 p-1 bg-[#F3E9DC] rounded-2xl mb-3">
           <button
             type="button"
-            className={`flex-1 py-2 text-[13px] font-black rounded-xl transition ${
+            className={`flex-1 py-2 text-[12.5px] font-black rounded-xl transition ${
               activeTab === 'manual'
                 ? 'bg-white text-[var(--ink)] shadow-sm'
                 : 'text-[var(--ink2)] hover:text-[var(--ink)]'
             }`}
             onClick={() => setActiveTab('manual')}
           >
-            ✍️ 手动打卡 (默认)
+            ✍️ Manual (Default)
           </button>
           <button
             type="button"
-            className={`flex-1 py-2 text-[13px] font-black rounded-xl transition ${
+            className={`flex-1 py-2 text-[12.5px] font-black rounded-xl transition ${
               activeTab === 'vision'
                 ? 'bg-white text-[var(--ink)] shadow-sm'
                 : 'text-[var(--ink2)] hover:text-[var(--ink)]'
             }`}
             onClick={() => setActiveTab('vision')}
           >
-            📷 Gemma 4 视觉 (可选)
+            📷 Gemma 4 Vision
           </button>
           <button
             type="button"
-            className={`flex-1 py-2 text-[13px] font-black rounded-xl transition ${
+            className={`flex-1 py-2 text-[12.5px] font-black rounded-xl transition ${
               activeTab === 'nlp'
                 ? 'bg-white text-[var(--ink)] shadow-sm'
                 : 'text-[var(--ink2)] hover:text-[var(--ink)]'
             }`}
             onClick={() => setActiveTab('nlp')}
           >
-            💬 一句话记账
+            💬 Smart Speech/Text
           </button>
         </div>
 
@@ -229,23 +230,23 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
               <span className="text-[22px]">🤖</span>
               <div>
                 <b className="text-[15px] font-black text-[var(--ink)] block">
-                  Gemma 4 Multimodal 视觉识别 (可选)
+                  Gemma 4 Multimodal Vision (Opt-in)
                 </b>
                 <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                  纯内存零盘流式处理（Zero-Disk），自动识别布里斯托分型并回填。
+                  Zero-Disk in-memory stream. Analyzes Bristol morphology and auto-populates telemetry.
                 </p>
               </div>
             </div>
 
             {!getStoredApiKey() && (
               <div className="p-3 bg-[var(--sun-l)] rounded-xl text-[12.5px] font-bold text-[#7A5300] flex justify-between items-center">
-                <span>⚠️ 尚未配置 Google AI Studio API Key</span>
+                <span>⚠️ Google AI Studio API key not configured</span>
                 <button
                   type="button"
                   className="underline ml-2 flex-none font-black"
                   onClick={onOpenSettings}
                 >
-                  去设置 →
+                  Configure in Settings →
                 </button>
               </div>
             )}
@@ -259,7 +260,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     className="max-h-[160px] mx-auto rounded-xl object-contain shadow-sm"
                   />
                   <label className="apple-chip cursor-pointer">
-                    重新拍照/上传
+                    Take New Photo / Choose Another
                     <input
                       type="file"
                       accept="image/*"
@@ -273,10 +274,10 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                 <label className="cursor-pointer block py-3">
                   <div className="text-[32px] mb-1">📸</div>
                   <b className="text-[14px] font-black text-[var(--ink)] block">
-                    拍摄或上传标本照片
+                    Snap or upload toilet basin photo
                   </b>
                   <p className="text-[12px] text-[var(--muted)] font-semibold mt-0.5">
-                    仅在内存暂存分析，判读完毕立即销毁
+                    Streamed in RAM only; immediately destroyed upon grading.
                   </p>
                   <input
                     type="file"
@@ -291,7 +292,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
             {isVisionLoading && (
               <div className="text-center py-3 text-[14px] font-black text-[var(--peach-d)] animate-pulse">
-                ⏳ Gemma 4 视觉正在进行 5 阶段临床推理与防作弊校验...
+                ⏳ Gemma 4 performing 5-stage clinical reasoning &amp; anti-spoof checks...
               </div>
             )}
 
@@ -305,10 +306,10 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
               <div className="p-3.5 bg-[var(--mint-l)] text-[#11634C] rounded-2xl space-y-1.5 text-[13px] font-bold">
                 <div className="flex justify-between items-center">
                   <span className="font-black text-[14px]">
-                    ✓ 已自动识别并回填：Type {visionResult.bristolType || '—'}
+                    ✓ Evaluated: Type {visionResult.bristolType || '—'}
                   </span>
                   <span className="text-[11px] opacity-80">
-                    置信度: {(visionResult.confidenceScore * 100).toFixed(0)}%
+                    Confidence: {(visionResult.confidenceScore * 100).toFixed(0)}% ({visionResult.modelUsed})
                   </span>
                 </div>
                 <p className="text-[12px] opacity-90 font-semibold">
@@ -319,7 +320,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                   className="apple-btn ghost mt-2 bg-white text-[13px] py-1.5"
                   onClick={() => setActiveTab('manual')}
                 >
-                  查看并确认表单数值 →
+                  Review and confirm form values →
                 </button>
               </div>
             )}
@@ -333,17 +334,17 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
               <span className="text-[22px]">💬</span>
               <div>
                 <b className="text-[15px] font-black text-[var(--ink)] block">
-                  一句话 AI 智能记账 (Gemini 语义抽取)
+                  Natural Language Smart Log (Gemini)
                 </b>
                 <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                  说出或输入昨晚睡眠、饮水量与便便感受，AI 自动填写全表。
+                  Describe your sleep, water, and stool in one sentence. AI automatically extracts the parameters.
                 </p>
               </div>
             </div>
 
             <textarea
               className="w-full h-24 p-3 bg-[#FFFDF9] border border-[var(--line)] rounded-xl text-[14px] font-semibold text-[var(--ink)] focus:outline-none focus:border-[var(--lav)] resize-none"
-              placeholder="例：昨晚睡了7.5小时，喝了6杯水，便便很顺畅像香蕉，感觉稍微有点胀气，学业压力还好..."
+              placeholder="e.g. Slept 7.5 hours last night, drank 6 glasses of water today, smooth stool like a banana, slight bloating, mild exam stress..."
               value={nlpText}
               onChange={(e) => setNlpText(e.target.value)}
             />
@@ -354,7 +355,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
               disabled={isNlpLoading || !nlpText.trim()}
               onClick={handleNlpParse}
             >
-              {isNlpLoading ? '⏳ AI 正在智能解析参数...' : '✨ 一键语义解析并填充表单'}
+              {isNlpLoading ? '⏳ AI extracting health parameters...' : '✨ Parse & Auto-fill Form'}
             </button>
 
             {nlpMessage && (
@@ -366,7 +367,6 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
         )}
 
         {/* Standard Manual Form (Always viewable and verifiable) */}
-        {/* Poop Question */}
         <div className="text-[15px] font-black text-[var(--ink)] my-2">
           {isPlayful ? 'Did you poop today?' : 'Bowel movement'}
         </div>
@@ -567,6 +567,12 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
         {/* Save Button */}
         <div className="mt-6 mb-2">
+          {formError && (
+            <div className="p-3 bg-[var(--danger-l)] text-[var(--danger)] rounded-xl text-[12.5px] font-bold mb-3 flex items-center gap-2">
+              <span>⚠️</span>
+              <div>{formError}</div>
+            </div>
+          )}
           <button
             type="button"
             className="apple-btn"
