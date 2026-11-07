@@ -1,4 +1,4 @@
-import { GemmaVisionResult } from '../types';
+import type { GemmaVisionResult } from '../types';
 
 // Gemma 4 Multimodal Vision Pipeline (gemma-4-26b-a4b-it)
 // Zero disk writes! Pure memory buffer processing!

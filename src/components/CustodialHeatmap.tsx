@@ -1,6 +1,6 @@
 import React from 'react';
-import { RestroomNode } from '../types';
-import { Sparkles, MapPin, Navigation, Clock, AlertTriangle } from 'lucide-react';
+import type { RestroomNode } from '../types';
+import { Sparkles, Navigation, Clock, AlertTriangle } from 'lucide-react';
 import { sound } from '../lib/audio';
 
 interface CustodialHeatmapProps {

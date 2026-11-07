@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Camera, Flashlight, ShieldAlert, CheckCircle2, X, RefreshCw, Cpu } from 'lucide-react';
-import { Dorm, RestroomNode, GemmaVisionResult } from '../types';
-import { analyzeStoolWithGemma4, PromptStageLog } from '../lib/gemmaVision';
+import type { Dorm, RestroomNode, GemmaVisionResult } from '../types';
+import { analyzeStoolWithGemma4, type PromptStageLog } from '../lib/gemmaVision';
 import { sound } from '../lib/audio';
 
 interface ScanModalProps {

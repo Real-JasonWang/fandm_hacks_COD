@@ -1,4 +1,4 @@
-import { Dorm, RestroomNode } from '../types';
+import type { Dorm, RestroomNode } from '../types';
 
 // Benchmark average F&M dorm size
 export const AVERAGE_DORM_HEADCOUNT = 250;

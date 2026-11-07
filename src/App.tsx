@@ -7,13 +7,11 @@ import {
   Sparkles,
   Volume2,
   VolumeX,
-  Eye,
   Trophy,
-  Flame,
-  Search
+  Flame
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { Dorm, RestroomNode, DormId, GemmaVisionResult, ConquestEvent } from './types';
+import type { Dorm, RestroomNode, DormId, GemmaVisionResult, ConquestEvent } from './types';
 import { INITIAL_DORMS, INITIAL_RESTROOMS } from './data/campusData';
 import { CampusMap } from './components/CampusMap';
 import { CustodialHeatmap } from './components/CustodialHeatmap';
@@ -145,7 +143,6 @@ export function App() {
 
           // Update dorm territory percentages
           setDorms((prev) => {
-            const count = prev.length;
             return prev.map((d) => ({
               ...d,
               territoryPercentage: d.id === activeDormId ? Math.min(45, d.territoryPercentage + 4) : Math.max(10, d.territoryPercentage - 1)

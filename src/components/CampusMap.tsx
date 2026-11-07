@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Dorm, RestroomNode, DormId } from '../types';
+import type { Dorm, RestroomNode, DormId } from '../types';
 
 interface CampusMapProps {
   dorms: Dorm[];
