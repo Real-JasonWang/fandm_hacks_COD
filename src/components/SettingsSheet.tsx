@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { AppSettings, HouseId, ModeType } from '../types';
 import { HOUSES } from '../data/appleData';
 import {
@@ -7,11 +7,14 @@ import {
   getStoredModel,
   setStoredModel,
   testGeminiApiKey,
+  SUPPORTED_AI_MODELS,
 } from '../lib/geminiAI';
+import type { UserAccount } from '../lib/authDatabase';
 
 interface SettingsSheetProps {
   isOpen: boolean;
   settings: AppSettings;
+  currentUser: UserAccount | null;
   onClose: () => void;
   onUpdateMode: (mode: ModeType) => void;
   onUpdateHouse: (house: HouseId) => void;
@@ -19,13 +22,15 @@ interface SettingsSheetProps {
   onOpenScience: () => void;
   onOpenFacilities: () => void;
   onOpenStealth: () => void;
+  onOpenAuth: () => void;
+  onLogout: () => void;
   onResetDemo: () => void;
   onWipeData: () => void;
 }
 
-export const SettingsSheet: React.FC<SettingsSheetProps> = ({
-  isOpen,
+const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
   settings,
+  currentUser,
   onClose,
   onUpdateMode,
   onUpdateHouse,
@@ -33,34 +38,26 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
   onOpenScience,
   onOpenFacilities,
   onOpenStealth,
+  onOpenAuth,
+  onLogout,
   onResetDemo,
   onWipeData,
 }) => {
-  const [apiKey, setApiKey] = useState('');
-  const [model, setModel] = useState('gemma-4-26b-a4b-it');
+  const [apiKey, setApiKey] = useState(() => getStoredApiKey());
+  const [model, setModel] = useState(() => getStoredModel());
   const [isTestingKey, setIsTestingKey] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
   const [showKey, setShowKey] = useState(false);
 
-  useEffect(() => {
-    if (isOpen) {
-      setApiKey(getStoredApiKey());
-      setModel(getStoredModel());
-      setTestResult(null);
-    }
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
   const handleSaveApiKey = () => {
     setStoredApiKey(apiKey);
     setStoredModel(model);
-    setTestResult({ success: true, message: 'Settings saved locally.' });
+    setTestResult({ success: true, message: 'API key & model preference saved locally.' });
   };
 
   const handleTestKey = async () => {
     if (!apiKey.trim()) {
-      setTestResult({ success: false, message: 'Please enter an API key first.' });
+      setTestResult({ success: false, message: 'Please enter a valid API key first.' });
       return;
     }
     setIsTestingKey(true);
@@ -82,7 +79,7 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
 
         <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2">
           <h2 className="text-[21px] font-black tracking-tight text-[var(--ink)]">
-            Settings &amp; privacy
+            Settings &amp; Preferences
           </h2>
           <button
             onClick={onClose}
@@ -91,6 +88,43 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
           >
             ×
           </button>
+        </div>
+
+        {/* User Account Bar */}
+        <div className="apple-card p-3 my-0 mb-3 bg-[#FAF8F5] border border-[var(--line)] flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="text-[22px]">🎓</span>
+            <div>
+              <b className="text-[14px] font-black text-[var(--ink)] block truncate">
+                {currentUser ? currentUser.displayName : 'Guest Student'}
+              </b>
+              <p className="text-[12px] text-[var(--muted)] font-mono font-bold truncate">
+                {currentUser ? currentUser.email : 'No registered session'}
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-1.5">
+            {currentUser ? (
+              <button
+                type="button"
+                className="apple-chip text-[11px] py-1 text-[var(--danger)] border-[var(--danger-l)] hover:bg-[var(--danger-l)]"
+                onClick={onLogout}
+              >
+                Sign Out
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="apple-chip text-[11px] py-1"
+                onClick={() => {
+                  onClose();
+                  onOpenAuth();
+                }}
+              >
+                Sign In
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Style / Vibe */}
@@ -114,12 +148,12 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
           </button>
         </div>
         <p className="text-[12px] text-[var(--muted)] font-bold mt-1.5 mb-4">
-          Discreet mode removes emoji &amp; jokes and renames the app "Gut Log" — for anyone who'd rather keep it low-key in class.
+          Discreet mode removes emoji &amp; jokes and renames the app "Gut Log" for discreet in-class check-ins.
         </p>
 
         {/* College House Grid */}
         <div className="text-[15px] font-black text-[var(--ink)] mb-2">
-          Your College House
+          Your College House Faction
         </div>
         <div className="grid grid-cols-2 gap-2 mb-4">
           {HOUSES.map((h) => {
@@ -149,7 +183,7 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
             <div className="flex items-center gap-2">
               <span className="text-[20px]">✨</span>
               <b className="text-[14.5px] font-black text-[var(--ink)]">
-                Google AI Studio / Gemma 4
+                Google Gemma 4 &amp; Gemini Engine
               </b>
             </div>
             <span
@@ -157,12 +191,12 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
                 apiKey ? 'bg-[var(--mint-l)] text-[#11634C]' : 'bg-[var(--sun-l)] text-[#7A5300]'
               }`}
             >
-              {apiKey ? 'Key configured' : 'Optional'}
+              {apiKey ? 'Pre-configured ✓' : 'Optional'}
             </span>
           </div>
 
           <p className="text-[12px] text-[var(--ink2)] font-semibold">
-            用于“Gemma 4 视觉辅助识别”与“一句话智能记账”。所有处理均在内存端到端完成，不写入任何磁盘。
+            Powers Gemma 4 Multimodal Vision and natural language logging. Features automatic real-time fallback cascade across Gemma 4 31B/26B, Gemini 3.5 Flash, and Gemini 3.8 Flash.
           </p>
 
           <div className="space-y-2">
@@ -170,7 +204,7 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
               <input
                 type={showKey ? 'text' : 'password'}
                 className="w-full py-2 px-3 pr-10 text-[13px] font-mono bg-[#FFFDF9] border border-[var(--line)] rounded-xl focus:outline-none focus:border-[var(--peach)]"
-                placeholder="AIzaSy... (Google AI Studio Key)"
+                placeholder="Google AI Studio API Key (AQ.Ab8...)"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
               />
@@ -183,37 +217,44 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
               </button>
             </div>
 
-            <div className="flex gap-2">
+            <div className="space-y-1.5">
+              <label className="text-[11.5px] font-extrabold text-[var(--ink2)] block">
+                Primary Model (with automatic fallback cascade):
+              </label>
               <select
-                className="flex-1 py-1.5 px-2.5 text-[12.5px] font-extrabold bg-[#FFFDF9] border border-[var(--line)] rounded-xl text-[var(--ink)] focus:outline-none"
+                className="w-full py-2 px-2.5 text-[12.5px] font-extrabold bg-[#FFFDF9] border border-[var(--line)] rounded-xl text-[var(--ink)] focus:outline-none"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
               >
-                <option value="gemma-4-26b-a4b-it">gemma-4-26b-a4b-it (Multimodal MoE)</option>
-                <option value="gemini-2.5-flash">gemini-2.5-flash (High speed)</option>
-                <option value="gemini-2.0-flash">gemini-2.0-flash (General)</option>
+                {SUPPORTED_AI_MODELS.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.name} [{m.tag}]
+                  </option>
+                ))}
               </select>
+            </div>
 
+            <div className="flex gap-2 pt-1">
               <button
                 type="button"
-                className="apple-chip text-[12px] flex-none"
+                className="apple-chip text-[12px] flex-1 justify-center"
                 onClick={handleSaveApiKey}
               >
-                Save
+                Save Preferences
               </button>
               <button
                 type="button"
-                className="apple-chip text-[12px] flex-none"
+                className="apple-chip text-[12px] flex-1 justify-center font-black"
                 disabled={isTestingKey}
                 onClick={handleTestKey}
               >
-                {isTestingKey ? 'Testing...' : 'Test Key'}
+                {isTestingKey ? 'Connecting...' : 'Test Connection'}
               </button>
             </div>
 
             {testResult && (
               <div
-                className={`p-2 rounded-xl text-[12px] font-bold ${
+                className={`p-2.5 rounded-xl text-[12px] font-bold ${
                   testResult.success
                     ? 'bg-[var(--mint-l)] text-[#11634C]'
                     : 'bg-[var(--danger-l)] text-[var(--danger)]'
@@ -232,10 +273,10 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
             <span className="text-[20px]">🕵️</span>
             <div>
               <b className="text-[13.5px] font-black text-[var(--ink)] block">
-                Stealth Privacy Shield (隐蔽盾)
+                Stealth Privacy Shield
               </b>
               <p className="text-[11.5px] text-[var(--muted)] font-bold">
-                快捷方式：在屏幕任意处快速双击
+                Gesture: Double-tap screen anywhere
               </p>
             </div>
           </div>
@@ -247,7 +288,7 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
               onOpenStealth();
             }}
           >
-            开启微积分伪装 →
+            Open Disguise →
           </button>
         </div>
 
@@ -287,7 +328,7 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
             className="apple-btn ghost text-[var(--danger)] border-[var(--danger-l)] hover:bg-[var(--danger-l)]"
             onClick={onWipeData}
           >
-            🗑 Delete all my data
+            🗑 Delete all personal data
           </button>
         </div>
 
@@ -297,4 +338,9 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
       </div>
     </>
   );
+};
+
+export const SettingsSheet: React.FC<SettingsSheetProps> = (props) => {
+  if (!props.isOpen) return null;
+  return <SettingsModalContent {...props} />;
 };

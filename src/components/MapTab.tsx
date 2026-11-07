@@ -191,9 +191,10 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
             return (
               <g
                 key={r.id}
-                className="cursor-pointer transition-opacity duration-200"
+                className={matches ? "cursor-pointer transition-opacity duration-200" : "transition-opacity duration-200"}
                 opacity={matches ? 1 : 0.18}
-                onClick={() => onOpenRestroom(r)}
+                style={{ pointerEvents: matches ? 'auto' : 'none' }}
+                onClick={matches ? () => onOpenRestroom(r) : undefined}
               >
                 <circle cx={r.x} cy={r.y} r="22" fill="transparent" />
                 <circle

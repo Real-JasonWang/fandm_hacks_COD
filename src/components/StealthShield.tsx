@@ -10,6 +10,18 @@ export const StealthShield: React.FC<StealthShieldProps> = ({ isOpen, onClose })
   const [calcInput, setCalcInput] = useState<string>('sin(x) * 1.5');
   const [calcResult, setCalcResult] = useState<string>('0.8414');
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const lastTapRef = useRef<number>(0);
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const now = Date.now();
+    if (now - lastTapRef.current < 300) {
+      const target = e.target as HTMLElement;
+      if (!target.closest('button, input, textarea, select')) {
+        onClose();
+      }
+    }
+    lastTapRef.current = now;
+  };
 
   // Draw graphing calculator function on canvas
   useEffect(() => {
@@ -69,6 +81,7 @@ export const StealthShield: React.FC<StealthShieldProps> = ({ isOpen, onClose })
     <div
       className="fixed inset-0 z-[100] bg-[#18181B] text-[#E4E4E7] font-mono select-none overflow-y-auto p-4 sm:p-6"
       onDoubleClick={onClose}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Top Bar disguise */}
       <div className="max-w-[540px] mx-auto">

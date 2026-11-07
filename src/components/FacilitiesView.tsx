@@ -8,17 +8,18 @@ interface FacilitiesViewProps {
   onMarkCleaned: (restroomId: string) => void;
 }
 
+function formatMinutesAgo(t: number): string {
+  const m = Math.round((Date.now() - t) / 60000);
+  if (m < 60) return `${m} min ago`;
+  const h = Math.round(m / 60);
+  return `${h} h ago`;
+}
+
 export const FacilitiesView: React.FC<FacilitiesViewProps> = ({
   settings,
   onBack,
   onMarkCleaned,
 }) => {
-  const ago = (t: number) => {
-    const m = Math.round((Date.now() - t) / 60000);
-    if (m < 60) return `${m} min ago`;
-    const h = Math.round(m / 60);
-    return `${h} h ago`;
-  };
 
   const queue = RESTROOMS.map((r) => ({
     r,
@@ -72,7 +73,7 @@ export const FacilitiesView: React.FC<FacilitiesViewProps> = ({
                     {item.r.b}
                   </b>
                   <p className="text-[12.5px] text-[var(--ink2)] font-semibold">
-                    {item.r.f} · Reported {ago(item.rep!.ts)}
+                    {item.r.f} · Reported {formatMinutesAgo(item.rep!.ts)}
                   </p>
                 </div>
               </div>

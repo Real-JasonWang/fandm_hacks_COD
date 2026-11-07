@@ -8,6 +8,13 @@ interface RestroomSheetProps {
   onReport: (restroomId: string, type: 'clean' | 'supplies' | 'ok') => void;
 }
 
+function formatMinutesAgo(t: number): string {
+  const m = Math.round((Date.now() - t) / 60000);
+  if (m < 60) return `${m} min ago`;
+  const h = Math.round(m / 60);
+  return `${h} h ago`;
+}
+
 export const RestroomSheet: React.FC<RestroomSheetProps> = ({
   restroom,
   report,
@@ -16,23 +23,16 @@ export const RestroomSheet: React.FC<RestroomSheetProps> = ({
 }) => {
   if (!restroom) return null;
 
-  const ago = (t: number) => {
-    const m = Math.round((Date.now() - t) / 60000);
-    if (m < 60) return `${m} min ago`;
-    const h = Math.round(m / 60);
-    return `${h} h ago`;
-  };
-
   const getStatusText = () => {
     if (!report) return null;
     if (report.clean >= 2) {
-      return `${report.clean} students reported it needs cleaning · ${ago(report.ts)}`;
+      return `${report.clean} students reported it needs cleaning · ${formatMinutesAgo(report.ts)}`;
     }
     if (report.supplies >= 1) {
-      return `Reported low on supplies · ${ago(report.ts)}`;
+      return `Reported low on supplies · ${formatMinutesAgo(report.ts)}`;
     }
     if (report.ok >= 1) {
-      return `Reported clean · ${ago(report.ts)}`;
+      return `Reported clean · ${formatMinutesAgo(report.ts)}`;
     }
     return null;
   };

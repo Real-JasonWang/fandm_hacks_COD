@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { AppSettings, BristolNumber } from '../types';
 import { BRISTOL, STRESS } from '../data/appleData';
 
@@ -35,125 +35,144 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
     stress: number;
   } | null>(null);
 
-  const dayKeyOf = (ts: number) => {
-    const d = new Date(ts);
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-  };
-
-  const byDayMap: Record<string, typeof settings.logs> = {};
-  for (const l of settings.logs) {
-    const k = dayKeyOf(l.ts);
-    (byDayMap[k] ||= []).push(l);
-  }
-
-  const dayRecord = (list: typeof settings.logs) => {
-    const bms = list.filter((l) => l.pooped && l.bristol);
-    const last = list[list.length - 1];
-    return {
-      bristol: bms.length
-        ? (bms.reduce((acc, cur) => acc + (cur.bristol || 0), 0) / bms.length) as BristolNumber
-        : null,
-      count: bms.length,
-      sleep: last.sleep,
-      water: last.water,
-      veg: last.veg,
-      stress: last.stress,
-      ts: last.ts,
+  const {
+    last14Days,
+    patterns,
+    daysLogged7,
+    idealPct7,
+    avgSleep7,
+    avgWater7,
+  } = useMemo(() => {
+    const dayKeyOf = (ts: number) => {
+      const d = new Date(ts);
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
     };
-  };
 
-  // Last 14 days
-  const last14Days = Array.from({ length: 14 }, (_, i) => {
-    const daysAgo = 13 - i;
-    const d = new Date();
-    d.setDate(d.getDate() - daysAgo);
-    const k = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-    return {
-      key: k,
-      date: d,
-      rec: byDayMap[k] ? dayRecord(byDayMap[k]) : null,
+    const byDayMap: Record<string, typeof settings.logs> = {};
+    for (const l of settings.logs) {
+      const k = dayKeyOf(l.ts);
+      (byDayMap[k] ||= []).push(l);
+    }
+
+    const dayRecord = (list: typeof settings.logs) => {
+      const bms = list.filter((l) => l.pooped && l.bristol);
+      const last = list[list.length - 1];
+      return {
+        bristol: bms.length
+          ? (bms.reduce((acc, cur) => acc + (cur.bristol || 0), 0) / bms.length) as BristolNumber
+          : null,
+        count: bms.length,
+        sleep: last.sleep,
+        water: last.water,
+        veg: last.veg,
+        stress: last.stress,
+        ts: last.ts,
+      };
     };
-  });
 
-  // Calculate patterns
-  const allDayRecords = Object.values(byDayMap).map(dayRecord);
-  const withB = allDayRecords.filter((d) => d.bristol !== null);
-  const isHard = (d: typeof withB[0]) => (d.bristol ?? 0) <= 2.5;
-  const isIdeal = (d: typeof withB[0]) => (d.bristol ?? 0) > 2.5 && (d.bristol ?? 0) < 4.5;
+    const now = new Date();
+    // Last 14 days
+    const last14Days = Array.from({ length: 14 }, (_, i) => {
+      const daysAgo = 13 - i;
+      const d = new Date(now.getTime());
+      d.setDate(d.getDate() - daysAgo);
+      const k = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+      return {
+        key: k,
+        date: d,
+        rec: byDayMap[k] ? dayRecord(byDayMap[k]) : null,
+      };
+    });
 
-  const share = (arr: typeof withB, fn: (d: typeof withB[0]) => boolean) =>
-    arr.length ? Math.round((100 * arr.filter(fn).length) / arr.length) : 0;
+    // Calculate patterns
+    const allDayRecords = Object.values(byDayMap).map(dayRecord);
+    const withB = allDayRecords.filter((d) => d.bristol !== null);
+    const isHard = (d: typeof withB[0]) => (d.bristol ?? 0) <= 2.5;
+    const isIdeal = (d: typeof withB[0]) => (d.bristol ?? 0) > 2.5 && (d.bristol ?? 0) < 4.5;
 
-  const patterns: PatternItem[] = [];
-  const lowSleep = withB.filter((d) => d.sleep < 6);
-  const goodSleep = withB.filter((d) => d.sleep >= 7);
-  if (lowSleep.length >= 2 && goodSleep.length >= 2) {
-    const a = share(lowSleep, isHard);
-    const b = share(goodSleep, isHard);
-    if (a - b >= 25) {
-      patterns.push({
-        em: "😴",
-        bg: "var(--lav-l)",
-        title: "Short sleep → harder stool",
-        text: `After nights under 6 hours, ${a}% of your logs were on the hard side, vs only ${b}% after 7+ hour nights.`,
-        a,
-        b,
-        la: "< 6 h sleep",
-        lb: "7+ h sleep",
-        col: "var(--lav)",
-      });
+    const share = (arr: typeof withB, fn: (d: typeof withB[0]) => boolean) =>
+      arr.length ? Math.round((100 * arr.filter(fn).length) / arr.length) : 0;
+
+    const patterns: PatternItem[] = [];
+    const lowSleep = withB.filter((d) => d.sleep < 6);
+    const goodSleep = withB.filter((d) => d.sleep >= 7);
+    if (lowSleep.length >= 2 && goodSleep.length >= 2) {
+      const a = share(lowSleep, isHard);
+      const b = share(goodSleep, isHard);
+      if (a - b >= 25) {
+        patterns.push({
+          em: "😴",
+          bg: "var(--lav-l)",
+          title: "Short sleep → harder stool",
+          text: `After nights under 6 hours, ${a}% of your logs were on the hard side, vs only ${b}% after 7+ hour nights.`,
+          a,
+          b,
+          la: "< 6 h sleep",
+          lb: "7+ h sleep",
+          col: "var(--lav)",
+        });
+      }
     }
-  }
 
-  const lowWater = withB.filter((d) => d.water < 4);
-  const goodWater = withB.filter((d) => d.water >= 6);
-  if (lowWater.length >= 2 && goodWater.length >= 2) {
-    const a = share(lowWater, isHard);
-    const b = share(goodWater, isHard);
-    if (a - b >= 25) {
-      patterns.push({
-        em: "💧",
-        bg: "#E3F1FF",
-        title: "Low water days = constipation days",
-        text: `On days with fewer than 4 glasses, ${a}% of logs were hard (Type 1–2), vs ${b}% on 6+ glass days.`,
-        a,
-        b,
-        la: "< 4 glasses",
-        lb: "6+ glasses",
-        col: "#3D7BE0",
-      });
+    const lowWater = withB.filter((d) => d.water < 4);
+    const goodWater = withB.filter((d) => d.water >= 6);
+    if (lowWater.length >= 2 && goodWater.length >= 2) {
+      const a = share(lowWater, isHard);
+      const b = share(goodWater, isHard);
+      if (a - b >= 25) {
+        patterns.push({
+          em: "💧",
+          bg: "#E3F1FF",
+          title: "Low water days = constipation days",
+          text: `On days with fewer than 4 glasses, ${a}% of logs were hard (Type 1–2), vs ${b}% on 6+ glass days.`,
+          a,
+          b,
+          la: "< 4 glasses",
+          lb: "6+ glasses",
+          col: "#3D7BE0",
+        });
+      }
     }
-  }
 
-  const hiStress = withB.filter((d) => d.stress >= 3);
-  const loStress = withB.filter((d) => d.stress <= 1);
-  if (hiStress.length >= 2 && loStress.length >= 2) {
-    const a = share(hiStress, (d) => (d.bristol ?? 0) >= 4.5);
-    const b = share(loStress, (d) => (d.bristol ?? 0) >= 4.5);
-    if (a - b >= 25) {
-      patterns.push({
-        em: "🧠",
-        bg: "var(--peach-l)",
-        title: "Stress shows up in your gut",
-        text: `On stressed days, ${a}% of logs were soft or loose, vs ${b}% on calm days. That's the gut–brain axis in real time.`,
-        a,
-        b,
-        la: "Stressed days",
-        lb: "Calm days",
-        col: "var(--peach-d)",
-      });
+    const hiStress = withB.filter((d) => d.stress >= 3);
+    const loStress = withB.filter((d) => d.stress <= 1);
+    if (hiStress.length >= 2 && loStress.length >= 2) {
+      const a = share(hiStress, (d) => (d.bristol ?? 0) >= 4.5);
+      const b = share(loStress, (d) => (d.bristol ?? 0) >= 4.5);
+      if (a - b >= 25) {
+        patterns.push({
+          em: "🧠",
+          bg: "var(--peach-l)",
+          title: "Stress shows up in your gut",
+          text: `On stressed days, ${a}% of logs were soft or loose, vs ${b}% on calm days. That's the gut–brain axis in real time.`,
+          a,
+          b,
+          la: "Stressed days",
+          lb: "Calm days",
+          col: "var(--peach-d)",
+        });
+      }
     }
-  }
 
-  const last7Days = last14Days.slice(7).filter((d) => d.rec);
-  const daysLogged7 = last7Days.length;
-  const idealPct7 = share(last7Days.filter((d) => d.rec?.bristol !== null).map((d) => d.rec!), isIdeal);
-  const avgSleep7 = daysLogged7
-    ? (last7Days.reduce((acc, cur) => acc + cur.rec!.sleep, 0) / daysLogged7).toFixed(1)
-    : "—";
-  const avgWater7 = daysLogged7
-    ? (last7Days.reduce((acc, cur) => acc + cur.rec!.water, 0) / daysLogged7).toFixed(1)
-    : "—";
+    const last7Days = last14Days.slice(7).filter((d) => d.rec);
+    const daysLogged7 = last7Days.length;
+    const idealPct7 = share(last7Days.filter((d) => d.rec?.bristol !== null).map((d) => d.rec!), isIdeal);
+    const avgSleep7 = daysLogged7
+      ? (last7Days.reduce((acc, cur) => acc + cur.rec!.sleep, 0) / daysLogged7).toFixed(1)
+      : "—";
+    const avgWater7 = daysLogged7
+      ? (last7Days.reduce((acc, cur) => acc + cur.rec!.water, 0) / daysLogged7).toFixed(1)
+      : "—";
+
+    return {
+      last14Days,
+      patterns,
+      daysLogged7,
+      idealPct7,
+      avgSleep7,
+      avgWater7,
+    };
+  }, [settings.logs]);
 
   // SVG Chart Dimensions
   const W = 320;
@@ -341,32 +360,52 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
             })}
           </svg>
 
-          {/* Interactive Tooltip */}
-          {activeTooltip && (
-            <div
-              className="absolute z-10 bg-[var(--ink)] text-white text-[12px] p-2.5 rounded-xl shadow-lg leading-snug pointer-events-auto transform -translate-x-1/2 -translate-y-full"
-              style={{
-                left: `${(activeTooltip.x / W) * 100}%`,
-                top: `${(activeTooltip.y / H) * 100}%`,
-              }}
-            >
-              <div className="flex justify-between items-center gap-2 mb-1">
-                <b className="font-extrabold">{activeTooltip.dateStr}</b>
-                <button
-                  onClick={() => setActiveTooltip(null)}
-                  className="text-white/70 hover:text-white px-1 text-[11px]"
-                >
-                  ✕
-                </button>
+          {/* Interactive Tooltip with boundary clamping */}
+          {activeTooltip && (() => {
+            const pctX = (activeTooltip.x / W) * 100;
+            const pctY = (activeTooltip.y / H) * 100;
+            const isNearRight = pctX > 75;
+            const isNearLeft = pctX < 25;
+            const isNearTop = pctY < 35;
+
+            const transformClass = isNearTop
+              ? isNearRight
+                ? '-translate-x-full translate-y-2'
+                : isNearLeft
+                ? 'translate-x-0 translate-y-2'
+                : '-translate-x-1/2 translate-y-2'
+              : isNearRight
+              ? '-translate-x-full -translate-y-full'
+              : isNearLeft
+              ? 'translate-x-0 -translate-y-full'
+              : '-translate-x-1/2 -translate-y-full';
+
+            return (
+              <div
+                className={`absolute z-10 bg-[var(--ink)] text-white text-[12px] p-2.5 rounded-xl shadow-lg leading-snug pointer-events-auto transform ${transformClass} max-w-[220px] w-max`}
+                style={{
+                  left: `${pctX}%`,
+                  top: `${pctY}%`,
+                }}
+              >
+                <div className="flex justify-between items-center gap-2 mb-1">
+                  <b className="font-extrabold">{activeTooltip.dateStr}</b>
+                  <button
+                    onClick={() => setActiveTooltip(null)}
+                    className="text-white/70 hover:text-white px-1 text-[11px]"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div>
+                  Type {activeTooltip.bristol} · {BRISTOL[activeTooltip.bristol]?.fun || BRISTOL[activeTooltip.bristol]?.name}
+                </div>
+                <div className="text-[11px] text-white/80 mt-1">
+                  😴 {activeTooltip.sleep} h · 💧 {activeTooltip.water} glasses · 🧠 {STRESS[activeTooltip.stress]?.[1]}
+                </div>
               </div>
-              <div>
-                Type {activeTooltip.bristol} · {BRISTOL[activeTooltip.bristol]?.fun || BRISTOL[activeTooltip.bristol]?.name}
-              </div>
-              <div className="text-[11px] text-white/80 mt-1">
-                😴 {activeTooltip.sleep} h · 💧 {activeTooltip.water} glasses · 🧠 {STRESS[activeTooltip.stress]?.[1]}
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
         <p className="text-[11.5px] text-[var(--muted)] font-bold mt-2">
