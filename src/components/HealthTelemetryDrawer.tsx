@@ -1,6 +1,6 @@
 // TODO: refactor this shit later, personal telemetry drawer looks sick with apple watch rings
 import React from 'react';
-import { X, Activity, Droplets, Apple, ShieldCheck, Download, Sparkles } from 'lucide-react';
+import { X, Activity, Droplets, ShieldCheck, Download, Sparkles } from 'lucide-react';
 import { sound } from '../lib/audio';
 
 interface HealthTelemetryDrawerProps {
