@@ -22,6 +22,7 @@ import { ScanModal } from './components/ScanModal';
 import { StealthShield } from './components/StealthShield';
 import { HealthTelemetryDrawer } from './components/HealthTelemetryDrawer';
 import { FloorCutawayModal } from './components/FloorCutawayModal';
+import { HousePerksModal } from './components/HousePerksModal';
 import { sound } from './lib/audio';
 
 // TODO: refactor this state monster into zustand later if time permits
@@ -40,6 +41,7 @@ export function App() {
   const [isStealthOpen, setIsStealthOpen] = useState(false);
   const [isHealthDrawerOpen, setIsHealthDrawerOpen] = useState(false);
   const [isFloorModalOpen, setIsFloorModalOpen] = useState(false);
+  const [isHouseModalOpen, setIsHouseModalOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   // Battle Vector & Live Sequence Animation
@@ -256,6 +258,14 @@ export function App() {
         node={selectedNode}
       />
 
+      <HousePerksModal
+        isOpen={isHouseModalOpen}
+        onClose={() => setIsHouseModalOpen(false)}
+        dorms={dorms}
+        activeDormId={activeDormId}
+        onSelectDorm={(id) => setActiveDormId(id)}
+      />
+
       {/* TOP HEADER: Brand, Live Ticker, Form Factor & Custodial Toggles */}
       <header className="h-14 bg-[#121316] border-b border-[#22252C] px-4 flex items-center justify-between z-30 flex-shrink-0">
         <div className="flex items-center space-x-2.5">
@@ -417,7 +427,15 @@ export function App() {
                 <Trophy className="w-3.5 h-3.5 text-[#FFE600]" />
                 <span>F&M College Cup</span>
               </span>
-              <span className="text-[10px] font-mono text-[#10B981]">Live Season</span>
+              <button
+                onClick={() => {
+                  sound.playClick();
+                  setIsHouseModalOpen(true);
+                }}
+                className="text-[10px] font-mono text-[#FFE600] hover:underline cursor-pointer flex items-center space-x-1"
+              >
+                <span>Perks & Buffs</span>
+              </button>
             </div>
 
             {/* Faction Cards */}
