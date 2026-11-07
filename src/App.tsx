@@ -177,7 +177,10 @@ export function App() {
         );
 
         setTimeout(() => {
-          sound.playCapture();
+          sound.playFactionFanfare(activeDormId);
+          if (result.cleanlinessAlert) {
+            setTimeout(() => sound.playSiren(), 300);
+          }
           confetti({
             particleCount: 50,
             spread: 60,
