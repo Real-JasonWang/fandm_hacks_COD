@@ -1,6 +1,9 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import type { Dorm, RestroomNode, DormId } from '../types';
+import { Sun, Moon, Sunset } from 'lucide-react';
+import { sound } from '../lib/audio';
 
+// TODO: refactor this shit later, day/night lighting shader is sick
 interface CampusMapProps {
   dorms: Dorm[];
   restrooms: RestroomNode[];
@@ -66,6 +69,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({
   custodialMode,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [lightingMode, setLightingMode] = useState<'noon' | 'dusk' | 'midnight'>('midnight');
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -81,8 +85,14 @@ export const CampusMap: React.FC<CampusMapProps> = ({
       const width = canvas.width;
       const height = canvas.height;
 
-      // 1. Dark charcoal canvas background (#0B0C10)
-      ctx.fillStyle = custodialMode ? '#0B0D13' : '#0B0C10';
+      // 1. Dynamic day/night canvas background
+      ctx.fillStyle = custodialMode
+        ? '#0B0D13'
+        : lightingMode === 'midnight'
+        ? '#06070A'
+        : lightingMode === 'dusk'
+        ? '#120F16'
+        : '#0F1117';
       ctx.fillRect(0, 0, width, height);
 
       // 2. F&M Campus Quad Lawns (Subtle deep matte grass patches)
@@ -219,14 +229,20 @@ export const CampusMap: React.FC<CampusMapProps> = ({
         ctx.fillStyle = b.facadeColor;
         ctx.fillRect(bx, by, bw, bh);
 
-        // Architectural window rows
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+        // Architectural window rows (dynamic window illumination)
         const winCols = 4;
         const winRows = Math.max(1, b.levels - 1);
         const colW = bw / (winCols + 1);
         const rowH = bh / (winRows + 1);
         for (let r = 1; r <= winRows; r++) {
           for (let c = 1; c <= winCols; c++) {
+            if (lightingMode === 'midnight') {
+              ctx.fillStyle = (r + c + b.levels) % 2 === 0 ? 'rgba(255, 230, 0, 0.45)' : 'rgba(255, 255, 255, 0.12)';
+            } else if (lightingMode === 'dusk') {
+              ctx.fillStyle = (r + c) % 2 === 0 ? 'rgba(251, 146, 60, 0.35)' : 'rgba(255, 255, 255, 0.1)';
+            } else {
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+            }
             ctx.fillRect(bx + c * colW - 2, by + r * rowH - 1.5, 3.5, 3);
           }
         }
@@ -386,7 +402,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({
     return () => {
       cancelAnimationFrame(animId);
     };
-  }, [dorms, restrooms, selectedNode, activeVector, custodialMode]);
+  }, [dorms, restrooms, selectedNode, activeVector, custodialMode, lightingMode]);
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
@@ -412,6 +428,48 @@ export const CampusMap: React.FC<CampusMapProps> = ({
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-[#0B0C10]">
+      {/* Lighting Mode Selector Pill */}
+      <div className="absolute top-4 left-4 z-20 flex items-center bg-[#121316]/90 backdrop-blur border border-[#22252C] rounded-lg p-1 space-x-1 shadow-lg">
+        <button
+          onClick={() => {
+            sound.playClick();
+            setLightingMode('noon');
+          }}
+          className={`p-1.5 rounded transition-colors ${
+            lightingMode === 'noon' ? 'bg-[#FFE600] text-black font-bold' : 'text-[#94A3B8] hover:text-white'
+          }`}
+          title="Noon Daylight Mode"
+        >
+          <Sun className="w-3.5 h-3.5" />
+        </button>
+
+        <button
+          onClick={() => {
+            sound.playClick();
+            setLightingMode('dusk');
+          }}
+          className={`p-1.5 rounded transition-colors ${
+            lightingMode === 'dusk' ? 'bg-[#F97316] text-black font-bold' : 'text-[#94A3B8] hover:text-white'
+          }`}
+          title="Dusk Golden Hour Mode"
+        >
+          <Sunset className="w-3.5 h-3.5" />
+        </button>
+
+        <button
+          onClick={() => {
+            sound.playClick();
+            setLightingMode('midnight');
+          }}
+          className={`p-1.5 rounded transition-colors ${
+            lightingMode === 'midnight' ? 'bg-[#38BDF8] text-black font-bold' : 'text-[#94A3B8] hover:text-white'
+          }`}
+          title="Midnight Cyber Mode"
+        >
+          <Moon className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
       <canvas
         ref={canvasRef}
         width={960}
