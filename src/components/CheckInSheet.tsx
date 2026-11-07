@@ -198,43 +198,28 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
           </button>
         </div>
 
-        {/* Check-In Mode Switcher (Sleek Apple Segmented Control) */}
-        <div className="flex p-1 bg-[#EFE9DD] rounded-2xl mb-3.5 border border-[#DFD6C7] shadow-inner gap-1">
+        {/* Check-In Mode Switcher (Identical to "Did you poop today?" apple-seg) */}
+        <div className="apple-seg tri mb-3">
           <button
             type="button"
-            className={`flex-1 py-2 px-1.5 text-[12.5px] font-black rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer select-none whitespace-nowrap ${
-              activeTab === 'manual'
-                ? 'bg-white text-[var(--ink)] shadow-xs border border-[#DFD6C7]/60'
-                : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[#FAF7F0]/60'
-            }`}
+            className={activeTab === 'manual' ? 'on' : ''}
             onClick={() => setActiveTab('manual')}
           >
-            <span>✏️</span>
-            <span>Manual</span>
+            ✏️ Manual
           </button>
           <button
             type="button"
-            className={`flex-1 py-2 px-1.5 text-[12.5px] font-black rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer select-none whitespace-nowrap ${
-              activeTab === 'vision'
-                ? 'bg-white text-[var(--ink)] shadow-xs border border-[#DFD6C7]/60'
-                : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[#FAF7F0]/60'
-            }`}
+            className={activeTab === 'vision' ? 'on' : ''}
             onClick={() => setActiveTab('vision')}
           >
-            <span>📷</span>
-            <span>AI Vision</span>
+            📷 AI Vision
           </button>
           <button
             type="button"
-            className={`flex-1 py-2 px-1.5 text-[12.5px] font-black rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer select-none whitespace-nowrap ${
-              activeTab === 'nlp'
-                ? 'bg-white text-[var(--ink)] shadow-xs border border-[#DFD6C7]/60'
-                : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[#FAF7F0]/60'
-            }`}
+            className={activeTab === 'nlp' ? 'on' : ''}
             onClick={() => setActiveTab('nlp')}
           >
-            <span>🎙️</span>
-            <span>Voice &amp; Chat</span>
+            🎙️ Voice &amp; Chat
           </button>
         </div>
 

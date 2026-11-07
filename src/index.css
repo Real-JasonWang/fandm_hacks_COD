@@ -598,6 +598,16 @@ button:focus-visible, [tabindex]:focus-visible {
   gap: 4px;
 }
 
+.apple-seg.tri {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.apple-seg.tri button {
+  padding: 10px 4px;
+  font-size: 13.5px;
+  white-space: nowrap;
+}
+
 .apple-seg button {
   padding: 11px;
   border-radius: 12px;
