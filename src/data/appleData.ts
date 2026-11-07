@@ -10,7 +10,7 @@ export const HOUSES: House[] = [
   // Traditional F&M Residence Halls
   { id: "Schnader", name: "Schnader Hall",         color: "#2563EB", part: 70, checks: 358, residents: 185, category: 'hall' },
   { id: "Thomas",   name: "Thomas Hall",           color: "#059669", part: 67, checks: 334, residents: 175, category: 'hall' },
-  { id: "Dietz",    name: "Dietz Hall",            color: "#D97706", part: 66, checks: 285, residents: 150, category: 'hall' },
+  { id: "Dietz",    name: "Dietz Hall",            color: "#D97706", part: 68, checks: 68,  residents: 40,  category: 'hall' },
 ];
 
 export const BRISTOL: Record<BristolNumber, BristolInfo> = {

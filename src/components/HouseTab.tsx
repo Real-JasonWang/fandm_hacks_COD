@@ -27,7 +27,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
       Weis: 210,
       Schnader: 185,
       Thomas: 175,
-      Dietz: 150,
+      Dietz: 40,
     };
 
     const getHandicapMultiplier = (houseId: string) => {
@@ -90,7 +90,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
       Brooks:   { registered: 195, active: 135, checks: 442, part: 69.2 },
       Roschel:  { registered: 188, active: 128, checks: 425, part: 68.1 },
       Thomas:   { registered: 142, active: 95,  checks: 334, part: 66.9 },
-      Dietz:    { registered: 122, active: 80,  checks: 285, part: 65.6 },
+      Dietz:    { registered: 32,  active: 22,  checks: 68,  part: 68.8 },
     };
 
     const sortedHouses = HOUSES.map((h) => {

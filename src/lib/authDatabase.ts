@@ -298,64 +298,89 @@ export function isDemoUser(user: UserAccount | null | undefined): boolean {
 }
 
 // 14 Days × 3 Check-ins per day (Morning, Afternoon, Evening = 42 check-ins)
+// Realistic biological variance for Case 1 (Ware Diplomat: mostly healthy with natural student off-days)
 export function createCase1HealthyLogs(): CheckInEntry[] {
   const logs: CheckInEntry[] = [];
   const now = new Date();
 
+  const dayProfiles = [
+    // day 13 (2 weeks ago)
+    { sleep: 7.8, waterM: 2, waterA: 5, waterE: 7, stress: 0, bM: 4, bA: 4, bE: null, sym: [] },
+    // day 12
+    { sleep: 8.2, waterM: 3, waterA: 6, waterE: 8, stress: 0, bM: 4, bA: null, bE: 4, sym: [] },
+    // day 11 (Late night prep: short sleep, lower water, hard stool)
+    { sleep: 5.4, waterM: 1, waterA: 3, waterE: 4, stress: 2, bM: 2, bA: 3, bE: null, sym: ['straining'] },
+    // day 10
+    { sleep: 7.0, waterM: 2, waterA: 5, waterE: 6, stress: 1, bM: 3, bA: 4, bE: null, sym: [] },
+    // day 9
+    { sleep: 7.6, waterM: 2, waterA: 5, waterE: 7, stress: 0, bM: 4, bA: null, bE: 4, sym: [] },
+    // day 8 (Weekend recovery)
+    { sleep: 8.5, waterM: 3, waterA: 6, waterE: 8, stress: 0, bM: 4, bA: 4, bE: null, sym: [] },
+    // day 7 (Late movie night, lower water)
+    { sleep: 5.7, waterM: 1, waterA: 3, waterE: 4, stress: 1, bM: 2, bA: null, bE: 3, sym: ['bloating'] },
+    // day 6
+    { sleep: 7.4, waterM: 2, waterA: 5, waterE: 7, stress: 0, bM: 3, bA: 4, bE: null, sym: [] },
+    // day 5
+    { sleep: 8.0, waterM: 2, waterA: 6, waterE: 8, stress: 0, bM: 4, bA: null, bE: 4, sym: [] },
+    // day 4 (Busy lab day, skipped bottle refill)
+    { sleep: 6.2, waterM: 1, waterA: 3, waterE: 4, stress: 2, bM: 3, bA: 5, bE: null, sym: ['gas'] },
+    // day 3
+    { sleep: 7.5, waterM: 2, waterA: 5, waterE: 7, stress: 0, bM: 4, bA: 4, bE: null, sym: [] },
+    // day 2 (Mild digestion shift)
+    { sleep: 7.1, waterM: 2, waterA: 5, waterE: 6, stress: 1, bM: 5, bA: null, bE: 4, sym: [] },
+    // day 1 (yesterday)
+    { sleep: 8.1, waterM: 3, waterA: 6, waterE: 8, stress: 0, bM: 4, bA: 4, bE: null, sym: [] },
+    // day 0 (today)
+    { sleep: 7.7, waterM: 2, waterA: 5, waterE: 7, stress: 0, bM: 4, bA: 4, bE: null, sym: [] },
+  ];
+
   for (let day = 13; day >= 0; day--) {
+    const prof = dayProfiles[13 - day];
     const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day);
     const dayStr = `${targetDate.getFullYear()}_${targetDate.getMonth() + 1}_${targetDate.getDate()}`;
 
-    // 1. Morning Check-in (~8:25 AM)
     const tMorning = new Date(targetDate);
     tMorning.setHours(8, 25, 0, 0);
 
-    // 2. Afternoon Check-in (~1:15 PM)
     const tAfternoon = new Date(targetDate);
     tAfternoon.setHours(13, 15, 0, 0);
 
-    // 3. Evening Check-in (~8:45 PM)
     const tEvening = new Date(targetDate);
     tEvening.setHours(20, 45, 0, 0);
 
-    const sleepHours = 7.5 + ((day % 3) * 0.5); // 7.5h to 8.5h sleep
-
-    // Morning check-in: Breakfast hydration & morning bowel movement
     logs.push({
       id: `c1_${dayStr}_m`,
       ts: tMorning.getTime(),
-      pooped: true,
-      bristol: (day % 4 === 1 ? 3 : 4) as BristolNumber,
-      symptoms: [],
-      sleep: sleepHours,
-      water: 2,
+      pooped: prof.bM !== null,
+      bristol: prof.bM as BristolNumber,
+      symptoms: prof.sym,
+      sleep: prof.sleep,
+      water: prof.waterM,
       veg: 1,
-      stress: (day % 5 === 0 ? 1 : 0),
+      stress: prof.stress,
     });
 
-    // Afternoon check-in: Post-dining hall lunch check-in
     logs.push({
       id: `c1_${dayStr}_a`,
       ts: tAfternoon.getTime(),
-      pooped: day % 2 === 0,
-      bristol: day % 2 === 0 ? 4 : null,
+      pooped: prof.bA !== null,
+      bristol: prof.bA as BristolNumber,
       symptoms: [],
-      sleep: sleepHours,
-      water: 5,
+      sleep: prof.sleep,
+      water: prof.waterA,
       veg: 2,
-      stress: 0,
+      stress: prof.stress,
     });
 
-    // Evening check-in: Post-dinner & sleep prep
     logs.push({
       id: `c1_${dayStr}_e`,
       ts: tEvening.getTime(),
-      pooped: day % 3 !== 0,
-      bristol: day % 3 !== 0 ? 4 : null,
+      pooped: prof.bE !== null,
+      bristol: prof.bE as BristolNumber,
       symptoms: [],
-      sleep: sleepHours,
-      water: 7 + (day % 2),
-      veg: 3 + (day % 2),
+      sleep: prof.sleep,
+      water: prof.waterE,
+      veg: 3,
       stress: 0,
     });
   }
@@ -369,13 +394,41 @@ export function createCase2StressLogs(): CheckInEntry[] {
   const logs: CheckInEntry[] = [];
   const now = new Date();
 
+  const dayProfiles = [
+    // day 13
+    { sleep: 6.8, waterM: 2, waterA: 4, waterE: 5, stress: 1, bM: 3, bA: null, bE: 4, sym: [] },
+    // day 12
+    { sleep: 5.6, waterM: 1, waterA: 3, waterE: 4, stress: 2, bM: 2, bA: 3, bE: null, sym: ['bloating'] },
+    // day 11
+    { sleep: 5.2, waterM: 1, waterA: 2, waterE: 3, stress: 3, bM: 2, bA: null, bE: 2, sym: ['straining'] },
+    // day 10
+    { sleep: 6.1, waterM: 2, waterA: 4, waterE: 5, stress: 2, bM: 4, bA: 5, bE: null, sym: ['gas'] },
+    // day 9 (Midterm start: severe stress, urgency diarrhea)
+    { sleep: 4.4, waterM: 1, waterA: 2, waterE: 3, stress: 4, bM: 6, bA: null, bE: 6, sym: ['cramps', 'urgency'] },
+    // day 8 (Exam day 2: acute painful constipation)
+    { sleep: 4.1, waterM: 1, waterA: 2, waterE: 2, stress: 4, bM: 1, bA: 2, bE: null, sym: ['straining', 'pain'] },
+    // day 7 (Exam day 3: IBS loose rebound)
+    { sleep: 4.7, waterM: 1, waterA: 3, waterE: 3, stress: 4, bM: 6, bA: 6, bE: null, sym: ['urgency'] },
+    // day 6 (Exam day 4: cramp and gas)
+    { sleep: 5.0, waterM: 1, waterA: 2, waterE: 3, stress: 3, bM: 2, bA: null, bE: 5, sym: ['cramps', 'bloating'] },
+    // day 5 (Final exam day)
+    { sleep: 4.2, waterM: 1, waterA: 2, waterE: 3, stress: 4, bM: 6, bA: 6, bE: null, sym: ['urgency', 'nausea'] },
+    // day 4 (Post-exam recovery)
+    { sleep: 7.2, waterM: 2, waterA: 4, waterE: 5, stress: 2, bM: 3, bA: 4, bE: null, sym: [] },
+    // day 3
+    { sleep: 6.4, waterM: 2, waterA: 4, waterE: 5, stress: 2, bM: 5, bA: null, bE: 4, sym: ['gas'] },
+    // day 2
+    { sleep: 5.3, waterM: 1, waterA: 3, waterE: 3, stress: 3, bM: 2, bA: null, bE: 6, sym: ['bloating'] },
+    // day 1
+    { sleep: 7.0, waterM: 2, waterA: 5, waterE: 6, stress: 1, bM: 4, bA: 4, bE: null, sym: [] },
+    // day 0 (today)
+    { sleep: 6.9, waterM: 2, waterA: 5, waterE: 6, stress: 1, bM: 3, bA: 4, bE: null, sym: [] },
+  ];
+
   for (let day = 13; day >= 0; day--) {
+    const prof = dayProfiles[13 - day];
     const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day);
     const dayStr = `${targetDate.getFullYear()}_${targetDate.getMonth() + 1}_${targetDate.getDate()}`;
-
-    // Midterm exam peak days (days 5 to 9 ago)
-    const isExamPeak = day >= 5 && day <= 9;
-    const isMildStress = (day >= 10 && day <= 12) || (day >= 2 && day <= 4);
 
     const tMorning = new Date(targetDate);
     tMorning.setHours(7, 45, 0, 0);
@@ -386,46 +439,40 @@ export function createCase2StressLogs(): CheckInEntry[] {
     const tEvening = new Date(targetDate);
     tEvening.setHours(21, 40, 0, 0);
 
-    const sleepHours = isExamPeak ? (4.0 + (day % 2) * 0.5) : isMildStress ? 5.5 : 7.0;
-    const stressLvl = isExamPeak ? 4 : isMildStress ? 3 : 1;
-
-    // Morning check-in: Early class rush
     logs.push({
       id: `c2_${dayStr}_m`,
       ts: tMorning.getTime(),
-      pooped: true,
-      bristol: (isExamPeak ? 6 : isMildStress ? 2 : 3) as BristolNumber,
-      symptoms: isExamPeak ? ['cramps', 'urgency'] : isMildStress ? ['bloating', 'straining'] : [],
-      sleep: sleepHours,
-      water: isExamPeak ? 1 : 2,
-      veg: isExamPeak ? 0 : 1,
-      stress: stressLvl,
+      pooped: prof.bM !== null,
+      bristol: prof.bM as BristolNumber,
+      symptoms: prof.sym,
+      sleep: prof.sleep,
+      water: prof.waterM,
+      veg: 1,
+      stress: prof.stress,
     });
 
-    // Afternoon check-in: Midday library grind
     logs.push({
       id: `c2_${dayStr}_a`,
       ts: tAfternoon.getTime(),
-      pooped: true,
-      bristol: (isExamPeak ? 2 : isMildStress ? 5 : 4) as BristolNumber,
-      symptoms: isExamPeak ? ['straining', 'pain'] : isMildStress ? ['gas'] : [],
-      sleep: sleepHours,
-      water: isExamPeak ? 3 : 4,
+      pooped: prof.bA !== null,
+      bristol: prof.bA as BristolNumber,
+      symptoms: [],
+      sleep: prof.sleep,
+      water: prof.waterA,
       veg: 1,
-      stress: stressLvl,
+      stress: prof.stress,
     });
 
-    // Evening check-in: Late night study session
     logs.push({
       id: `c2_${dayStr}_e`,
       ts: tEvening.getTime(),
-      pooped: isExamPeak || day % 2 === 0,
-      bristol: (isExamPeak ? 6 : 3) as BristolNumber,
-      symptoms: isExamPeak ? ['urgency', 'nausea'] : [],
-      sleep: sleepHours,
-      water: isExamPeak ? 3 : 5,
-      veg: isExamPeak ? 0 : 2,
-      stress: stressLvl,
+      pooped: prof.bE !== null,
+      bristol: prof.bE as BristolNumber,
+      symptoms: [],
+      sleep: prof.sleep,
+      water: prof.waterE,
+      veg: 2,
+      stress: Math.max(0, prof.stress - 1),
     });
   }
 
@@ -546,18 +593,18 @@ export function getAllUsers(): UserAccount[] {
         if (Array.isArray(parsed) && parsed.length > 0) {
           let modified = false;
           for (const u of parsed) {
-            // Ensure demo users have the full 42 check-ins
-            if (u.id === 'user_fandm_demo' && (!u.logs || u.logs.length < 40)) {
+            // Keep demo users updated with rich randomized variance
+            if (u.id === 'user_fandm_demo') {
               u.logs = createCase1HealthyLogs();
               u.isDemo = true;
               u.streak = 14;
-              u.totalPoints = 620;
+              u.totalPoints = 580;
               modified = true;
-            } else if (u.id === 'user_fandm_ben' && (!u.logs || u.logs.length < 40)) {
+            } else if (u.id === 'user_fandm_ben') {
               u.logs = createCase2StressLogs();
               u.isDemo = true;
               u.streak = 14;
-              u.totalPoints = 540;
+              u.totalPoints = 510;
               modified = true;
             }
           }

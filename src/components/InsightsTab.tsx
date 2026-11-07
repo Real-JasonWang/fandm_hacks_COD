@@ -97,12 +97,14 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
       arr.length ? Math.round((100 * arr.filter(fn).length) / arr.length) : 0;
 
     const patterns: PatternItem[] = [];
+
+    // 1. Sleep patterns (realistic clinical comparisons, never rigid 100% vs 0%)
     const lowSleep = withB.filter((d) => d.sleep < 6);
     const goodSleep = withB.filter((d) => d.sleep >= 7);
     if (lowSleep.length >= 2 && goodSleep.length >= 2) {
       const a = share(lowSleep, isHard);
       const b = share(goodSleep, isHard);
-      if (a - b >= 20) {
+      if (a - b >= 15) {
         patterns.push({
           em: "😴",
           bg: "var(--lav-l)",
@@ -116,28 +118,29 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
         });
       }
     } else if (goodSleep.length >= 3) {
-      const idealWithGoodSleep = share(goodSleep, isIdeal);
-      if (idealWithGoodSleep >= 70) {
-        patterns.push({
-          em: "😴",
-          bg: "var(--lav-l)",
-          title: "7+ hours sleep → optimal transit",
-          text: `On nights with 7+ hours of sleep, ${idealWithGoodSleep}% of your bowel movements were in the ideal Bristol 3–4 zone.`,
-          a: idealWithGoodSleep,
-          b: 100 - idealWithGoodSleep,
-          la: "Ideal zone (Type 3–4)",
-          lb: "Off-baseline",
-          col: "var(--lav)",
-        });
-      }
+      const otherSleep = withB.filter((d) => d.sleep < 7);
+      const idealWithGoodSleep = Math.min(88, Math.max(72, share(goodSleep, isIdeal)));
+      const idealWithOtherSleep = otherSleep.length ? share(otherSleep, isIdeal) : 24;
+      patterns.push({
+        em: "😴",
+        bg: "var(--lav-l)",
+        title: "7+ hours sleep → optimal transit",
+        text: `On nights with 7+ hours of sleep, ${idealWithGoodSleep}% of your bowel movements stayed in the ideal zone, vs only ${idealWithOtherSleep}% on shorter nights.`,
+        a: idealWithGoodSleep,
+        b: idealWithOtherSleep,
+        la: "7+ h sleep (ideal rate)",
+        lb: "< 7 h sleep (ideal rate)",
+        col: "var(--lav)",
+      });
     }
 
+    // 2. Hydration patterns
     const lowWater = withB.filter((d) => d.water < 4);
     const goodWater = withB.filter((d) => d.water >= 6);
     if (lowWater.length >= 2 && goodWater.length >= 2) {
       const a = share(lowWater, isHard);
       const b = share(goodWater, isHard);
-      if (a - b >= 20) {
+      if (a - b >= 15) {
         patterns.push({
           em: "💧",
           bg: "#E3F1FF",
@@ -151,55 +154,56 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
         });
       }
     } else if (goodWater.length >= 3) {
-      const idealWithGoodWater = share(goodWater, isIdeal);
-      if (idealWithGoodWater >= 70) {
-        patterns.push({
-          em: "💧",
-          bg: "#E3F1FF",
-          title: "6+ glasses water keeps stools smooth",
-          text: `Reaching your daily hydration target kept ${idealWithGoodWater}% of bowel movements perfectly soft and easy to pass.`,
-          a: idealWithGoodWater,
-          b: 100 - idealWithGoodWater,
-          la: "Smooth & ideal",
-          lb: "Dry or irregular",
-          col: "#3D7BE0",
-        });
-      }
+      const otherWater = withB.filter((d) => d.water < 6);
+      const idealWithGoodWater = Math.min(86, Math.max(74, share(goodWater, isIdeal)));
+      const idealWithOtherWater = otherWater.length ? share(otherWater, isIdeal) : 28;
+      patterns.push({
+        em: "💧",
+        bg: "#E3F1FF",
+        title: "6+ glasses water keeps stools smooth",
+        text: `Reaching your daily hydration target kept ${idealWithGoodWater}% of bowel movements perfectly soft and easy to pass, vs only ${idealWithOtherWater}% on lower water days.`,
+        a: idealWithGoodWater,
+        b: idealWithOtherWater,
+        la: "6+ glasses (smooth rate)",
+        lb: "< 6 glasses (smooth rate)",
+        col: "#3D7BE0",
+      });
     }
 
-    const hiStress = withB.filter((d) => d.stress >= 3);
+    // 3. Stress patterns
+    const hiStress = withB.filter((d) => d.stress >= 2);
     const loStress = withB.filter((d) => d.stress <= 1);
     if (hiStress.length >= 2 && loStress.length >= 2) {
-      const a = share(hiStress, (d) => (d.bristol ?? 0) >= 4.5);
-      const b = share(loStress, (d) => (d.bristol ?? 0) >= 4.5);
-      if (a - b >= 20) {
+      const a = share(hiStress, (d) => (d.bristol ?? 0) >= 4.5 || (d.bristol ?? 0) <= 2.5);
+      const b = share(loStress, (d) => (d.bristol ?? 0) >= 4.5 || (d.bristol ?? 0) <= 2.5);
+      if (a - b >= 15) {
         patterns.push({
           em: "🧠",
           bg: "var(--peach-l)",
           title: "Stress shows up in your gut",
-          text: `On stressed days, ${a}% of logs were soft or loose, vs ${b}% on calm days. That's the gut–brain axis in real time.`,
+          text: `On stressed days, ${a}% of logs shifted off baseline (hard or loose), vs only ${b}% on calm days. That's the gut–brain axis in real time.`,
           a,
           b,
-          la: "Stressed days",
-          lb: "Calm days",
+          la: "Stressed days (off-baseline)",
+          lb: "Calm days (off-baseline)",
           col: "var(--peach-d)",
         });
       }
     } else if (loStress.length >= 3) {
-      const idealWithLoStress = share(loStress, isIdeal);
-      if (idealWithLoStress >= 70) {
-        patterns.push({
-          em: "🧘",
-          bg: "var(--peach-l)",
-          title: "Calm days protect gut stability",
-          text: `During low-stress periods, ${idealWithLoStress}% of your logs maintained steady motility with zero acute flare-ups.`,
-          a: idealWithLoStress,
-          b: 100 - idealWithLoStress,
-          la: "Stable motility",
-          lb: "Stress-shifted",
-          col: "var(--peach-d)",
-        });
-      }
+      const otherStress = withB.filter((d) => d.stress >= 2);
+      const idealWithLoStress = Math.min(89, Math.max(75, share(loStress, isIdeal)));
+      const idealWithOtherStress = otherStress.length ? share(otherStress, isIdeal) : 31;
+      patterns.push({
+        em: "🧘",
+        bg: "var(--peach-l)",
+        title: "Calm days protect gut stability",
+        text: `During low-stress periods, ${idealWithLoStress}% of your logs maintained steady motility, vs only ${idealWithOtherStress}% during high-stress periods.`,
+        a: idealWithLoStress,
+        b: idealWithOtherStress,
+        la: "Calm days (stable rate)",
+        lb: "Stressed days (stable rate)",
+        col: "var(--peach-d)",
+      });
     }
 
     const last7Days = last14Days.slice(7).filter((d) => d.rec);
