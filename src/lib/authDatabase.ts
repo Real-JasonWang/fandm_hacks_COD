@@ -1,4 +1,4 @@
-import type { CheckInEntry } from '../types';
+import type { CheckInEntry, BristolNumber } from '../types';
 
 export interface UniversityDef {
   id: string;
@@ -23,8 +23,6 @@ export const SUPPORTED_UNIVERSITIES: UniversityDef[] = [
       { id: 'Schnader', name: 'Schnader Hall', color: '#2563EB' },
       { id: 'Thomas', name: 'Thomas Hall', color: '#059669' },
       { id: 'Dietz', name: 'Dietz Hall', color: '#D97706' },
-      { id: 'Marshall', name: 'Marshall Hall', color: '#7C3AED' },
-      { id: 'Buchanan', name: 'Buchanan Hall', color: '#DC2626' },
     ],
   },
 ];
@@ -41,6 +39,7 @@ export interface UserAccount {
   logs: CheckInEntry[];
   streak: number;
   totalPoints: number;
+  isDemo?: boolean;
 }
 
 export interface UserCredentialRecord {
@@ -284,48 +283,153 @@ export const campusDB = new CampusDatabaseEngine();
 // ==========================================
 // In-Memory & Synchronous Cache Layer
 // ==========================================
-export function createCase1HealthyLogs(): CheckInEntry[] {
-  const now = Date.now();
-  const dayMs = 864e5;
-  // Full 14-day optimal routine history (Ideal Bristol 3-4, 7-8h sleep, 6-8 glasses water)
-  return [
-    { id: 'case1_14', ts: now - 13 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 0 },
-    { id: 'case1_13', ts: now - 12 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 8, veg: 4, stress: 0 },
-    { id: 'case1_12', ts: now - 11 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 7.0, water: 6, veg: 2, stress: 1 },
-    { id: 'case1_11', ts: now - 10 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 0 },
-    { id: 'case1_10', ts: now - 9 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 8, veg: 4, stress: 0 },
-    { id: 'case1_09', ts: now - 8 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 1 },
-    { id: 'case1_08', ts: now - 7 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.5, water: 8, veg: 3, stress: 0 },
-    { id: 'case1_07', ts: now - 6 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 0 },
-    { id: 'case1_06', ts: now - 5 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 8, veg: 4, stress: 0 },
-    { id: 'case1_05', ts: now - 4 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 7.0, water: 6, veg: 2, stress: 1 },
-    { id: 'case1_04', ts: now - 3 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 7, veg: 3, stress: 0 },
-    { id: 'case1_03', ts: now - 2 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 8, veg: 4, stress: 0 },
-    { id: 'case1_02', ts: now - 1 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 1 },
-    { id: 'case1_01', ts: now, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 7, veg: 3, stress: 0 },
+// Helper to detect if a session belongs to a pre-configured demo account
+export function isDemoUser(user: UserAccount | null | undefined): boolean {
+  if (!user) return false;
+  if (user.isDemo) return true;
+  const demoEmails = [
+    'diplomat@fandm.edu',
+    'ben@fandm.edu',
+    'david@fandm.edu',
+    'leo@fandm.edu',
+    'maya@fandm.edu',
   ];
+  return demoEmails.includes(user.email.toLowerCase()) || user.id.startsWith('user_fandm_');
 }
 
+// 14 Days × 3 Check-ins per day (Morning, Afternoon, Evening = 42 check-ins)
+export function createCase1HealthyLogs(): CheckInEntry[] {
+  const logs: CheckInEntry[] = [];
+  const now = new Date();
+
+  for (let day = 13; day >= 0; day--) {
+    const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day);
+    const dayStr = `${targetDate.getFullYear()}_${targetDate.getMonth() + 1}_${targetDate.getDate()}`;
+
+    // 1. Morning Check-in (~8:25 AM)
+    const tMorning = new Date(targetDate);
+    tMorning.setHours(8, 25, 0, 0);
+
+    // 2. Afternoon Check-in (~1:15 PM)
+    const tAfternoon = new Date(targetDate);
+    tAfternoon.setHours(13, 15, 0, 0);
+
+    // 3. Evening Check-in (~8:45 PM)
+    const tEvening = new Date(targetDate);
+    tEvening.setHours(20, 45, 0, 0);
+
+    const sleepHours = 7.5 + ((day % 3) * 0.5); // 7.5h to 8.5h sleep
+
+    // Morning check-in: Breakfast hydration & morning bowel movement
+    logs.push({
+      id: `c1_${dayStr}_m`,
+      ts: tMorning.getTime(),
+      pooped: true,
+      bristol: (day % 4 === 1 ? 3 : 4) as BristolNumber,
+      symptoms: [],
+      sleep: sleepHours,
+      water: 2,
+      veg: 1,
+      stress: (day % 5 === 0 ? 1 : 0),
+    });
+
+    // Afternoon check-in: Post-dining hall lunch check-in
+    logs.push({
+      id: `c1_${dayStr}_a`,
+      ts: tAfternoon.getTime(),
+      pooped: day % 2 === 0,
+      bristol: day % 2 === 0 ? 4 : null,
+      symptoms: [],
+      sleep: sleepHours,
+      water: 5,
+      veg: 2,
+      stress: 0,
+    });
+
+    // Evening check-in: Post-dinner & sleep prep
+    logs.push({
+      id: `c1_${dayStr}_e`,
+      ts: tEvening.getTime(),
+      pooped: day % 3 !== 0,
+      bristol: day % 3 !== 0 ? 4 : null,
+      symptoms: [],
+      sleep: sleepHours,
+      water: 7 + (day % 2),
+      veg: 3 + (day % 2),
+      stress: 0,
+    });
+  }
+
+  return logs;
+}
+
+// 14 Days × 3 Check-ins per day (Morning, Afternoon, Evening = 42 check-ins)
+// Simulates student midterm exam stress, sleep deprivation, low water, and IBS gut motility swings
 export function createCase2StressLogs(): CheckInEntry[] {
-  const now = Date.now();
-  const dayMs = 864e5;
-  // Full 14-day history reflecting student exam stress, short sleep, low hydration and IBS motility swings
-  return [
-    { id: 'case2_14', ts: now - 13 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 7.0, water: 6, veg: 2, stress: 1 },
-    { id: 'case2_13', ts: now - 12 * dayMs, pooped: true, bristol: 2, symptoms: ['straining'], sleep: 5.5, water: 3, veg: 1, stress: 3 },
-    { id: 'case2_12', ts: now - 11 * dayMs, pooped: true, bristol: 2, symptoms: ['bloating', 'straining'], sleep: 5.0, water: 3, veg: 0, stress: 4 },
-    { id: 'case2_11', ts: now - 10 * dayMs, pooped: true, bristol: 5, symptoms: ['gas'], sleep: 6.0, water: 4, veg: 1, stress: 2 },
-    { id: 'case2_10', ts: now - 9 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 6, veg: 3, stress: 1 },
-    { id: 'case2_09', ts: now - 8 * dayMs, pooped: true, bristol: 6, symptoms: ['cramps', 'urgency'], sleep: 4.5, water: 4, veg: 1, stress: 4 },
-    { id: 'case2_08', ts: now - 7 * dayMs, pooped: true, bristol: 6, symptoms: ['urgency'], sleep: 4.0, water: 3, veg: 1, stress: 4 },
-    { id: 'case2_07', ts: now - 6 * dayMs, pooped: true, bristol: 2, symptoms: ['bloating'], sleep: 5.0, water: 2, veg: 1, stress: 3 },
-    { id: 'case2_06', ts: now - 5 * dayMs, pooped: true, bristol: 1, symptoms: ['straining', 'pain'], sleep: 4.5, water: 2, veg: 0, stress: 4 },
-    { id: 'case2_05', ts: now - 4 * dayMs, pooped: true, bristol: 3, symptoms: ['gas'], sleep: 6.5, water: 5, veg: 2, stress: 2 },
-    { id: 'case2_04', ts: now - 3 * dayMs, pooped: true, bristol: 6, symptoms: ['cramps', 'urgency'], sleep: 5.0, water: 4, veg: 1, stress: 4 },
-    { id: 'case2_03', ts: now - 2 * dayMs, pooped: true, bristol: 5, symptoms: ['bloating'], sleep: 6.0, water: 4, veg: 2, stress: 3 },
-    { id: 'case2_02', ts: now - 1 * dayMs, pooped: true, bristol: 6, symptoms: ['urgency'], sleep: 4.5, water: 3, veg: 1, stress: 4 },
-    { id: 'case2_01', ts: now, pooped: true, bristol: 3, symptoms: [], sleep: 7.0, water: 6, veg: 3, stress: 1 },
-  ];
+  const logs: CheckInEntry[] = [];
+  const now = new Date();
+
+  for (let day = 13; day >= 0; day--) {
+    const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day);
+    const dayStr = `${targetDate.getFullYear()}_${targetDate.getMonth() + 1}_${targetDate.getDate()}`;
+
+    // Midterm exam peak days (days 5 to 9 ago)
+    const isExamPeak = day >= 5 && day <= 9;
+    const isMildStress = (day >= 10 && day <= 12) || (day >= 2 && day <= 4);
+
+    const tMorning = new Date(targetDate);
+    tMorning.setHours(7, 45, 0, 0);
+
+    const tAfternoon = new Date(targetDate);
+    tAfternoon.setHours(14, 20, 0, 0);
+
+    const tEvening = new Date(targetDate);
+    tEvening.setHours(21, 40, 0, 0);
+
+    const sleepHours = isExamPeak ? (4.0 + (day % 2) * 0.5) : isMildStress ? 5.5 : 7.0;
+    const stressLvl = isExamPeak ? 4 : isMildStress ? 3 : 1;
+
+    // Morning check-in: Early class rush
+    logs.push({
+      id: `c2_${dayStr}_m`,
+      ts: tMorning.getTime(),
+      pooped: true,
+      bristol: (isExamPeak ? 6 : isMildStress ? 2 : 3) as BristolNumber,
+      symptoms: isExamPeak ? ['cramps', 'urgency'] : isMildStress ? ['bloating', 'straining'] : [],
+      sleep: sleepHours,
+      water: isExamPeak ? 1 : 2,
+      veg: isExamPeak ? 0 : 1,
+      stress: stressLvl,
+    });
+
+    // Afternoon check-in: Midday library grind
+    logs.push({
+      id: `c2_${dayStr}_a`,
+      ts: tAfternoon.getTime(),
+      pooped: true,
+      bristol: (isExamPeak ? 2 : isMildStress ? 5 : 4) as BristolNumber,
+      symptoms: isExamPeak ? ['straining', 'pain'] : isMildStress ? ['gas'] : [],
+      sleep: sleepHours,
+      water: isExamPeak ? 3 : 4,
+      veg: 1,
+      stress: stressLvl,
+    });
+
+    // Evening check-in: Late night study session
+    logs.push({
+      id: `c2_${dayStr}_e`,
+      ts: tEvening.getTime(),
+      pooped: isExamPeak || day % 2 === 0,
+      bristol: (isExamPeak ? 6 : 3) as BristolNumber,
+      symptoms: isExamPeak ? ['urgency', 'nausea'] : [],
+      sleep: sleepHours,
+      water: isExamPeak ? 3 : 5,
+      veg: isExamPeak ? 0 : 2,
+      stress: stressLvl,
+    });
+  }
+
+  return logs;
 }
 
 function createBrooksStudentLogs(): CheckInEntry[] {
@@ -371,7 +475,8 @@ function getSeedUsers(): UserAccount[] {
       createdAt: Date.now() - 14 * 864e5,
       logs: createCase1HealthyLogs(),
       streak: 14,
-      totalPoints: 280,
+      totalPoints: 620,
+      isDemo: true,
     },
     {
       id: 'user_fandm_ben',
@@ -383,8 +488,9 @@ function getSeedUsers(): UserAccount[] {
       passwordHash: SEED_PBKDF2_HASH,
       createdAt: Date.now() - 14 * 864e5,
       logs: createCase2StressLogs(),
-      streak: 8,
-      totalPoints: 195,
+      streak: 14,
+      totalPoints: 540,
+      isDemo: true,
     },
     {
       id: 'user_fandm_david',
@@ -398,6 +504,7 @@ function getSeedUsers(): UserAccount[] {
       logs: createBrooksStudentLogs(),
       streak: 3,
       totalPoints: 55,
+      isDemo: true,
     },
     {
       id: 'user_fandm_leo',
@@ -411,6 +518,7 @@ function getSeedUsers(): UserAccount[] {
       logs: createWeisStudentLogs(),
       streak: 4,
       totalPoints: 75,
+      isDemo: true,
     },
     {
       id: 'user_fandm_maya',
@@ -424,6 +532,7 @@ function getSeedUsers(): UserAccount[] {
       logs: createRoschelStudentLogs(),
       streak: 2,
       totalPoints: 35,
+      isDemo: true,
     },
   ];
 }
@@ -435,15 +544,21 @@ export function getAllUsers(): UserAccount[] {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Strictly purge any legacy fake demo logs (id starting with 's')
           let modified = false;
           for (const u of parsed) {
-            if (Array.isArray(u.logs)) {
-              const realLogs = u.logs.filter((l: CheckInEntry) => l && typeof l.id === 'string' && !l.id.startsWith('s'));
-              if (realLogs.length !== u.logs.length) {
-                u.logs = realLogs;
-                modified = true;
-              }
+            // Ensure demo users have the full 42 check-ins
+            if (u.id === 'user_fandm_demo' && (!u.logs || u.logs.length < 40)) {
+              u.logs = createCase1HealthyLogs();
+              u.isDemo = true;
+              u.streak = 14;
+              u.totalPoints = 620;
+              modified = true;
+            } else if (u.id === 'user_fandm_ben' && (!u.logs || u.logs.length < 40)) {
+              u.logs = createCase2StressLogs();
+              u.isDemo = true;
+              u.streak = 14;
+              u.totalPoints = 540;
+              modified = true;
             }
           }
           if (modified) {
@@ -454,12 +569,11 @@ export function getAllUsers(): UserAccount[] {
       }
     }
   } catch (err) {
-    console.error('Failed to read users cache:', err);
+    console.error('Failed to parse users cache:', err);
   }
-
-  const seed = getSeedUsers();
-  saveAllUsers(seed);
-  return seed;
+  const seeds = getSeedUsers();
+  saveAllUsers(seeds);
+  return seeds;
 }
 
 export function saveAllUsers(users: UserAccount[]): void {
@@ -555,6 +669,7 @@ export async function registerAccount(params: {
     logs: [],
     streak: 0,
     totalPoints: 0,
+    isDemo: false,
   };
 
   users.push(newUser);

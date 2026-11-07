@@ -33,6 +33,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
     sleep: number;
     water: number;
     stress: number;
+    count?: number;
   } | null>(null);
 
   const {
@@ -62,11 +63,12 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
         bristol: bms.length
           ? (bms.reduce((acc, cur) => acc + (cur.bristol || 0), 0) / bms.length) as BristolNumber
           : null,
-        count: bms.length,
-        sleep: last.sleep,
-        water: last.water,
-        veg: last.veg,
-        stress: last.stress,
+        count: list.length,
+        bmCount: bms.length,
+        sleep: Math.max(...list.map((l) => l.sleep)),
+        water: Math.max(...list.map((l) => l.water)),
+        veg: Math.max(...list.map((l) => l.veg)),
+        stress: Math.max(...list.map((l) => l.stress)),
         ts: last.ts,
       };
     };
@@ -427,6 +429,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                             sleep: rec.sleep,
                             water: rec.water,
                             stress: rec.stress,
+                            count: rec.count,
                           });
                         }
                       }}
@@ -444,6 +447,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                           sleep: rec.sleep,
                           water: rec.water,
                           stress: rec.stress,
+                          count: rec.count,
                         });
                       }}
                     >
@@ -505,6 +509,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                 </div>
                 <div className="text-[11px] text-white/80 mt-1">
                   😴 {activeTooltip.sleep} h · 💧 {activeTooltip.water} glasses · 🧠 {STRESS[activeTooltip.stress]?.[1]}
+                  {activeTooltip.count && activeTooltip.count > 1 ? ` · 📝 ${activeTooltip.count} check-ins` : ''}
                 </div>
               </div>
             );

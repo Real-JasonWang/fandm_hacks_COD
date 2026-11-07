@@ -20,7 +20,7 @@ const PRESET_LOCATIONS: { name: string; lat: number; lng: number }[] = [
   { name: 'Steinman Dining (SCC)', lat: 40.0462, lng: -76.3195 },
   { name: 'Shadek Library', lat: 40.0463, lng: -76.3210 },
   { name: 'Alumni Sports (ASFC)', lat: 40.0512, lng: -76.3192 },
-  { name: 'Brooks House (Buchanan)', lat: 40.0479, lng: -76.3160 },
+  { name: 'Brooks House', lat: 40.0479, lng: -76.3160 },
   { name: 'Ware House (North Ben)', lat: 40.0498, lng: -76.3158 },
   { name: 'Schnader Hall', lat: 40.0478, lng: -76.3222 },
   { name: 'Thomas Hall', lat: 40.0482, lng: -76.3170 },

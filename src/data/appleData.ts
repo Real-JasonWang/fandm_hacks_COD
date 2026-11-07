@@ -2,17 +2,15 @@ import type { House, BristolInfo, BristolNumber, Restroom, RestroomReport, Check
 
 export const HOUSES: House[] = [
   // F&M College Houses
-  { id: "Ware",     name: "Ware College House",    color: "#8E5CE0", part: 78, checks: 489, residents: 260, category: 'house' },
-  { id: "Bonchek",  name: "Bonchek College House", color: "#3D6FE0", part: 65, checks: 412, residents: 220, category: 'house' },
-  { id: "Weis",     name: "Weis College House",    color: "#D48A0F", part: 66, checks: 341, residents: 210, category: 'house' },
-  { id: "Brooks",   name: "Brooks College House",  color: "#D9483F", part: 58, checks: 376, residents: 240, category: 'house' },
-  { id: "Roschel",  name: "Roschel College House", color: "#2A9A72", part: 51, checks: 298, residents: 230, category: 'house' },
+  { id: "Ware",     name: "Ware College House",    color: "#8E5CE0", part: 74, checks: 462, residents: 260, category: 'house' },
+  { id: "Bonchek",  name: "Bonchek College House", color: "#3D6FE0", part: 72, checks: 435, residents: 220, category: 'house' },
+  { id: "Weis",     name: "Weis College House",    color: "#D48A0F", part: 71, checks: 418, residents: 210, category: 'house' },
+  { id: "Brooks",   name: "Brooks College House",  color: "#D9483F", part: 69, checks: 442, residents: 240, category: 'house' },
+  { id: "Roschel",  name: "Roschel College House", color: "#2A9A72", part: 68, checks: 425, residents: 230, category: 'house' },
   // Traditional F&M Residence Halls
-  { id: "Schnader", name: "Schnader Hall",         color: "#2563EB", part: 62, checks: 310, residents: 185, category: 'hall' },
-  { id: "Thomas",   name: "Thomas Hall",           color: "#059669", part: 59, checks: 285, residents: 175, category: 'hall' },
-  { id: "Dietz",    name: "Dietz Hall",            color: "#D97706", part: 56, checks: 240, residents: 150, category: 'hall' },
-  { id: "Marshall", name: "Marshall Hall",         color: "#7C3AED", part: 53, checks: 225, residents: 140, category: 'hall' },
-  { id: "Buchanan", name: "Buchanan Hall",         color: "#DC2626", part: 49, checks: 210, residents: 135, category: 'hall' },
+  { id: "Schnader", name: "Schnader Hall",         color: "#2563EB", part: 70, checks: 358, residents: 185, category: 'hall' },
+  { id: "Thomas",   name: "Thomas Hall",           color: "#059669", part: 67, checks: 334, residents: 175, category: 'hall' },
+  { id: "Dietz",    name: "Dietz Hall",            color: "#D97706", part: 66, checks: 285, residents: 150, category: 'hall' },
 ];
 
 export const BRISTOL: Record<BristolNumber, BristolInfo> = {
@@ -76,7 +74,7 @@ export const RESTROOMS: Restroom[] = [
   { id: "main", b: "Old Main", f: "2nd Floor Cupola Hall", x: 305, y: 605, lat: 40.0470, lng: -76.3194, all: true, acc: true, per: false, single: true, baby: false },
   { id: "ware", b: "North Ben (Ware College House)", f: "Floors 1-3 & 2 in Commons", x: 575, y: 265, lat: 40.0498, lng: -76.3158, all: true, acc: true, per: true, single: true, baby: false },
   { id: "bonchek", b: "South Ben (Bonchek College House)", f: "1st, 2nd, 3rd Floors", x: 570, y: 350, lat: 40.0488, lng: -76.3159, all: true, acc: true, per: true, single: true, baby: false },
-  { id: "brooks", b: "Buchanan Hall (Brooks College House)", f: "1st, 2nd, 3rd Floors", x: 565, y: 435, lat: 40.0479, lng: -76.3160, all: true, acc: true, per: false, single: true, baby: false },
+  { id: "brooks", b: "Brooks College House", f: "1st, 2nd, 3rd Floors", x: 565, y: 435, lat: 40.0479, lng: -76.3160, all: true, acc: true, per: false, single: true, baby: false },
   { id: "weis", b: "Weis Hall (Weis College House)", f: "1st, 2nd, 3rd Floors", x: 560, y: 520, lat: 40.0469, lng: -76.3161, all: true, acc: true, per: true, single: true, baby: false },
   { id: "roschel", b: "Roschel College House & Arts Center", f: "1st, 2nd, 3rd, 4th Floors", x: 515, y: 615, lat: 40.0458, lng: -76.3168, all: true, acc: true, per: true, single: true, baby: true },
   { id: "writers", b: "Philadelphia Alumni Writers House", f: "1st & 2nd Floors", x: 460, y: 700, lat: 40.0452, lng: -76.3175, all: true, acc: true, per: true, single: true, baby: false },

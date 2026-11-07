@@ -8,9 +8,7 @@ export type HouseId =
   | 'Weis'
   | 'Thomas'
   | 'Schnader'
-  | 'Dietz'
-  | 'Marshall'
-  | 'Buchanan';
+  | 'Dietz';
 
 export interface House {
   id: HouseId;

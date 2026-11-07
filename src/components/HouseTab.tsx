@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import type { AppSettings } from '../types';
 import { HOUSES, calculateCheckInPoints } from '../data/appleData';
-import { getAllUsers, getCurrentSession } from '../lib/authDatabase';
+import { getAllUsers, getCurrentSession, isDemoUser } from '../lib/authDatabase';
 
 interface HouseTabProps {
   settings: AppSettings;
@@ -18,7 +18,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
     sortedHouses,
     rank,
   } = useMemo(() => {
-    // Headcount map from F&M Residential Life data
+    // Official F&M residential communities headcounts (5 College Houses + 3 Traditional Halls)
     const dormHeadcounts: Record<string, number> = {
       Ware: 260,
       Brooks: 240,
@@ -28,8 +28,6 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
       Schnader: 185,
       Thomas: 175,
       Dietz: 150,
-      Marshall: 140,
-      Buchanan: 135,
     };
 
     const getHandicapMultiplier = (houseId: string) => {
@@ -81,69 +79,97 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
     const allUsers = getAllUsers();
     const session = getCurrentSession();
     const currentUserId = session?.id;
+    const isDemo = isDemoUser(session);
+
+    // Demo Mode: Balanced, close competition data where every community has similar active resident participation
+    const DEMO_COMMUNITIES: Record<string, { registered: number; active: number; checks: number; part: number }> = {
+      Ware:     { registered: 210, active: 156, checks: 462, part: 74.3 },
+      Bonchek:  { registered: 180, active: 131, checks: 435, part: 72.8 },
+      Weis:     { registered: 172, active: 123, checks: 418, part: 71.5 },
+      Schnader: { registered: 152, active: 107, checks: 358, part: 70.4 },
+      Brooks:   { registered: 195, active: 135, checks: 442, part: 69.2 },
+      Roschel:  { registered: 188, active: 128, checks: 425, part: 68.1 },
+      Thomas:   { registered: 142, active: 95,  checks: 334, part: 66.9 },
+      Dietz:    { registered: 122, active: 80,  checks: 285, part: 65.6 },
+    };
 
     const sortedHouses = HOUSES.map((h) => {
-      // Find all database users assigned to this house
-      const houseUsers = allUsers.filter((u) => u.houseId === h.id);
-
-      // If current user is in this house, use live settings.logs
-      const usersList = houseUsers.map((u) => {
-        if (currentUserId && u.id === currentUserId) {
-          return { ...u, logs: settings.logs };
-        }
-        return u;
-      });
-
-      // If current user is in this house but not yet in houseUsers list
-      if (currentHouse.id === h.id && currentUserId && !usersList.some((u) => u.id === currentUserId)) {
-        usersList.push({
-          id: currentUserId,
-          email: session?.email || '',
-          displayName: session?.displayName || '',
-          universityId: 'fandm',
-          houseId: h.id,
-          salt: '',
-          passwordHash: '',
-          createdAt: Date.now(),
-          logs: settings.logs,
-          streak,
-          totalPoints: userPts,
-        });
-      }
-
-      // 1. Real total checks in this house over the last 7 days
-      const checks = usersList.reduce((acc, u) => {
-        return acc + u.logs.filter((l) => l.ts >= sevenDaysAgo).length;
-      }, 0);
-
-      // 2. Real count of residents who checked in 3+ distinct days this week
-      const activeResidents = usersList.filter((u) => {
-        const distinctDays = new Set(
-          u.logs.filter((l) => l.ts >= sevenDaysAgo).map((l) => dayKeyOf(l.ts))
-        );
-        return distinctDays.size >= 3;
-      }).length;
-
-      // 3. Real raw participation percentage with realistic baseline for unassigned halls
-      const rawPart = usersList.length > 0 ? (activeResidents / usersList.length) * 100 : (h.part || 55);
-      const part = +rawPart.toFixed(1);
-
-      // 4. Sub-linear handicap multiplier (dorm headcount normalization)
       const multiplier = getHandicapMultiplier(h.id);
 
-      // 5. Balanced score
-      const score = +(part * multiplier).toFixed(1);
+      if (isDemo) {
+        // In Demo Mode: realistic close participation for every house
+        const demo = DEMO_COMMUNITIES[h.id] || { registered: 150, active: 100, checks: 350, part: 66.7 };
+        const isCurrentHouse = currentHouse.id === h.id;
+        const checks = demo.checks + (isCurrentHouse ? recentLogs.length : 0);
+        const part = demo.part;
+        const score = +(part * multiplier).toFixed(1);
 
-      return {
-        ...h,
-        checks: checks > 0 ? checks : (h.checks || 180),
-        headcount: dormHeadcounts[h.id] || 200,
-        registeredCount: usersList.length > 0 ? usersList.length : Math.round((dormHeadcounts[h.id] || 200) * 0.42),
-        activeCount: usersList.length > 0 ? activeResidents : Math.round((dormHeadcounts[h.id] || 200) * (part / 100)),
-        multiplier,
-        part,
-        score,
-      };
+        return {
+          ...h,
+          checks,
+          headcount: dormHeadcounts[h.id] || 200,
+          registeredCount: demo.registered,
+          activeCount: demo.active,
+          multiplier,
+          part,
+          score,
+        };
+      } else {
+        // In Real Login Mode: STRICTLY real database users & actual check-ins, ZERO fake data!
+        const realUsers = allUsers.filter((u) => !isDemoUser(u));
+        const houseUsers = realUsers.filter((u) => u.houseId === h.id);
+
+        const usersList = houseUsers.map((u) => {
+          if (currentUserId && u.id === currentUserId) {
+            return { ...u, logs: settings.logs };
+          }
+          return u;
+        });
+
+        if (currentHouse.id === h.id && currentUserId && !usersList.some((u) => u.id === currentUserId)) {
+          usersList.push({
+            id: currentUserId,
+            email: session?.email || '',
+            displayName: session?.displayName || '',
+            universityId: 'fandm',
+            houseId: h.id,
+            salt: '',
+            passwordHash: '',
+            createdAt: Date.now(),
+            logs: settings.logs,
+            streak,
+            totalPoints: userPts,
+            isDemo: false,
+          });
+        }
+
+        const checks = usersList.reduce((acc, u) => {
+          return acc + u.logs.filter((l) => l.ts >= sevenDaysAgo).length;
+        }, 0);
+
+        const activeResidents = usersList.filter((u) => {
+          const distinctDays = new Set(
+            u.logs.filter((l) => l.ts >= sevenDaysAgo).map((l) => dayKeyOf(l.ts))
+          );
+          return distinctDays.size >= 3;
+        }).length;
+
+        const registeredCount = usersList.length;
+        const rawPart = registeredCount > 0 ? (activeResidents / registeredCount) * 100 : 0;
+        const part = +rawPart.toFixed(1);
+        const score = registeredCount > 0 ? +(part * multiplier).toFixed(1) : 0;
+
+        return {
+          ...h,
+          checks,
+          headcount: dormHeadcounts[h.id] || 200,
+          registeredCount,
+          activeCount: activeResidents,
+          multiplier,
+          part,
+          score,
+        };
+      }
     }).sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       if (b.part !== a.part) return b.part - a.part;
@@ -160,7 +186,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
       sortedHouses,
       rank,
     };
-  }, [settings, currentHouse]);
+  }, [settings.logs, settings.house, currentHouse]);
 
   return (
     <div className="apple-view space-y-3">
