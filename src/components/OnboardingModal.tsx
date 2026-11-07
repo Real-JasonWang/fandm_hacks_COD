@@ -47,7 +47,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
             Sleep
           </div>
           <div className="apple-card my-0 p-3.5 text-center font-black text-[14px]">
-            <span className="text-[30px] block mb-1">🥗</span>
+            <span className="text-[30px] block mb-1">💧</span>
             Hydration
           </div>
         </div>
@@ -106,7 +106,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           </button>
           <p className="text-[12px] text-[var(--muted)] font-bold text-center mt-3 leading-normal">
             🔒 Private by design · zero photos · anonymous House Cup<br />
-            Preloaded with 2 weeks of realistic health logs.
+            100% Real authentic personal health telemetry.
           </p>
         </div>
       </div>

@@ -204,7 +204,7 @@ export const TodayTab: React.FC<TodayTabProps> = ({
         </button>
 
         <button className="apple-pillar" onClick={onOpenCheckIn}>
-          <div className="ic">🥗</div>
+          <div className="ic">💧</div>
           <div className="lb">Hydration</div>
           <div className="v">{last ? `${last.water} 💧` : '—'}</div>
           <div className="s">

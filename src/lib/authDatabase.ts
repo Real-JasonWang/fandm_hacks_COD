@@ -1,5 +1,4 @@
 import type { CheckInEntry } from '../types';
-import { seedLogs } from '../data/appleData';
 
 export interface UniversityDef {
   id: string;
@@ -291,9 +290,9 @@ function getSeedUsers(): UserAccount[] {
       salt: SEED_SALT,
       passwordHash: SEED_PBKDF2_HASH,
       createdAt: Date.now() - 14 * 864e5,
-      logs: seedLogs(),
-      streak: 7,
-      totalPoints: 120,
+      logs: [],
+      streak: 0,
+      totalPoints: 0,
     },
     {
       id: 'user_fandm_ben',
@@ -304,9 +303,9 @@ function getSeedUsers(): UserAccount[] {
       salt: SEED_SALT,
       passwordHash: SEED_PBKDF2_HASH,
       createdAt: Date.now() - 7 * 864e5,
-      logs: seedLogs(),
-      streak: 4,
-      totalPoints: 75,
+      logs: [],
+      streak: 0,
+      totalPoints: 0,
     },
   ];
 }
@@ -318,6 +317,20 @@ export function getAllUsers(): UserAccount[] {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) {
+          // Strictly purge any legacy fake demo logs (id starting with 's')
+          let modified = false;
+          for (const u of parsed) {
+            if (Array.isArray(u.logs)) {
+              const realLogs = u.logs.filter((l: CheckInEntry) => l && typeof l.id === 'string' && !l.id.startsWith('s'));
+              if (realLogs.length !== u.logs.length) {
+                u.logs = realLogs;
+                modified = true;
+              }
+            }
+          }
+          if (modified) {
+            localStorage.setItem(LOCAL_STORAGE_USERS_KEY, JSON.stringify(parsed));
+          }
           return parsed;
         }
       }

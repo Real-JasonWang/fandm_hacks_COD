@@ -73,12 +73,18 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
     }
 
     const mineBonus = userLoggedDays >= 3 ? 0.4 : 0;
-    const sortedHouses = HOUSES.map((h) => ({
-      ...h,
-      headcount: dormHeadcounts[h.id] || 240,
-      multiplier: getHandicapMultiplier(h.id),
-      part: h.id === currentHouse.id ? +(h.part + mineBonus).toFixed(1) : h.part,
-    })).sort((a, b) => b.part - a.part);
+    const sortedHouses = HOUSES.map((h) => {
+      const part = h.id === currentHouse.id ? +(h.part + mineBonus).toFixed(1) : h.part;
+      const multiplier = getHandicapMultiplier(h.id);
+      const score = +(part * multiplier).toFixed(1);
+      return {
+        ...h,
+        headcount: dormHeadcounts[h.id] || 240,
+        multiplier,
+        part,
+        score,
+      };
+    }).sort((a, b) => b.score - a.score);
 
     const rank = sortedHouses.findIndex((h) => h.id === currentHouse.id) + 1;
 
@@ -211,12 +217,12 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
                       }}
                     />
                   </div>
-                  <span className="w-[48px] text-right font-black tabular-nums text-[var(--ink)]">
-                    {h.part}%
+                  <span className="w-[58px] text-right font-black tabular-nums text-[var(--ink)]">
+                    {h.score}%
                   </span>
                 </div>
                 <div className="flex justify-between text-[11px] text-[var(--muted)] font-bold pl-[94px] pr-1">
-                  <span>{h.headcount} residents</span>
+                  <span>{h.headcount} residents · Raw: {h.part}%</span>
                   <span>Handicap: {h.multiplier}×</span>
                 </div>
               </div>

@@ -6,9 +6,10 @@ import type {
   HouseId,
   ModeType,
   Restroom,
+  RestroomReportType,
   CheckInEntry,
 } from './types';
-import { loadSettings, saveSettings, seedLogs, seedReports, calculateCheckInPoints } from './data/appleData';
+import { loadSettings, saveSettings, seedReports, calculateCheckInPoints } from './data/appleData';
 import {
   getCurrentSession,
   logoutSession,
@@ -37,14 +38,12 @@ export function App() {
   const [settings, setSettings] = useState<AppSettings>(() => {
     const s = loadSettings();
     const session = getCurrentSession();
-    if (session) {
-      return {
-        ...s,
-        house: session.houseId as HouseId,
-        logs: session.logs.length > 0 ? session.logs : s.logs,
-      };
-    }
-    return s;
+    const userLogs = session ? session.logs : [];
+    return {
+      ...s,
+      house: session ? (session.houseId as HouseId) : s.house,
+      logs: userLogs,
+    };
   });
 
   const [activeTab, setActiveTab] = useState<TabType>('today');
@@ -97,7 +96,7 @@ export function App() {
     setSettings((prev) => ({
       ...prev,
       house: user.houseId as HouseId,
-      logs: user.logs.length > 0 ? user.logs : prev.logs,
+      logs: user.logs, // Strictly real authentic user logs, never fall back to fake demo logs!
     }));
     if (settings.mode === 'playful') {
       confetti({ particleCount: 50, spread: 55 });
@@ -157,23 +156,23 @@ export function App() {
       ['blood', 'black', 'pain'].includes(s)
     );
 
+    showToast(
+      `+${pts} pts for ${settings.house} House! ${
+        settings.mode === 'playful' ? '🎉💩' : '✓'
+      }`
+    );
+
     if (isRedFlag) {
       setTimeout(() => {
         setIsRedFlagOpen(true);
       }, 350);
-    } else {
-      showToast(
-        `+${pts} pts for ${settings.house} House! ${
-          settings.mode === 'playful' ? '🎉💩' : '✓'
-        }`
-      );
     }
   };
 
   // Restroom Crowd-sourced Report handler
   const handleReportRestroom = (
     restroomId: string,
-    type: 'clean' | 'supplies' | 'ok'
+    type: RestroomReportType
   ) => {
     triggerHaptic();
 
@@ -189,11 +188,14 @@ export function App() {
       if (type === 'ok') {
         updated.clean = 0;
         updated.supplies = 0;
+        updated.maintenance = 0;
         updated.ok += 1;
       } else if (type === 'clean') {
         updated.clean += 1;
       } else if (type === 'supplies') {
         updated.supplies += 1;
+      } else if (type === 'maintenance') {
+        updated.maintenance = (updated.maintenance || 0) + 1;
       }
 
       return {
@@ -206,7 +208,13 @@ export function App() {
     });
 
     setSelectedRestroom(null);
-    showToast('Report submitted! Routed to Facilities queue 🧽');
+    const msg =
+      type === 'ok'
+        ? 'Marked clean & stocked! ✓'
+        : type === 'maintenance'
+        ? 'Dispatched urgent maintenance work order to F&M Facilities 🔧'
+        : 'Report submitted! Routed to Facilities queue 🧽';
+    showToast(msg);
   };
 
   // Facilities mark clean
@@ -386,7 +394,7 @@ export function App() {
         }}
         onLogout={handleLogout}
         onResetDemo={() => {
-          const freshLogs = seedLogs();
+          const freshLogs: CheckInEntry[] = [];
           const freshReports = seedReports();
           setSettings((prev) => ({
             ...prev,
@@ -398,7 +406,7 @@ export function App() {
             setCurrentUser((prev) => (prev ? { ...prev, logs: freshLogs } : null));
           }
           setIsSettingsOpen(false);
-          showToast('Demo dataset reset to 2-week history.');
+          showToast('Data reset to clean initial state (0 logs).');
         }}
         onWipeData={() => {
           if (confirm('Are you sure you want to delete all personal logs?')) {

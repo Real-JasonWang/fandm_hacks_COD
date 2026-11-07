@@ -1,11 +1,11 @@
 import React from 'react';
-import type { Restroom, RestroomReport } from '../types';
+import type { Restroom, RestroomReport, RestroomReportType } from '../types';
 
 interface RestroomSheetProps {
   restroom: Restroom | null;
   report: RestroomReport | undefined;
   onClose: () => void;
-  onReport: (restroomId: string, type: 'clean' | 'supplies' | 'ok') => void;
+  onReport: (restroomId: string, type: RestroomReportType) => void;
 }
 
 function formatMinutesAgo(t: number): string {
@@ -34,6 +34,9 @@ export const RestroomSheet: React.FC<RestroomSheetProps> = ({
 
   const getStatusText = () => {
     if (!report) return null;
+    if (report.maintenance && report.maintenance >= 1) {
+      return `🔧 Facilities alert: ${report.maintenance} maintenance report(s) filed · ${formatMinutesAgo(report.ts)}`;
+    }
     if (report.clean >= 2) {
       return `${report.clean} students reported it needs cleaning · ${formatMinutesAgo(report.ts)}`;
     }
@@ -127,6 +130,12 @@ export const RestroomSheet: React.FC<RestroomSheetProps> = ({
             onClick={() => onReport(restroom.id, 'supplies')}
           >
             🧻 Out of soap / paper / period products
+          </button>
+          <button
+            className="apple-btn ghost"
+            onClick={() => onReport(restroom.id, 'maintenance')}
+          >
+            🔧 Broken lock / plumbing / fixture
           </button>
         </div>
 

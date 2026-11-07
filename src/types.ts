@@ -43,10 +43,13 @@ export interface Restroom {
   baby: boolean;   // changing table
 }
 
+export type RestroomReportType = 'clean' | 'supplies' | 'ok' | 'maintenance';
+
 export interface RestroomReport {
   clean: number;
   supplies: number;
   ok: number;
+  maintenance?: number;
   ts: number;
 }
 

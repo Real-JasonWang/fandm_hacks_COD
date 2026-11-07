@@ -60,6 +60,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
   const [nlpText, setNlpText] = useState('');
   const [isNlpLoading, setIsNlpLoading] = useState(false);
   const [nlpMessage, setNlpMessage] = useState<string | null>(null);
+  const [nlpError, setNlpError] = useState<string | null>(null);
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -142,9 +143,10 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
   // NLP Semantic Parser
   const handleNlpParse = async () => {
     if (!nlpText.trim()) return;
+    setNlpError(null);
     const hasApiKey = Boolean(getStoredApiKey());
     if (!hasApiKey) {
-      setVisionError('Please configure your Google Gemini API key in Settings first.');
+      setNlpError('Please configure your Google Gemini API key in Settings first.');
       return;
     }
 
@@ -160,9 +162,10 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
       setVeg(res.veg);
       setStress(res.stress);
       setNlpMessage(res.summary);
+      setFormError(null);
       setActiveTab('manual'); // return to review form
     } catch (err: unknown) {
-      setVisionError(formatAiErrorMessage(err));
+      setNlpError(formatAiErrorMessage(err));
     } finally {
       setIsNlpLoading(false);
     }
@@ -463,6 +466,13 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                 ✓ {nlpMessage}
               </p>
             )}
+
+            {nlpError && (
+              <div className="p-3 bg-[var(--danger-l)] text-[var(--danger)] rounded-xl text-[12.5px] font-bold flex items-center gap-2">
+                <span>⚠️</span>
+                <div>{nlpError}</div>
+              </div>
+            )}
           </div>
         )}
 
@@ -474,7 +484,10 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
           <button
             type="button"
             className={pooped ? 'on' : ''}
-            onClick={() => setPooped(true)}
+            onClick={() => {
+              setPooped(true);
+              setFormError(null);
+            }}
           >
             {isPlayful ? 'Yes 💩' : 'Yes'}
           </button>
@@ -484,6 +497,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
             onClick={() => {
               setPooped(false);
               setBristol(null);
+              setFormError(null);
             }}
           >
             Not today
@@ -511,7 +525,10 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     className={`apple-bt ${isSelected ? 'on' : ''} ${
                       t === 7 ? 'apple-bt wide' : ''
                     }`}
-                    onClick={() => setBristol(t)}
+                    onClick={() => {
+                      setBristol(t);
+                      setFormError(null);
+                    }}
                   >
                     <AppleBristolSVG type={t} eyes={isPlayful} />
                     <div>
@@ -670,7 +687,8 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
           <button
             type="button"
             className="apple-btn"
-            style={pooped && !bristol ? { opacity: 0.5 } : undefined}
+            style={pooped && !bristol ? { opacity: 0.6, cursor: 'not-allowed' } : undefined}
+            aria-disabled={pooped && !bristol}
             onClick={handleSave}
           >
             Save check-in · +{calculatePoints()} pts

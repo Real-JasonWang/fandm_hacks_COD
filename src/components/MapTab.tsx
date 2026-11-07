@@ -90,7 +90,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
         <svg
           viewBox="0 0 360 440"
           className="w-full h-auto block select-none"
-          role="img"
+          role="region"
           aria-label="F&M Campus Restroom Map"
         >
           {/* Base Map Lawn */}
@@ -191,9 +191,18 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
             return (
               <g
                 key={r.id}
-                className={matches ? "cursor-pointer transition-opacity duration-200" : "transition-opacity duration-200"}
+                className={matches ? "cursor-pointer transition-opacity duration-200 focus:outline-none" : "transition-opacity duration-200"}
                 opacity={matches ? 1 : 0.18}
                 style={{ pointerEvents: matches ? 'auto' : 'none' }}
+                role={matches ? "button" : undefined}
+                tabIndex={matches ? 0 : undefined}
+                aria-label={matches ? `${r.b} ${r.f}: ${r.all ? 'All-gender' : 'Standard'} Restroom` : undefined}
+                onKeyDown={matches ? (e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onOpenRestroom(r);
+                  }
+                } : undefined}
                 onClick={matches ? () => onOpenRestroom(r) : undefined}
               >
                 <circle cx={r.x} cy={r.y} r="22" fill="transparent" />

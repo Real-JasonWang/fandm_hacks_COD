@@ -51,9 +51,12 @@ export const RedFlagModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
               <b className="text-[14px] font-black text-[var(--ink)] block">
                 Contact F&amp;M Student Health Services
               </b>
-              <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                Schedule an appointment or drop in during clinical center hours.
-              </p>
+              <a
+                href="tel:7175449051"
+                className="text-[12.5px] text-[var(--mint-d)] font-bold inline-flex items-center gap-1 hover:underline"
+              >
+                📞 Call (717) 544-9051 (Goerz Hall) →
+              </a>
             </div>
           </div>
 
@@ -65,9 +68,12 @@ export const RedFlagModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
               <b className="text-[14px] font-black text-[var(--danger)] block">
                 Heavy bleeding, fainting, or severe pain?
               </b>
-              <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                Contact F&amp;M Public Safety or dial 911 immediately.
-              </p>
+              <a
+                href="tel:7172913911"
+                className="text-[12.5px] text-[var(--danger)] font-bold inline-flex items-center gap-1 hover:underline"
+              >
+                🚨 Call F&amp;M Public Safety: (717) 291-3911 or 911 →
+              </a>
             </div>
           </div>
         </div>

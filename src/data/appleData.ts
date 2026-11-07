@@ -97,46 +97,7 @@ export function seedReports(): Record<string, RestroomReport> {
 }
 
 export function seedLogs(): CheckInEntry[] {
-  const sleep = [7.5, 5.5, 8, 6.5, 5, 7, 8, 4.5, 7, 7.5, 6, 5.5, 8];
-  const water = [6, 3, 7, 5, 2, 6, 8, 3, 6, 7, 5, 4, 7];
-  const stress = [1, 2, 1, 3, 4, 1, 0, 3, 2, 1, 3, 4, 1];
-  const veg = [3, 1, 4, 2, 1, 3, 5, 1, 3, 4, 2, 1, 4];
-  const logs: CheckInEntry[] = [];
-
-  for (let i = 0; i < 13; i++) {
-    const daysAgo = 13 - i;
-    const d = new Date();
-    d.setHours(9 + (i % 3), 15 * (i % 4), 0, 0);
-    d.setDate(d.getDate() - daysAgo);
-
-    let bt: BristolNumber = i % 2 ? 4 : 3;
-    let sym: string[] = [];
-
-    if (stress[i] >= 4) {
-      bt = 6;
-      sym = ["cramps", "urgency"];
-    } else if (sleep[i] < 6 || water[i] < 4) {
-      bt = 2;
-      sym = ["bloating", "straining"];
-    } else if (stress[i] === 3) {
-      bt = 5;
-      sym = ["gas"];
-    }
-
-    const skipPoop = i === 4;
-    logs.push({
-      id: "s" + i,
-      ts: d.getTime(),
-      pooped: !skipPoop,
-      bristol: skipPoop ? null : bt,
-      symptoms: skipPoop ? ["bloating"] : sym,
-      sleep: sleep[i],
-      water: water[i],
-      veg: veg[i],
-      stress: stress[i],
-    });
-  }
-  return logs;
+  return [];
 }
 
 export const STORAGE_KEY = "cod_demo_v1";
@@ -145,7 +106,13 @@ export function loadSettings(): AppSettings {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      return {
+        ...parsed,
+        logs: Array.isArray(parsed.logs)
+          ? parsed.logs.filter((l: CheckInEntry) => l && typeof l.id === 'string' && !l.id.startsWith('s'))
+          : [],
+      };
     }
   } catch (e) {
     console.error("Failed to load settings from localStorage", e);

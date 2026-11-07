@@ -185,7 +185,12 @@ function createGenAI(customKey?: string) {
 export async function testGeminiApiKey(apiKey: string): Promise<{ success: boolean; message: string }> {
   try {
     const ai = new GoogleGenAI({ apiKey });
-    const modelsToTry = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash'];
+    const userModel = getStoredModel();
+    const modelsToTry = [
+      userModel,
+      'gemini-2.5-flash',
+      'gemini-1.5-flash',
+    ].filter((v, i, arr) => arr.indexOf(v) === i);
     let lastError: unknown = null;
     for (const m of modelsToTry) {
       try {

@@ -258,8 +258,8 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
           <svg
             viewBox={`0 0 ${W} ${H}`}
             className="w-full h-auto block select-none"
-            role="img"
-            aria-label="Stool chart"
+            role="region"
+            aria-label="14-Day Stool Motility Telemetry Chart"
           >
             {/* Ideal zone green ribbon */}
             <rect
@@ -362,7 +362,29 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                   )}
                   {d.rec && d.rec.bristol !== null && (
                     <g
-                      className="cursor-pointer"
+                      className="cursor-pointer focus:outline-none"
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${d.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}: Bristol Type ${d.rec.bristol}, ${d.rec.sleep}h sleep, ${d.rec.water} glasses water`}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          const rec = d.rec!;
+                          setActiveTooltip({
+                            x: xPos,
+                            y: getY(rec.bristol!),
+                            dateStr: d.date.toLocaleDateString('en-US', {
+                              weekday: 'short',
+                              month: 'short',
+                              day: 'numeric',
+                            }),
+                            bristol: Math.round(rec.bristol!) as BristolNumber,
+                            sleep: rec.sleep,
+                            water: rec.water,
+                            stress: rec.stress,
+                          });
+                        }
+                      }}
                       onClick={() => {
                         const rec = d.rec!;
                         setActiveTooltip({

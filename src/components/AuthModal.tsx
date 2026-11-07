@@ -33,6 +33,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  React.useEffect(() => {
+    if (!isOpen || !onClose) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const domainCheck = validateCampusEmail(email, 'fandm');
@@ -140,10 +149,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {tab === 'register' && (
           <>
             <div>
-              <label className="text-[12.5px] font-extrabold text-[var(--ink)] block mb-1">
+              <label htmlFor="auth-name" className="text-[12.5px] font-extrabold text-[var(--ink)] block mb-1">
                 Your Full Name or Codename
               </label>
               <input
+                id="auth-name"
                 type="text"
                 className="w-full py-2.5 px-3 bg-white border border-[var(--line)] rounded-xl text-[14px] font-bold text-[var(--ink)] focus:outline-none focus:border-[var(--peach)]"
                 placeholder="e.g. Alex Diplomat"
@@ -167,7 +177,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* Institutional Email Field with Live @fandm.edu Verification */}
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label className="text-[12.5px] font-extrabold text-[var(--ink)]">
+            <label htmlFor="auth-email" className="text-[12.5px] font-extrabold text-[var(--ink)]">
               F&amp;M Institutional Email
             </label>
             <span
@@ -181,6 +191,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </span>
           </div>
           <input
+            id="auth-email"
             type="email"
             required
             className="w-full py-2.5 px-3 bg-white border border-[var(--line)] rounded-xl text-[14px] font-bold text-[var(--ink)] focus:outline-none focus:border-[var(--peach)]"
@@ -192,11 +203,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Password Field */}
         <div>
-          <label className="text-[12.5px] font-extrabold text-[var(--ink)] block mb-1">
+          <label htmlFor="auth-password" className="text-[12.5px] font-extrabold text-[var(--ink)] block mb-1">
             Password (min 6 characters)
           </label>
           <div className="relative">
             <input
+              id="auth-password"
               type={showPassword ? 'text' : 'password'}
               required
               className="w-full py-2.5 px-3 pr-10 bg-white border border-[var(--line)] rounded-xl text-[14px] font-bold text-[var(--ink)] focus:outline-none focus:border-[var(--peach)]"
