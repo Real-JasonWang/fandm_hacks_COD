@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { Camera, Flashlight, ShieldAlert, CheckCircle2, X, RefreshCw, Cpu } from 'lucide-react';
+// TODO: refactor this shit later, optical hud is kinda hacky but works for the demo
+import React, { useState, useRef, useEffect } from 'react';
+import { Camera, Flashlight, ShieldAlert, CheckCircle2, X, RefreshCw, Cpu, Scan, Activity } from 'lucide-react';
 import type { Dorm, RestroomNode, GemmaVisionResult } from '../types';
 import { analyzeStoolWithGemma4, type PromptStageLog } from '../lib/gemmaVision';
 import { sound } from '../lib/audio';
@@ -24,7 +25,17 @@ export const ScanModal: React.FC<ScanModalProps> = ({
   const [selectedPreset, setSelectedPreset] = useState<string>('type4_healthy');
   const [stages, setStages] = useState<PromptStageLog[]>([]);
   const [scanResult, setScanResult] = useState<GemmaVisionResult | null>(null);
+  const [laserPos, setLaserPos] = useState(10);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Optical scanning laser animation loop
+  useEffect(() => {
+    if (!isOpen || !isProcessing) return;
+    const interval = setInterval(() => {
+      setLaserPos((prev) => (prev > 90 ? 10 : prev + 6));
+    }, 60);
+    return () => clearInterval(interval);
+  }, [isOpen, isProcessing]);
 
   if (!isOpen) return null;
 
@@ -36,6 +47,7 @@ export const ScanModal: React.FC<ScanModalProps> = ({
 
     const preset = presetOverride || selectedPreset;
     console.log(`[ScanModal] Running Gemma 4 Multimodal analysis for ${selectedNode.buildingName} (${preset})`);
+    console.log('// debug: sending bytes directly to gemma-4 in RAM, zero disk write');
 
     const { result, stages: stageLogs } = await analyzeStoolWithGemma4(preset, activeDorm.powerMultiplier);
 
@@ -100,8 +112,43 @@ export const ScanModal: React.FC<ScanModalProps> = ({
             </span>
           </div>
 
-          {/* Camera / Torch Controls */}
-          <div className="p-4 bg-[#0B0C10] border border-[#22252C] rounded-lg text-center space-y-3">
+          {/* Viewfinder & Camera / Torch Controls */}
+          <div className="p-4 bg-[#0B0C10] border border-[#22252C] rounded-lg text-center space-y-3 relative overflow-hidden">
+            {/* Optical Medical Viewfinder Frame */}
+            <div className="relative w-full h-36 bg-[#16171B] border border-[#333842] rounded-lg flex flex-col items-center justify-center overflow-hidden">
+              {/* Corner Reticles */}
+              <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-[#FFE600]" />
+              <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-[#FFE600]" />
+              <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-[#FFE600]" />
+              <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-[#FFE600]" />
+
+              {/* Animated Laser Bar when processing */}
+              {isProcessing && (
+                <div
+                  className="absolute left-0 right-0 h-0.5 bg-[#FFE600] shadow-[0_0_12px_#FFE600] transition-all duration-75 pointer-events-none"
+                  style={{ top: `${laserPos}%` }}
+                />
+              )}
+
+              {/* Viewfinder center contents */}
+              <div className="flex flex-col items-center text-[#64748B] pointer-events-none space-y-1">
+                <Scan className={`w-8 h-8 ${isProcessing ? 'text-[#FFE600] animate-pulse' : 'text-[#475569]'}`} />
+                <span className="text-[10px] font-mono tracking-wider">
+                  {isProcessing ? 'CALIBRATING OPTICAL DEPTH & MORPHOLOGY' : 'POSITION SPECIMEN WITHIN OPTICAL FRAME'}
+                </span>
+              </div>
+
+              {/* HUD Telemetry Overlay */}
+              <div className="absolute bottom-1.5 left-2 right-2 flex justify-between text-[9px] font-mono text-[#94A3B8]">
+                <div className="flex items-center space-x-1">
+                  <Activity className="w-3 h-3 text-[#10B981]" />
+                  <span>TURB: 12% OK</span>
+                </div>
+                <div>LIPID_SHEEN: 0.04</div>
+                <div className="text-[#FFE600]">RAM_WIPE: ON</div>
+              </div>
+            </div>
+
             <div className="flex items-center justify-center space-x-3">
               <button
                 onClick={() => {
