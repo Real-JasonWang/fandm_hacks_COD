@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ShieldCheck, BookOpen, Calculator, X } from 'lucide-react';
+import { ShieldCheck, BookOpen, Calculator, X, GraduationCap, Clock, CheckCircle } from 'lucide-react';
 import { sound } from '../lib/audio';
 
 // TODO: fix trig graph canvas scaling on high dpi displays if blurry
@@ -9,7 +9,7 @@ interface StealthShieldProps {
 }
 
 export const StealthShield: React.FC<StealthShieldProps> = ({ isOpen, onClose }) => {
-  const [mode, setMode] = useState<'notes' | 'calc'>('notes');
+  const [mode, setMode] = useState<'notes' | 'calc' | 'canvas'>('notes');
   const [calcInput, setCalcInput] = useState('sin(x) * 2');
   const [calcResult, setCalcResult] = useState('2.0000');
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -77,16 +77,47 @@ export const StealthShield: React.FC<StealthShieldProps> = ({ isOpen, onClose })
           </span>
         </div>
         <div className="flex items-center space-x-2">
-          <button
-            onClick={() => {
-              sound.playClick();
-              setMode(mode === 'notes' ? 'calc' : 'notes');
-            }}
-            className="flex items-center space-x-1 px-2 py-1 text-xs rounded bg-[#1C1E24] hover:bg-[#2A2D35] text-[#CBD5E1]"
-          >
-            {mode === 'notes' ? <Calculator className="w-3.5 h-3.5" /> : <BookOpen className="w-3.5 h-3.5" />}
-            <span>{mode === 'notes' ? 'Open Calculator' : 'Open Notes'}</span>
-          </button>
+          <div className="flex bg-[#1C1E24] p-0.5 rounded border border-[#2A2D35] space-x-1">
+            <button
+              onClick={() => {
+                sound.playClick();
+                setMode('notes');
+              }}
+              className={`px-2 py-1 text-xs rounded flex items-center space-x-1 ${
+                mode === 'notes' ? 'bg-[#38BDF8] text-black font-bold' : 'text-[#CBD5E1] hover:text-white'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Notes</span>
+            </button>
+
+            <button
+              onClick={() => {
+                sound.playClick();
+                setMode('calc');
+              }}
+              className={`px-2 py-1 text-xs rounded flex items-center space-x-1 ${
+                mode === 'calc' ? 'bg-[#38BDF8] text-black font-bold' : 'text-[#CBD5E1] hover:text-white'
+              }`}
+            >
+              <Calculator className="w-3.5 h-3.5" />
+              <span>Calc</span>
+            </button>
+
+            <button
+              onClick={() => {
+                sound.playClick();
+                setMode('canvas');
+              }}
+              className={`px-2 py-1 text-xs rounded flex items-center space-x-1 ${
+                mode === 'canvas' ? 'bg-[#38BDF8] text-black font-bold' : 'text-[#CBD5E1] hover:text-white'
+              }`}
+            >
+              <GraduationCap className="w-3.5 h-3.5" />
+              <span>Canvas LMS</span>
+            </button>
+          </div>
+
           <button
             onClick={() => {
               sound.playClick();
@@ -136,7 +167,7 @@ export const StealthShield: React.FC<StealthShieldProps> = ({ isOpen, onClose })
             </ul>
           </div>
         </div>
-      ) : (
+      ) : mode === 'calc' ? (
         <div className="flex-1 flex flex-col p-4 max-w-sm mx-auto w-full space-y-3">
           <div className="border border-[#2A2D35] rounded-lg overflow-hidden bg-[#0A0D14]">
             <canvas ref={canvasRef} width={340} height={160} className="w-full h-40 block" />
@@ -164,6 +195,63 @@ export const StealthShield: React.FC<StealthShieldProps> = ({ isOpen, onClose })
                 {btn}
               </button>
             ))}
+          </div>
+        </div>
+      ) : (
+        /* Canvas LMS Dashboard */
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 max-w-2xl mx-auto w-full text-xs font-sans">
+          <div className="flex items-center justify-between border-b border-[#22252C] pb-3">
+            <div className="flex items-center space-x-2">
+              <GraduationCap className="w-5 h-5 text-[#38BDF8]" />
+              <h2 className="text-sm font-bold text-[#F8FAFC]">F&M Canvas LMS Student Portal</h2>
+            </div>
+            <span className="font-mono text-[#10B981] bg-[#10B981]/10 px-2 py-0.5 rounded border border-[#10B981]/30">
+              Spring 2026 Active
+            </span>
+          </div>
+
+          <div className="space-y-2.5">
+            <div className="p-3.5 bg-[#16171B] border border-[#22252C] rounded-lg flex items-center justify-between">
+              <div>
+                <div className="text-[10px] font-mono uppercase text-[#38BDF8]">CS 370 · Stager Hall 102</div>
+                <div className="text-sm font-bold text-[#F1F3F5]">Operating Systems & Distributed Architecture</div>
+                <div className="text-[11px] text-[#94A3B8] mt-0.5 flex items-center space-x-2">
+                  <Clock className="w-3 h-3" />
+                  <span>Lab 4: Raft Consensus due in 3 days</span>
+                </div>
+              </div>
+              <span className="font-mono text-xs font-bold text-[#10B981] bg-[#10B981]/15 px-2 py-1 rounded">
+                94.8% (A)
+              </span>
+            </div>
+
+            <div className="p-3.5 bg-[#16171B] border border-[#22252C] rounded-lg flex items-center justify-between">
+              <div>
+                <div className="text-[10px] font-mono uppercase text-[#F59E0B]">MATH 211 · Hackman 204</div>
+                <div className="text-sm font-bold text-[#F1F3F5]">Multivariable Calculus</div>
+                <div className="text-[11px] text-[#94A3B8] mt-0.5 flex items-center space-x-2">
+                  <CheckCircle className="w-3 h-3 text-[#10B981]" />
+                  <span>Green's Theorem Homework Submitted</span>
+                </div>
+              </div>
+              <span className="font-mono text-xs font-bold text-[#38BDF8] bg-[#38BDF8]/15 px-2 py-1 rounded">
+                91.5% (A-)
+              </span>
+            </div>
+
+            <div className="p-3.5 bg-[#16171B] border border-[#22252C] rounded-lg flex items-center justify-between">
+              <div>
+                <div className="text-[10px] font-mono uppercase text-[#EC4899]">BIO 110 · Barshinger LSB</div>
+                <div className="text-sm font-bold text-[#F1F3F5]">Cellular Physiology & Digestion</div>
+                <div className="text-[11px] text-[#94A3B8] mt-0.5 flex items-center space-x-2">
+                  <Clock className="w-3 h-3" />
+                  <span>Quiz #4 next Tuesday 9:00 AM</span>
+                </div>
+              </div>
+              <span className="font-mono text-xs font-bold text-[#10B981] bg-[#10B981]/15 px-2 py-1 rounded">
+                96.0% (A)
+              </span>
+            </div>
           </div>
         </div>
       )}
