@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { AppSettings, Restroom } from '../types';
 import { RESTROOMS, FILTERS, getDistanceMeters, FM_CAMPUS_DEFAULT } from '../data/appleData';
 
@@ -22,11 +22,20 @@ const PRESET_LOCATIONS: { name: string; lat: number; lng: number }[] = [
   { name: 'Alumni Sports (ASFC)', lat: 40.0512, lng: -76.3192 },
   { name: 'Brooks House (Buchanan)', lat: 40.0479, lng: -76.3160 },
   { name: 'Ware House (North Ben)', lat: 40.0498, lng: -76.3158 },
+  { name: 'Schnader Hall', lat: 40.0478, lng: -76.3222 },
+  { name: 'Thomas Hall', lat: 40.0482, lng: -76.3170 },
+  { name: 'Dietz Hall', lat: 40.0474, lng: -76.3175 },
 ];
 
 export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
   const [activeFilter, setActiveFilter] = useState<string>('any');
   const [sortBy, setSortBy] = useState<'distance' | 'name'>('distance');
+
+  // Filter container horizontal drag & wheel scrolling
+  const filterScrollRef = useRef<HTMLDivElement>(null);
+  const [isFilterDragging, setIsFilterDragging] = useState<boolean>(false);
+  const [filterStartX, setFilterStartX] = useState<number>(0);
+  const [filterScrollLeft, setFilterScrollLeft] = useState<number>(0);
 
   // User GPS Location State
   const [userLocation, setUserLocation] = useState<UserLocation>({
@@ -44,19 +53,34 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
       const watchId = navigator.geolocation.watchPosition(
         (pos) => {
           const { latitude, longitude, accuracy } = pos.coords;
+          // Check if reasonably near Lancaster F&M (39.9 to 40.2, -76.45 to -76.15)
           const isNearFm =
             latitude >= 39.95 && latitude <= 40.15 && longitude >= -76.45 && longitude <= -76.15;
 
-          setUserLocation({
-            lat: latitude,
-            lng: longitude,
-            accuracy,
-            isReal: true,
-            presetName: isNearFm ? 'Live GPS (Campus)' : 'Live GPS (Off-Campus)',
-          });
+          if (isNearFm) {
+            setUserLocation({
+              lat: latitude,
+              lng: longitude,
+              accuracy,
+              isReal: true,
+              presetName: 'Live GPS (Campus)',
+            });
+          } else {
+            // Off-campus or remote test: default to F&M campus center
+            setUserLocation((prev) => {
+              if (prev.isReal && isNearFm) return prev;
+              return {
+                lat: FM_CAMPUS_DEFAULT.lat,
+                lng: FM_CAMPUS_DEFAULT.lng,
+                accuracy: 12,
+                isReal: false,
+                presetName: prev.presetName || 'College Green (Quad)',
+              };
+            });
+          }
         },
         (err) => {
-          console.log('GPS watch warning/denied, fallback to campus center', err.message);
+          console.log('GPS watch fallback to campus center', err.message);
           setUserLocation({
             lat: FM_CAMPUS_DEFAULT.lat,
             lng: FM_CAMPUS_DEFAULT.lng,
@@ -84,17 +108,19 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
 
   // Calculate dynamic distance & walking time for each restroom
   const restroomsWithDistance = filteredRestrooms.map((r) => {
-    const distMeters = getDistanceMeters(
+    const rawDist = getDistanceMeters(
       userLocation.lat,
       userLocation.lng,
       r.lat || 40.0475,
       r.lng || -76.3190
     );
+    const distMeters = Math.max(15, rawDist);
     const walkMins = Math.max(1, Math.round(distMeters / 80));
     return {
       ...r,
       distMeters,
       walkMins,
+      isHere: rawDist < 25,
     };
   });
 
@@ -127,6 +153,30 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
     return null;
   };
 
+  // Horizontal filter chip drag & wheel handlers
+  const handleFilterWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (filterScrollRef.current) {
+      filterScrollRef.current.scrollLeft += e.deltaY;
+    }
+  };
+
+  const handleFilterMouseDown = (e: React.MouseEvent) => {
+    if (!filterScrollRef.current) return;
+    setIsFilterDragging(true);
+    setFilterStartX(e.pageX - filterScrollRef.current.offsetLeft);
+    setFilterScrollLeft(filterScrollRef.current.scrollLeft);
+  };
+
+  const handleFilterMouseMove = (e: React.MouseEvent) => {
+    if (!isFilterDragging || !filterScrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - filterScrollRef.current.offsetLeft;
+    const walk = (x - filterStartX) * 1.5;
+    filterScrollRef.current.scrollLeft = filterScrollLeft - walk;
+  };
+
+  const handleFilterMouseUp = () => setIsFilterDragging(false);
+
   return (
     <div className="apple-view space-y-3 pb-24">
       {/* Page Title & Subtitle */}
@@ -139,18 +189,51 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
         </p>
       </div>
 
-      {/* Filter Chips Horizontal Scroll */}
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 no-scrollbar">
-        {FILTERS.map((f) => (
-          <button
-            key={f.id}
-            type="button"
-            className={`apple-chip ${activeFilter === f.id ? 'on' : ''}`}
-            onClick={() => setActiveFilter(f.id)}
-          >
-            {f.label}
-          </button>
-        ))}
+      {/* Filter Chips with Interactive Left/Right Buttons & Drag-to-Scroll */}
+      <div className="relative flex items-center">
+        <button
+          type="button"
+          className="w-7 h-7 rounded-full bg-white shadow-xs border border-[var(--line)] text-[14px] font-black grid place-items-center flex-none mr-1.5 cursor-pointer hover:bg-[#FAF7F0] text-[var(--ink)] select-none"
+          onClick={() => {
+            if (filterScrollRef.current) filterScrollRef.current.scrollBy({ left: -140, behavior: 'smooth' });
+          }}
+          aria-label="Scroll left"
+        >
+          ‹
+        </button>
+
+        <div
+          ref={filterScrollRef}
+          onWheel={handleFilterWheel}
+          onMouseDown={handleFilterMouseDown}
+          onMouseMove={handleFilterMouseMove}
+          onMouseUp={handleFilterMouseUp}
+          onMouseLeave={handleFilterMouseUp}
+          className="flex gap-2 overflow-x-auto pb-1 px-1 flex-1 cursor-grab active:cursor-grabbing select-none"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {FILTERS.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              className={`apple-chip flex-none ${activeFilter === f.id ? 'on' : ''}`}
+              onClick={() => setActiveFilter(f.id)}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          className="w-7 h-7 rounded-full bg-white shadow-xs border border-[var(--line)] text-[14px] font-black grid place-items-center flex-none ml-1.5 cursor-pointer hover:bg-[#FAF7F0] text-[var(--ink)] select-none"
+          onClick={() => {
+            if (filterScrollRef.current) filterScrollRef.current.scrollBy({ left: 140, behavior: 'smooth' });
+          }}
+          aria-label="Scroll right"
+        >
+          ›
+        </button>
       </div>
 
       {/* Recommended Nearest Restroom Hero Card (Dynamic GPS Driven) */}
@@ -169,7 +252,11 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
                   Recommended Nearest
                 </span>
                 <span className="text-[11.5px] font-extrabold text-[var(--muted)]">
-                  📍 {nearestRestroom.distMeters}m ({nearestRestroom.walkMins} min walk)
+                  {nearestRestroom.isHere ? (
+                    <span className="text-[#166E53] font-black">📍 In this building (&lt;25m)</span>
+                  ) : (
+                    <span>📍 {nearestRestroom.distMeters}m ({nearestRestroom.walkMins} min walk)</span>
+                  )}
                 </span>
               </div>
               <b className="text-[16px] font-black text-[var(--ink)] block truncate leading-snug mt-0.5">
@@ -207,7 +294,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
                 F&amp;M Campus Restrooms Map
               </b>
               <span className="text-[11.5px] font-bold text-[var(--muted)] block truncate">
-                Official F&amp;M Concept3D Spatial Map (Restroom &amp; All-Gender Layers)
+                Concept3D Spatial Map · Layers 32461 &amp; 57938 (Restrooms &amp; All-Gender)
               </span>
             </div>
           </div>
@@ -291,25 +378,23 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
         </div>
       </div>
 
-      {/* Restroom Horizontal Cards List ("下面卡片长条状" - Full Width Rows) */}
+      {/* Restroom Horizontal Cards List Header with Compact Segmented Control (Never Overflows!) */}
       <div className="pt-2">
-        <div className="flex items-center justify-between mb-2.5">
-          <div className="flex items-center gap-2">
-            <h2 className="text-[18px] font-black tracking-tight text-[var(--ink)]">
-              {sortedRestrooms.length} Restroom Location{sortedRestrooms.length !== 1 ? 's' : ''}
+        <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
+          <div className="min-w-0">
+            <h2 className="text-[17px] font-black tracking-tight text-[var(--ink)] leading-tight">
+              {sortedRestrooms.length} Restroom Locations
             </h2>
-            <span className="text-[12px] font-extrabold text-[var(--muted)]">
-              (Sorted by {sortBy === 'distance' ? 'distance' : 'name'})
-            </span>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          {/* Compact Segmented Control - Fixed Overflow */}
+          <div className="flex items-center bg-[#F2EDE4] p-0.5 rounded-xl border border-[var(--line)] flex-none">
             <button
               type="button"
-              className={`px-2.5 py-1 rounded-xl text-[11px] font-black border transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg text-[11.5px] font-black transition-all cursor-pointer ${
                 sortBy === 'distance'
-                  ? 'bg-[var(--brand)] text-white border-[var(--brand)] shadow-xs'
-                  : 'bg-[var(--card)] border-[var(--line)] text-[var(--ink2)]'
+                  ? 'bg-white text-[var(--ink)] shadow-xs'
+                  : 'text-[var(--muted)] hover:text-[var(--ink)]'
               }`}
               onClick={() => setSortBy('distance')}
             >
@@ -317,10 +402,10 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
             </button>
             <button
               type="button"
-              className={`px-2.5 py-1 rounded-xl text-[11px] font-black border transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg text-[11.5px] font-black transition-all cursor-pointer ${
                 sortBy === 'name'
-                  ? 'bg-[var(--brand)] text-white border-[var(--brand)] shadow-xs'
-                  : 'bg-[var(--card)] border-[var(--line)] text-[var(--ink2)]'
+                  ? 'bg-white text-[var(--ink)] shadow-xs'
+                  : 'text-[var(--muted)] hover:text-[var(--ink)]'
               }`}
               onClick={() => setSortBy('name')}
             >
@@ -329,7 +414,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
           </div>
         </div>
 
-        {/* Full-Width Horizontal Long-Bar Cards (Never squished into 2-columns!) */}
+        {/* Full-Width Horizontal Long-Bar Cards */}
         <div className="flex flex-col gap-2.5">
           {sortedRestrooms.map((r) => {
             const st = getStatus(r.id);
@@ -351,7 +436,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
                       {r.all ? '⚧' : '🚻'}
                     </div>
                     <span className="text-[10.5px] font-black mt-1 px-1.5 py-0.5 rounded-md bg-[#F2EDE4] text-[var(--ink2)] whitespace-nowrap">
-                      {r.distMeters}m · {r.walkMins}m
+                      {r.isHere ? 'In building' : `${r.distMeters}m · ${r.walkMins}m`}
                     </span>
                   </div>
 

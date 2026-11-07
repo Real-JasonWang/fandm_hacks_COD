@@ -20,6 +20,11 @@ export const SUPPORTED_UNIVERSITIES: UniversityDef[] = [
       { id: 'Roschel', name: 'Roschel College House', color: '#2A9A72' },
       { id: 'Ware', name: 'Ware College House', color: '#8E5CE0' },
       { id: 'Weis', name: 'Weis College House', color: '#D48A0F' },
+      { id: 'Schnader', name: 'Schnader Hall', color: '#2563EB' },
+      { id: 'Thomas', name: 'Thomas Hall', color: '#059669' },
+      { id: 'Dietz', name: 'Dietz Hall', color: '#D97706' },
+      { id: 'Marshall', name: 'Marshall Hall', color: '#7C3AED' },
+      { id: 'Buchanan', name: 'Buchanan Hall', color: '#DC2626' },
     ],
   },
 ];
@@ -282,25 +287,44 @@ export const campusDB = new CampusDatabaseEngine();
 export function createCase1HealthyLogs(): CheckInEntry[] {
   const now = Date.now();
   const dayMs = 864e5;
+  // Full 14-day optimal routine history (Ideal Bristol 3-4, 7-8h sleep, 6-8 glasses water)
   return [
-    { id: 'case1_01', ts: now - 4 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 0 },
-    { id: 'case1_02', ts: now - 3 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 6, veg: 2, stress: 1 },
-    { id: 'case1_03', ts: now - 2 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 7.0, water: 8, veg: 4, stress: 0 },
-    { id: 'case1_04', ts: now - 1 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 1 },
-    { id: 'case1_05', ts: now, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 7, veg: 3, stress: 0 },
+    { id: 'case1_14', ts: now - 13 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 0 },
+    { id: 'case1_13', ts: now - 12 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 8, veg: 4, stress: 0 },
+    { id: 'case1_12', ts: now - 11 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 7.0, water: 6, veg: 2, stress: 1 },
+    { id: 'case1_11', ts: now - 10 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 0 },
+    { id: 'case1_10', ts: now - 9 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 8, veg: 4, stress: 0 },
+    { id: 'case1_09', ts: now - 8 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 1 },
+    { id: 'case1_08', ts: now - 7 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.5, water: 8, veg: 3, stress: 0 },
+    { id: 'case1_07', ts: now - 6 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 0 },
+    { id: 'case1_06', ts: now - 5 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 8, veg: 4, stress: 0 },
+    { id: 'case1_05', ts: now - 4 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 7.0, water: 6, veg: 2, stress: 1 },
+    { id: 'case1_04', ts: now - 3 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 7, veg: 3, stress: 0 },
+    { id: 'case1_03', ts: now - 2 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 8, veg: 4, stress: 0 },
+    { id: 'case1_02', ts: now - 1 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 1 },
+    { id: 'case1_01', ts: now, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 7, veg: 3, stress: 0 },
   ];
 }
 
 export function createCase2StressLogs(): CheckInEntry[] {
   const now = Date.now();
   const dayMs = 864e5;
+  // Full 14-day history reflecting student exam stress, short sleep, low hydration and IBS motility swings
   return [
-    { id: 'case2_01', ts: now - 5 * dayMs, pooped: true, bristol: 2, symptoms: ['bloating', 'straining'], sleep: 5.0, water: 3, veg: 1, stress: 3 },
-    { id: 'case2_02', ts: now - 4 * dayMs, pooped: true, bristol: 2, symptoms: ['straining'], sleep: 4.5, water: 2, veg: 0, stress: 4 },
-    { id: 'case2_03', ts: now - 3 * dayMs, pooped: true, bristol: 6, symptoms: ['cramps', 'urgency'], sleep: 5.0, water: 4, veg: 1, stress: 4 },
-    { id: 'case2_04', ts: now - 2 * dayMs, pooped: true, bristol: 5, symptoms: ['gas'], sleep: 6.0, water: 5, veg: 2, stress: 2 },
-    { id: 'case2_05', ts: now - 1 * dayMs, pooped: true, bristol: 6, symptoms: ['urgency'], sleep: 4.0, water: 3, veg: 1, stress: 4 },
-    { id: 'case2_06', ts: now, pooped: true, bristol: 3, symptoms: [], sleep: 7.0, water: 6, veg: 3, stress: 1 },
+    { id: 'case2_14', ts: now - 13 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 7.0, water: 6, veg: 2, stress: 1 },
+    { id: 'case2_13', ts: now - 12 * dayMs, pooped: true, bristol: 2, symptoms: ['straining'], sleep: 5.5, water: 3, veg: 1, stress: 3 },
+    { id: 'case2_12', ts: now - 11 * dayMs, pooped: true, bristol: 2, symptoms: ['bloating', 'straining'], sleep: 5.0, water: 3, veg: 0, stress: 4 },
+    { id: 'case2_11', ts: now - 10 * dayMs, pooped: true, bristol: 5, symptoms: ['gas'], sleep: 6.0, water: 4, veg: 1, stress: 2 },
+    { id: 'case2_10', ts: now - 9 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 6, veg: 3, stress: 1 },
+    { id: 'case2_09', ts: now - 8 * dayMs, pooped: true, bristol: 6, symptoms: ['cramps', 'urgency'], sleep: 4.5, water: 4, veg: 1, stress: 4 },
+    { id: 'case2_08', ts: now - 7 * dayMs, pooped: true, bristol: 6, symptoms: ['urgency'], sleep: 4.0, water: 3, veg: 1, stress: 4 },
+    { id: 'case2_07', ts: now - 6 * dayMs, pooped: true, bristol: 2, symptoms: ['bloating'], sleep: 5.0, water: 2, veg: 1, stress: 3 },
+    { id: 'case2_06', ts: now - 5 * dayMs, pooped: true, bristol: 1, symptoms: ['straining', 'pain'], sleep: 4.5, water: 2, veg: 0, stress: 4 },
+    { id: 'case2_05', ts: now - 4 * dayMs, pooped: true, bristol: 3, symptoms: ['gas'], sleep: 6.5, water: 5, veg: 2, stress: 2 },
+    { id: 'case2_04', ts: now - 3 * dayMs, pooped: true, bristol: 6, symptoms: ['cramps', 'urgency'], sleep: 5.0, water: 4, veg: 1, stress: 4 },
+    { id: 'case2_03', ts: now - 2 * dayMs, pooped: true, bristol: 5, symptoms: ['bloating'], sleep: 6.0, water: 4, veg: 2, stress: 3 },
+    { id: 'case2_02', ts: now - 1 * dayMs, pooped: true, bristol: 6, symptoms: ['urgency'], sleep: 4.5, water: 3, veg: 1, stress: 4 },
+    { id: 'case2_01', ts: now, pooped: true, bristol: 3, symptoms: [], sleep: 7.0, water: 6, veg: 3, stress: 1 },
   ];
 }
 
@@ -346,8 +370,8 @@ function getSeedUsers(): UserAccount[] {
       passwordHash: SEED_PBKDF2_HASH,
       createdAt: Date.now() - 14 * 864e5,
       logs: createCase1HealthyLogs(),
-      streak: 5,
-      totalPoints: 100,
+      streak: 14,
+      totalPoints: 280,
     },
     {
       id: 'user_fandm_ben',
@@ -357,10 +381,10 @@ function getSeedUsers(): UserAccount[] {
       houseId: 'Bonchek',
       salt: SEED_SALT,
       passwordHash: SEED_PBKDF2_HASH,
-      createdAt: Date.now() - 7 * 864e5,
+      createdAt: Date.now() - 14 * 864e5,
       logs: createCase2StressLogs(),
-      streak: 6,
-      totalPoints: 85,
+      streak: 8,
+      totalPoints: 195,
     },
     {
       id: 'user_fandm_david',

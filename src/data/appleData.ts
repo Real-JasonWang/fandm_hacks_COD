@@ -1,11 +1,18 @@
 import type { House, BristolInfo, BristolNumber, Restroom, RestroomReport, CheckInEntry, SymptomDef, AppSettings } from '../types';
 
 export const HOUSES: House[] = [
-  { id: "Bonchek", name: "Bonchek College House", color: "#3D6FE0", part: 61, checks: 412 },
-  { id: "Brooks",  name: "Brooks College House",  color: "#D9483F", part: 57, checks: 376 },
-  { id: "Roschel", name: "Roschel College House", color: "#2A9A72", part: 49, checks: 298 },
-  { id: "Ware",    name: "Ware College House",    color: "#8E5CE0", part: 54, checks: 389 },
-  { id: "Weis",    name: "Weis College House",    color: "#D48A0F", part: 66, checks: 341 },
+  // F&M College Houses
+  { id: "Ware",     name: "Ware College House",    color: "#8E5CE0", part: 78, checks: 489, residents: 260, category: 'house' },
+  { id: "Bonchek",  name: "Bonchek College House", color: "#3D6FE0", part: 65, checks: 412, residents: 220, category: 'house' },
+  { id: "Weis",     name: "Weis College House",    color: "#D48A0F", part: 66, checks: 341, residents: 210, category: 'house' },
+  { id: "Brooks",   name: "Brooks College House",  color: "#D9483F", part: 58, checks: 376, residents: 240, category: 'house' },
+  { id: "Roschel",  name: "Roschel College House", color: "#2A9A72", part: 51, checks: 298, residents: 230, category: 'house' },
+  // Traditional F&M Residence Halls
+  { id: "Schnader", name: "Schnader Hall",         color: "#2563EB", part: 62, checks: 310, residents: 185, category: 'hall' },
+  { id: "Thomas",   name: "Thomas Hall",           color: "#059669", part: 59, checks: 285, residents: 175, category: 'hall' },
+  { id: "Dietz",    name: "Dietz Hall",            color: "#D97706", part: 56, checks: 240, residents: 150, category: 'hall' },
+  { id: "Marshall", name: "Marshall Hall",         color: "#7C3AED", part: 53, checks: 225, residents: 140, category: 'hall' },
+  { id: "Buchanan", name: "Buchanan Hall",         color: "#DC2626", part: 49, checks: 210, residents: 135, category: 'hall' },
 ];
 
 export const BRISTOL: Record<BristolNumber, BristolInfo> = {

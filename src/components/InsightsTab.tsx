@@ -100,7 +100,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
     if (lowSleep.length >= 2 && goodSleep.length >= 2) {
       const a = share(lowSleep, isHard);
       const b = share(goodSleep, isHard);
-      if (a - b >= 25) {
+      if (a - b >= 20) {
         patterns.push({
           em: "😴",
           bg: "var(--lav-l)",
@@ -113,6 +113,21 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
           col: "var(--lav)",
         });
       }
+    } else if (goodSleep.length >= 3) {
+      const idealWithGoodSleep = share(goodSleep, isIdeal);
+      if (idealWithGoodSleep >= 70) {
+        patterns.push({
+          em: "😴",
+          bg: "var(--lav-l)",
+          title: "7+ hours sleep → optimal transit",
+          text: `On nights with 7+ hours of sleep, ${idealWithGoodSleep}% of your bowel movements were in the ideal Bristol 3–4 zone.`,
+          a: idealWithGoodSleep,
+          b: 100 - idealWithGoodSleep,
+          la: "Ideal zone (Type 3–4)",
+          lb: "Off-baseline",
+          col: "var(--lav)",
+        });
+      }
     }
 
     const lowWater = withB.filter((d) => d.water < 4);
@@ -120,7 +135,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
     if (lowWater.length >= 2 && goodWater.length >= 2) {
       const a = share(lowWater, isHard);
       const b = share(goodWater, isHard);
-      if (a - b >= 25) {
+      if (a - b >= 20) {
         patterns.push({
           em: "💧",
           bg: "#E3F1FF",
@@ -133,6 +148,21 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
           col: "#3D7BE0",
         });
       }
+    } else if (goodWater.length >= 3) {
+      const idealWithGoodWater = share(goodWater, isIdeal);
+      if (idealWithGoodWater >= 70) {
+        patterns.push({
+          em: "💧",
+          bg: "#E3F1FF",
+          title: "6+ glasses water keeps stools smooth",
+          text: `Reaching your daily hydration target kept ${idealWithGoodWater}% of bowel movements perfectly soft and easy to pass.`,
+          a: idealWithGoodWater,
+          b: 100 - idealWithGoodWater,
+          la: "Smooth & ideal",
+          lb: "Dry or irregular",
+          col: "#3D7BE0",
+        });
+      }
     }
 
     const hiStress = withB.filter((d) => d.stress >= 3);
@@ -140,7 +170,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
     if (hiStress.length >= 2 && loStress.length >= 2) {
       const a = share(hiStress, (d) => (d.bristol ?? 0) >= 4.5);
       const b = share(loStress, (d) => (d.bristol ?? 0) >= 4.5);
-      if (a - b >= 25) {
+      if (a - b >= 20) {
         patterns.push({
           em: "🧠",
           bg: "var(--peach-l)",
@@ -150,6 +180,21 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
           b,
           la: "Stressed days",
           lb: "Calm days",
+          col: "var(--peach-d)",
+        });
+      }
+    } else if (loStress.length >= 3) {
+      const idealWithLoStress = share(loStress, isIdeal);
+      if (idealWithLoStress >= 70) {
+        patterns.push({
+          em: "🧘",
+          bg: "var(--peach-l)",
+          title: "Calm days protect gut stability",
+          text: `During low-stress periods, ${idealWithLoStress}% of your logs maintained steady motility with zero acute flare-ups.`,
+          a: idealWithLoStress,
+          b: 100 - idealWithLoStress,
+          la: "Stable motility",
+          lb: "Stress-shifted",
           col: "var(--peach-d)",
         });
       }

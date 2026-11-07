@@ -1,6 +1,16 @@
 export type ModeType = 'playful' | 'discreet';
 
-export type HouseId = 'Bonchek' | 'Brooks' | 'Roschel' | 'Ware' | 'Weis';
+export type HouseId =
+  | 'Bonchek'
+  | 'Brooks'
+  | 'Roschel'
+  | 'Ware'
+  | 'Weis'
+  | 'Thomas'
+  | 'Schnader'
+  | 'Dietz'
+  | 'Marshall'
+  | 'Buchanan';
 
 export interface House {
   id: HouseId;
@@ -8,6 +18,8 @@ export interface House {
   color: string;
   part: number; // participation %
   checks: number;
+  residents?: number;
+  category?: 'house' | 'hall';
 }
 
 export type BristolNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7;
