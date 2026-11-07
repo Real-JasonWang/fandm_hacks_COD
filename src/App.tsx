@@ -21,6 +21,7 @@ import { CustodialHeatmap } from './components/CustodialHeatmap';
 import { ScanModal } from './components/ScanModal';
 import { StealthShield } from './components/StealthShield';
 import { HealthTelemetryDrawer } from './components/HealthTelemetryDrawer';
+import { FloorCutawayModal } from './components/FloorCutawayModal';
 import { sound } from './lib/audio';
 
 // TODO: refactor this state monster into zustand later if time permits
@@ -38,6 +39,7 @@ export function App() {
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
   const [isStealthOpen, setIsStealthOpen] = useState(false);
   const [isHealthDrawerOpen, setIsHealthDrawerOpen] = useState(false);
+  const [isFloorModalOpen, setIsFloorModalOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   // Battle Vector & Live Sequence Animation
@@ -246,6 +248,12 @@ export function App() {
         isOpen={isHealthDrawerOpen}
         onClose={() => setIsHealthDrawerOpen(false)}
         dormName={activeDorm.name}
+      />
+
+      <FloorCutawayModal
+        isOpen={isFloorModalOpen}
+        onClose={() => setIsFloorModalOpen(false)}
+        node={selectedNode}
       />
 
       {/* TOP HEADER: Brand, Live Ticker, Form Factor & Custodial Toggles */}
@@ -572,6 +580,16 @@ export function App() {
                     {selectedNode.cleanlinessAlert ? 'URGENT SOIL' : 'CLEAN'}
                   </div>
                 </div>
+
+                <button
+                  onClick={() => {
+                    sound.playClick();
+                    setIsFloorModalOpen(true);
+                  }}
+                  className="w-full mt-2 py-1.5 bg-[#1C1E24] hover:bg-[#2A2D35] text-[#FFE600] font-mono text-[10px] uppercase font-bold rounded flex items-center justify-center space-x-1.5 cursor-pointer border border-[#FFE600]/30"
+                >
+                  <span>Inspect Indoor Stalls & Schematic</span>
+                </button>
               </div>
 
               {/* Quick Facility Switcher */}
