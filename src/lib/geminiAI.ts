@@ -71,53 +71,53 @@ export function generateDefaultChainOfThought(type: BristolNumber): VisualChainO
   switch (type) {
     case 1:
       return {
-        morphologyAnalysis: 'Observed separate, distinct, hard nut-like pellet formations (diameter < 1.5 cm) with dense, rigid, compressed surface geometry and abrupt contours without longitudinal unity.',
-        moistureAnalysis: 'Extremely low free moisture (< 60%); specimen resists water dissolution in the porcelain basin with zero turbidity or water discoloration.',
-        differentialDiagnosis: 'Ruled out Type 2 due to complete absence of fused cylindrical grouping; ruled out Type 3 due to absence of formed cracked sausage. Discontinuous hard pellets definitively establish Type 1.',
-        clinicalAssessment: 'Severely delayed colonic transit time (typically > 72 hours), excessive distal mucosal water reabsorption, indicating acute constipation and dehydration risk.',
+        morphologyAnalysis: 'Separate, hard little lumps like nuts. Dense and tough to pass.',
+        moistureAnalysis: 'Very dry. Sinks right to the bottom with clean water and zero clouding.',
+        differentialDiagnosis: 'Not Type 2 because the lumps are separate, not stuck together. Definitely Type 1.',
+        clinicalAssessment: 'Slow digestion. Your body pulled out too much water, usually from dehydration or low fiber.',
       };
     case 2:
       return {
-        morphologyAnalysis: 'Formed cylindrical sausage mass composed of distinct, agglomerated hard lumps and nodules, exhibiting a prominent cobblestone-like, irregular perimeter.',
-        moistureAnalysis: 'Low moisture content; maintains structural integrity with minimal peripheral flaking and zero basin water turbidity.',
-        differentialDiagnosis: 'Ruled out Type 1 because pellets are bonded into a contiguous log; ruled out Type 3 because surface is deeply nodular rather than smooth with surface cracks. Conclusive for Type 2.',
-        clinicalAssessment: 'Mild colonic transit deceleration; inadequate dietary insoluble fiber and suboptimal daily hydration.',
+        morphologyAnalysis: 'A lumpy sausage made of hard chunks stuck together.',
+        moistureAnalysis: 'Pretty dry. Stays solid in the bowl without breaking apart or clouding.',
+        differentialDiagnosis: 'Not Type 1 because it is in one log. Not Type 3 because it is bumpy lumps, not surface cracks. Classic Type 2.',
+        clinicalAssessment: 'Moved through a bit too slow. A sign you could use an extra glass of water today.',
       };
     case 3:
       return {
-        morphologyAnalysis: 'Well-formed continuous cylinder with observable superficial linear fissures and longitudinal surface cracks along an otherwise cohesive body.',
-        moistureAnalysis: 'Normal physiological moisture balance (70-75%); retains intact structural boundary upon water impact without basin clouding or wall adhesion.',
-        differentialDiagnosis: 'Ruled out Type 2 because individual lump nodules are absent; ruled out Type 4 because surface is cracked rather than completely smooth. Conclusive for Type 3.',
-        clinicalAssessment: 'Healthy normal stool; optimal intestinal transit time between 30 and 40 hours with adequate fiber intake.',
+        morphologyAnalysis: 'Sausage-shaped with cracks across the surface.',
+        moistureAnalysis: 'Normal moisture balance. Stays intact in the water with clean edges.',
+        differentialDiagnosis: 'Not Type 2 because it is not lumpy chunks. Not Type 4 because of the surface cracks. Healthy Type 3.',
+        clinicalAssessment: 'Good, healthy digestion speed. Everything moved through on schedule.',
       };
     case 4:
       return {
-        morphologyAnalysis: 'Optimal uniform cylindrical morphology with smooth, continuous surface contour; resembles a soft snake or banana with zero surface fissures or nodular bumps.',
-        moistureAnalysis: 'Ideal hydration equilibrium (approx. 75% water-to-solid ratio); smooth sedimentation with zero residue or basin staining.',
-        differentialDiagnosis: 'Ruled out Type 3 due to absence of surface fissures; ruled out Type 5 because log is uninterrupted without segment blob detachment. Gold Standard Type 4.',
-        clinicalAssessment: 'Peak digestive mucosal lubrication and balanced gut microbiome; ideal transit time and dietary fiber-hydration equilibrium.',
+        morphologyAnalysis: 'Smooth and soft like a banana or snake. No cracks or bumps.',
+        moistureAnalysis: 'Ideal moisture. Rests in the water completely intact without clouding.',
+        differentialDiagnosis: 'Not Type 3 because the surface is totally smooth. Not Type 5 because it did not break into pieces. Textbook Type 4.',
+        clinicalAssessment: 'Spot-on digestion speed. Your hydration and food balance are working great.',
       };
     case 5:
       return {
-        morphologyAnalysis: 'Discrete, soft, pliable fragment blobs with well-defined, clear-cut boundaries (no ragged or frayed margins).',
-        moistureAnalysis: 'Moderately elevated moisture; fragments retain individual demarcated contours in basin water without immediate clouding.',
-        differentialDiagnosis: 'Ruled out Type 4 due to absence of continuous cylinder; ruled out Type 6 because fragment borders are distinctly sharp rather than ragged and fluffy. Conclusive for Type 5.',
-        clinicalAssessment: 'Accelerated colonic transit or low dietary soluble fiber; stool evacuated before complete terminal water absorption.',
+        morphologyAnalysis: 'Soft, separate blobs with clean-cut edges.',
+        moistureAnalysis: 'Has more water than usual. Floats easily but does not dissolve immediately.',
+        differentialDiagnosis: 'Not Type 4 because it broke into blobs. Not Type 6 because the edges are clean, not ragged. Type 5.',
+        clinicalAssessment: 'Moved through your colon a bit fast. Adding some soluble fiber like oats or bread will help firm it up.',
       };
     case 6:
       return {
-        morphologyAnalysis: 'Fragmented, fluffy masses with irregular, ragged, frayed margins; lacks solid cylindrical core or defined edges; distinctly mushy consistency.',
-        moistureAnalysis: 'High moisture content (> 85%); rapid local dissolution causing noticeable basin water cloudiness and wall soiling.',
-        differentialDiagnosis: 'Ruled out Type 5 because margins are ragged and frayed rather than clean-cut; ruled out Type 7 because soft mushy solid pieces remain. Conclusive for Type 6.',
-        clinicalAssessment: 'Marked intestinal hyper-motility, mild osmotic or secretory diarrhea; increased electrolyte loss risk. Rehydration with oral electrolytes advised.',
+        morphologyAnalysis: 'Fluffy, mushy pieces with ragged, uneven edges.',
+        moistureAnalysis: 'High water content. Breaks apart quickly and clouds the toilet water.',
+        differentialDiagnosis: 'Not Type 5 because the edges are ragged and mushy. Not Type 7 because there are still soft solid pieces. Type 6.',
+        clinicalAssessment: 'Gut moved fast today. Often caused by stress, caffeine, or quick-digesting food.',
       };
     case 7:
     default:
       return {
-        morphologyAnalysis: 'Complete absence of formed solid particles; fluid suspension with diffuse discoloration throughout the toilet basin.',
-        moistureAnalysis: 'Extremely high free-water content (> 90%); immediate dispersion with widespread basin turbidity.',
-        differentialDiagnosis: 'Ruled out Type 6 due to total lack of solid or ragged mush fragments. Conclusive for severe watery diarrhea (Type 7).',
-        clinicalAssessment: 'Acute secretory diarrhea or enteritis; impaired mucosal water absorption with rapid dehydration risk. Immediate fluid and electrolyte replacement recommended.',
+        morphologyAnalysis: 'All liquid with no solid pieces.',
+        moistureAnalysis: 'Pure fluid. Immediately spreads through the water.',
+        differentialDiagnosis: 'Not Type 6 because there are zero solid chunks left. Pure Type 7 diarrhea.',
+        clinicalAssessment: 'Water rushed straight through without absorbing. Sip water and electrolytes to stay hydrated.',
       };
   }
 }
@@ -224,23 +224,24 @@ export async function analyzeStoolImageWithGemma(
     ...FALLBACK_CASCADE.filter((m) => m !== preferredModel),
   ];
 
-  const prompt = `You are a world-class board-certified gastroenterologist and clinical diagnostic AI evaluating the Bristol Stool Form Scale (BSFS).
-Analyze this specimen using rigorous clinical methodology and provide an explicit, highly structured Chain-of-Thought with clinical justifications:
+  const prompt = `You are evaluating a photo for the Bristol Stool Form Scale (BSFS) for a student health app.
+Analyze this photo and provide a clear 4-stage reasoning breakdown.
+IMPORTANT STYLE REQUIREMENT: Use short, plain high school English. NO medical jargon, NO clichés, NO robotic corporate filler. Keep every section to 1-2 punchy sentences that any high schooler or college student naturally understands.
 
-1. Anti-Spoofing & Liveness: Ensure this is an authentic human bowel movement in a porcelain toilet basin. (If melted chocolate, toy rubber, peanut butter, pet feces, or not in a toilet, flag isValid = false).
+1. Anti-Spoofing: Ensure this is a real bowel movement in a toilet bowl. (If melted chocolate, toy, peanut butter, pet poop, or not in a toilet, set isValid = false).
 2. Bristol Stool Form Scale (BSFS) Types 1-7:
-   - Type 1: Separate hard lumps, like nuts (severe constipation)
-   - Type 2: Sausage-shaped but lumpy (mild constipation)
-   - Type 3: Like a sausage with cracks on surface (normal/healthy)
-   - Type 4: Like a sausage or snake, smooth and soft (optimal benchmark)
-   - Type 5: Soft blobs with clear-cut edges (mild loose/low fiber)
-   - Type 6: Fluffy pieces with ragged edges, a mushy stool (diarrhea/rapid motility)
-   - Type 7: Watery, no solid pieces; entirely liquid (severe diarrhea)
-3. Structured Chain-of-Thought Reasoning (4-Stage Clinical Deductions):
-   - morphologyAnalysis: Specimen morphology & edge consistency (solid contour, ragged vs smooth margins, fragment shape)
-   - moistureAnalysis: Water dynamics & basin dispersion (free-water proportion, water clouding, dissipation rate)
-   - differentialDiagnosis: Differential diagnosis & exclusion logic (explicitly explain why adjacent types were rejected and why this type is confirmed)
-   - clinicalAssessment: Colonic motility & hydration assessment (gut transit velocity, mucosal reabsorption rate, dietary electrolyte advice)
+   - Type 1: Separate hard lumps, like nuts (hard to pass)
+   - Type 2: Sausage-shaped but lumpy
+   - Type 3: Like a sausage with cracks on surface (normal)
+   - Type 4: Like a sausage or snake, smooth and soft (ideal)
+   - Type 5: Soft blobs with clear-cut edges (passed easily)
+   - Type 6: Fluffy pieces with ragged edges, a mushy stool
+   - Type 7: Watery, no solid pieces; entirely liquid (diarrhea)
+3. 4-Stage Reasoning (in short plain high school English with zero clichés):
+   - morphologyAnalysis: What it looks like (shape, smooth vs lumpy, cracks, chunks).
+   - moistureAnalysis: How it looks in the toilet water (holds together, dissolves, clouds the bowl).
+   - differentialDiagnosis: Why it is this type and not the next types (e.g. why not Type 3, why not Type 5).
+   - clinicalAssessment: Digestion speed and what it means (moving fast, normal, or slow; simple tip).
 
 Return ONLY a valid JSON object matching this schema with NO markdown code fences or backticks:
 {
@@ -251,12 +252,12 @@ Return ONLY a valid JSON object matching this schema with NO markdown code fence
   "cleanlinessAlert": boolean,
   "soilingIndex": number (0 to 5),
   "detectedSymptoms": string[],
-  "clinicalTip": string,
+  "clinicalTip": string (1 short high school english sentence, no clichés),
   "chainOfThought": {
-    "morphologyAnalysis": string,
-    "moistureAnalysis": string,
-    "differentialDiagnosis": string,
-    "clinicalAssessment": string
+    "morphologyAnalysis": string (1-2 short high school english sentences),
+    "moistureAnalysis": string (1-2 short high school english sentences),
+    "differentialDiagnosis": string (1-2 short high school english sentences),
+    "clinicalAssessment": string (1-2 short high school english sentences)
   }
 }`;
 

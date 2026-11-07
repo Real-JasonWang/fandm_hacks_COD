@@ -43,8 +43,8 @@ export const AppleBottomNav: React.FC<AppleBottomNavProps> = ({
           className={`apple-nb ${activeTab === 'map' ? 'on' : ''}`}
           onClick={() => onChangeTab('map')}
         >
-          <span>🗺️</span>
-          Map
+          <span>🧽</span>
+          Reports
         </button>
 
         <button

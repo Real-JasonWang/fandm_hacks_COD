@@ -1,7 +1,7 @@
 {
   "name": "Call of Doodie — F&M Gut Health",
   "short_name": "Doodie",
-  "description": "Poop · Sleep · Food check-ins, campus bathroom map and anonymous College House challenges for F&M students.",
+  "description": "Poop · Sleep · Food check-ins, campus bathroom reports and anonymous College House challenges for F&M students.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

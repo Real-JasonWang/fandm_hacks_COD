@@ -358,16 +358,16 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
                 {/* Clinical Summary Tip */}
                 <div className="p-3 bg-white rounded-xl border border-[var(--line)] text-[12.5px] font-bold text-[var(--ink)] leading-relaxed">
-                  💡 <b>Clinical Summary:</b> {visionResult.clinicalTip}
+                  💡 <b>Quick Take:</b> {visionResult.clinicalTip}
                 </div>
 
                 {/* Structured Chain-of-Thought */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <b className="text-[13px] font-black text-[var(--ink)] flex items-center gap-1.5">
-                      <span>🧠</span> Clinical Chain-of-Thought &amp; Diagnostic Justification
+                      <span>🧠</span> AI Chain-of-Thought &amp; Reasoning
                     </b>
-                    <span className="text-[10.5px] font-bold text-[var(--muted)]">4-Stage Reasoning</span>
+                    <span className="text-[10.5px] font-bold text-[var(--muted)]">4-Stage Breakdown</span>
                   </div>
 
                   <div className="space-y-2 text-[12.5px]">
@@ -375,7 +375,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
                       <div className="flex items-center gap-1.5 font-black text-[#2A2238]">
                         <span className="text-[14px]">🔍</span>
-                        <span>Stage 1 · Specimen Morphology &amp; Edge Consistency</span>
+                        <span>Stage 1 · Shape &amp; Texture</span>
                       </div>
                       <p className="text-[12px] font-semibold text-[var(--ink2)] leading-relaxed pl-5">
                         {visionResult.chainOfThought?.morphologyAnalysis}
@@ -386,7 +386,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
                       <div className="flex items-center gap-1.5 font-black text-[#2A2238]">
                         <span className="text-[14px]">💧</span>
-                        <span>Stage 2 · Water Dynamics &amp; Basin Dispersion</span>
+                        <span>Stage 2 · Water Consistency</span>
                       </div>
                       <p className="text-[12px] font-semibold text-[var(--ink2)] leading-relaxed pl-5">
                         {visionResult.chainOfThought?.moistureAnalysis}
@@ -397,7 +397,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     <div className="p-3 bg-[#FFFDF9] rounded-xl border-2 border-[var(--peach-l)] shadow-sm space-y-1">
                       <div className="flex items-center gap-1.5 font-black text-[var(--peach-d)]">
                         <span className="text-[14px]">⚖️</span>
-                        <span>Stage 3 · Differential Diagnosis &amp; Exclusion Logic</span>
+                        <span>Stage 3 · Why this Bristol Type?</span>
                       </div>
                       <p className="text-[12px] font-bold text-[var(--ink)] leading-relaxed pl-5">
                         {visionResult.chainOfThought?.differentialDiagnosis}
@@ -408,7 +408,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
                       <div className="flex items-center gap-1.5 font-black text-[#11634C]">
                         <span className="text-[14px]">🩺</span>
-                        <span>Stage 4 · Colonic Motility &amp; Physiological Correlate</span>
+                        <span>Stage 4 · Digestion &amp; Gut Speed</span>
                       </div>
                       <p className="text-[12px] font-semibold text-[var(--ink2)] leading-relaxed pl-5">
                         {visionResult.chainOfThought?.clinicalAssessment}
