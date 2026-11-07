@@ -90,7 +90,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
       sortedHouses,
       rank,
     };
-  }, [settings.logs, currentHouse.id]);
+  }, [settings, currentHouse]);
 
   return (
     <div className="apple-view space-y-3">

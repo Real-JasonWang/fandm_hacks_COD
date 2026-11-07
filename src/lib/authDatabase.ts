@@ -275,6 +275,21 @@ export function logoutSession(): void {
   setCurrentSession(null);
 }
 
+// Update current user's college house in database
+export function updateUserHouse(userId: string, houseId: string): void {
+  const users = getAllUsers();
+  const index = users.findIndex((u) => u.id === userId);
+  if (index !== -1) {
+    users[index].houseId = houseId;
+    saveAllUsers(users);
+
+    const activeSession = getCurrentSession();
+    if (activeSession && activeSession.id === userId) {
+      setCurrentSession(users[index]);
+    }
+  }
+}
+
 // Update current user's personal logs in database
 export function updateUserLogs(userId: string, newLog: CheckInEntry): void {
   const users = getAllUsers();

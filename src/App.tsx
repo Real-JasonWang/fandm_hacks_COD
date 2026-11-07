@@ -13,6 +13,7 @@ import {
   getCurrentSession,
   logoutSession,
   updateUserLogs,
+  updateUserHouse,
   type UserAccount,
 } from './lib/authDatabase';
 
@@ -284,6 +285,10 @@ export function App() {
             if (mode === 'playful') {
               confetti({ particleCount: 50, spread: 50 });
             }
+            if (currentUser) {
+              updateUserHouse(currentUser.id, house);
+              setCurrentUser((prev) => (prev ? { ...prev, houseId: house } : null));
+            }
             setSettings((prev) => ({
               ...prev,
               onboarded: true,
@@ -394,8 +399,13 @@ export function App() {
           setSettings((prev) => ({ ...prev, mode }));
         }}
         onUpdateHouse={(house) => {
+          triggerHaptic();
           setSettings((prev) => ({ ...prev, house }));
-          showToast(`Switched to ${house} House!`);
+          if (currentUser) {
+            updateUserHouse(currentUser.id, house);
+            setCurrentUser((prev) => (prev ? { ...prev, houseId: house } : null));
+          }
+          showToast(`Switched to ${house} College House!`);
         }}
         onOpenAI={() => setIsAIOpen(true)}
         onOpenScience={() => setIsScienceOpen(true)}

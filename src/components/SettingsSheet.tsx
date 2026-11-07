@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { AppSettings, HouseId, ModeType } from '../types';
-import { HOUSES } from '../data/appleData';
+import { HouseSelector } from './HouseSelector';
 import {
   getStoredApiKey,
   setStoredApiKey,
@@ -98,7 +98,7 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
               <b className="text-[14px] font-black text-[var(--ink)] block truncate">
                 {currentUser ? currentUser.displayName : 'Guest Student'}
               </b>
-              <p className="text-[12px] text-[var(--muted)] font-mono font-bold truncate">
+              <p className="text-[12px] text-[var(--muted)] font-bold truncate">
                 {currentUser ? currentUser.email : 'No registered session'}
               </p>
             </div>
@@ -155,27 +155,11 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
         <div className="text-[15px] font-black text-[var(--ink)] mb-2">
           Your College House Faction
         </div>
-        <div className="grid grid-cols-2 gap-2 mb-4">
-          {HOUSES.map((h) => {
-            const isSelected = settings.house === h.id;
-            return (
-              <button
-                key={h.id}
-                type="button"
-                className={`apple-card my-0 p-3 flex items-center gap-2.5 font-black text-[14px] text-left border-2 transition ${
-                  isSelected ? 'border-[var(--ink)]' : 'border-transparent'
-                }`}
-                onClick={() => onUpdateHouse(h.id)}
-              >
-                <span
-                  className="w-3 h-3 rounded-full flex-none"
-                  style={{ background: h.color }}
-                />
-                {h.id}
-              </button>
-            );
-          })}
-        </div>
+        <HouseSelector
+          selectedHouse={settings.house}
+          onSelect={onUpdateHouse}
+          className="mb-4"
+        />
 
         {/* Google AI Studio API Key & Gemma 4 Panel */}
         <div className="apple-card p-3.5 space-y-3 mb-4 border-2 border-[var(--peach-l)]">

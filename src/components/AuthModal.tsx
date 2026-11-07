@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import {
-  SUPPORTED_UNIVERSITIES,
   validateCampusEmail,
   registerAccount,
   loginAccount,
   type UserAccount,
 } from '../lib/authDatabase';
+import { HouseSelector } from './HouseSelector';
+import type { HouseId } from '../types';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -34,7 +35,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   if (!isOpen) return null;
 
-  const currentUni = SUPPORTED_UNIVERSITIES[0]; // Franklin & Marshall College
   const domainCheck = validateCampusEmail(email, 'fandm');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -153,29 +153,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[12.5px] font-extrabold text-[var(--ink)] block mb-1">
+              <label className="text-[12.5px] font-extrabold text-[var(--ink)] block mb-1.5">
                 Select Your F&amp;M College House
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                {currentUni.houses.map((h) => (
-                  <button
-                    key={h.id}
-                    type="button"
-                    className={`p-2.5 rounded-xl border-2 text-left font-extrabold text-[13px] flex items-center gap-2 transition ${
-                      houseId === h.id
-                        ? 'border-[var(--ink)] bg-[#FFFDF9]'
-                        : 'border-transparent bg-white'
-                    }`}
-                    onClick={() => setHouseId(h.id)}
-                  >
-                    <span
-                      className="w-3 h-3 rounded-full flex-none"
-                      style={{ background: h.color }}
-                    />
-                    <span className="truncate">{h.name}</span>
-                  </button>
-                ))}
-              </div>
+              <HouseSelector
+                selectedHouse={houseId}
+                onSelect={(id: HouseId) => setHouseId(id)}
+              />
             </div>
           </>
         )}
@@ -199,7 +183,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <input
             type="email"
             required
-            className="w-full py-2.5 px-3 bg-white border border-[var(--line)] rounded-xl text-[14px] font-mono text-[var(--ink)] focus:outline-none focus:border-[var(--peach)]"
+            className="w-full py-2.5 px-3 bg-white border border-[var(--line)] rounded-xl text-[14px] font-bold text-[var(--ink)] focus:outline-none focus:border-[var(--peach)]"
             placeholder="username@fandm.edu"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -215,7 +199,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <input
               type={showPassword ? 'text' : 'password'}
               required
-              className="w-full py-2.5 px-3 pr-10 bg-white border border-[var(--line)] rounded-xl text-[14px] font-mono text-[var(--ink)] focus:outline-none focus:border-[var(--peach)]"
+              className="w-full py-2.5 px-3 pr-10 bg-white border border-[var(--line)] rounded-xl text-[14px] font-bold text-[var(--ink)] focus:outline-none focus:border-[var(--peach)]"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

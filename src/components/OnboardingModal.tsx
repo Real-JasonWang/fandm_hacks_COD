@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { HouseId, ModeType } from '../types';
-import { HOUSES } from '../data/appleData';
+import { HouseSelector } from './HouseSelector';
 
 interface OnboardingModalProps {
   initialHouse: HouseId;
@@ -55,27 +55,10 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           <p className="text-[14px] font-black text-[var(--ink)] mb-2">
             Which F&amp;M College House are you in?
           </p>
-          <div className="grid grid-cols-2 gap-2">
-            {HOUSES.map((h) => {
-              const isSelected = selectedHouse === h.id;
-              return (
-                <button
-                  key={h.id}
-                  type="button"
-                  className={`apple-card my-0 p-3 flex items-center gap-2.5 font-black text-[14px] text-left border-2 transition ${
-                    isSelected ? 'border-[var(--ink)]' : 'border-transparent'
-                  }`}
-                  onClick={() => setSelectedHouse(h.id)}
-                >
-                  <span
-                    className="w-3 h-3 rounded-full flex-none"
-                    style={{ background: h.color }}
-                  />
-                  {h.id}
-                </button>
-              );
-            })}
-          </div>
+          <HouseSelector
+            selectedHouse={selectedHouse}
+            onSelect={setSelectedHouse}
+          />
         </div>
 
         {/* Vibe Selection */}
