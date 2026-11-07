@@ -1,4 +1,5 @@
 // types.ts - hackathon types yolo
+// TODO: refactor this shit later, gradual territory fields added
 export type DormId = 'bonchek' | 'brooks' | 'ware' | 'weis' | 'new_college';
 
 export interface Dorm {
@@ -24,6 +25,9 @@ export interface RestroomNode {
   cleanlinessAlert: boolean;
   trafficCount: number;
   lastCleanedMinutesAgo: number;
+  captureProgress: number; // 0 - 100 gradual capture bar
+  contestState: 'STABLE' | 'CONTESTED' | 'FORTIFIED';
+  influenceRadius: number; // dynamic radius for canvas wave rings
 }
 
 export interface GemmaVisionResult {

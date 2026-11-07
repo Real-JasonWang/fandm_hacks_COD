@@ -66,6 +66,29 @@ export function App() {
     return () => clearInterval(timer);
   }, []);
 
+  // Gradual campus simulation loop (live autonomous dorm skirmishes)
+  // TODO: refactor this shit later, simulates gradual territory tug-of-war across F&M houses
+  useEffect(() => {
+    const simInterval = setInterval(() => {
+      setRestrooms((prev) =>
+        prev.map((r) => {
+          if (r.contestState === 'CONTESTED') {
+            const shift = (Math.random() - 0.48) * 3;
+            const newHp = Math.max(15, Math.min(95, Math.round(r.baseHp + shift)));
+            return {
+              ...r,
+              baseHp: newHp,
+              captureProgress: newHp,
+              influenceRadius: Math.max(18, Math.min(48, Math.round(newHp * 0.4 + 10)))
+            };
+          }
+          return r;
+        })
+      );
+    }, 4500);
+    return () => clearInterval(simInterval);
+  }, []);
+
   const formatTimer = (sec: number) => {
     const m = Math.floor(sec / 60);
     const s = sec % 60;
@@ -133,6 +156,9 @@ export function App() {
                 ...r,
                 controllingDormId: activeDormId,
                 baseHp: newHp,
+                captureProgress: newHp,
+                contestState: newHp >= 90 ? 'FORTIFIED' : 'STABLE',
+                influenceRadius: Math.min(50, (r.influenceRadius || 28) + 8),
                 cleanlinessAlert: result.cleanlinessAlert,
                 soilingIndex: Math.min(5, r.soilingIndex + result.soilingSeverity),
                 trafficCount: r.trafficCount + 1,

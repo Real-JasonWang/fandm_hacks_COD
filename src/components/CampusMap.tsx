@@ -316,15 +316,36 @@ export const CampusMap: React.FC<CampusMapProps> = ({
           ctx.textAlign = 'center';
           ctx.fillText(`U:${r.soilingIndex}`, rx, ry + 18);
         } else {
-          // Student Faction Mode
+          // Student Faction Mode: Gradual Territory Expansion & Influence Waves
           const pinColor = controllingDorm ? controllingDorm.colorHex : '#64748B';
+
+          // Gradual territory influence aura
+          const dynamicRad = (r.influenceRadius || 25) + Math.sin(t * 3 + r.floor) * 3;
+          ctx.save();
+          ctx.fillStyle = pinColor + '20'; // 12% opacity
+          ctx.beginPath();
+          ctx.arc(rx, ry, dynamicRad, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Contested state animated dashed alert ring
+          if (r.contestState === 'CONTESTED') {
+            ctx.strokeStyle = '#FFE600';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.lineDashOffset = t * 15;
+            ctx.beginPath();
+            ctx.arc(rx, ry, dynamicRad + 4, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
+          ctx.restore();
 
           // Selection Reticle
           if (isSelected) {
             ctx.strokeStyle = '#FFE600';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.arc(rx, ry, 13, 0, Math.PI * 2);
+            ctx.arc(rx, ry, 14, 0, Math.PI * 2);
             ctx.stroke();
           }
 
@@ -339,13 +360,21 @@ export const CampusMap: React.FC<CampusMapProps> = ({
           ctx.lineWidth = 1.5;
           ctx.stroke();
 
-          // Mini HP bar
-          const barW = 20;
+          // Gradual capture progression meter
+          const barW = 24;
           const barH = 3;
           ctx.fillStyle = '#0B0C10';
-          ctx.fillRect(rx - barW / 2, ry - 11, barW, barH);
+          ctx.fillRect(rx - barW / 2, ry - 12, barW, barH);
           ctx.fillStyle = r.baseHp > 40 ? '#10B981' : '#EF4444';
-          ctx.fillRect(rx - barW / 2, ry - 11, (r.baseHp / 100) * barW, barH);
+          ctx.fillRect(rx - barW / 2, ry - 12, (r.baseHp / 100) * barW, barH);
+
+          // Gradual progress indicator text
+          if (isSelected) {
+            ctx.fillStyle = '#FFE600';
+            ctx.font = 'bold 8px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${r.captureProgress ?? r.baseHp}%`, rx, ry - 15);
+          }
         }
       });
 

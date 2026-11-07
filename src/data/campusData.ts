@@ -53,6 +53,7 @@ export const INITIAL_DORMS: Dorm[] = [
 ];
 
 // F&M Main Campus Restroom Nodes mapped to canvas percentage coordinates (x, y: 0-100)
+// TODO: refactor this shit later, gradual decay logic handles capture progress
 export const INITIAL_RESTROOMS: RestroomNode[] = [
   {
     id: 'shadek_1f',
@@ -66,7 +67,10 @@ export const INITIAL_RESTROOMS: RestroomNode[] = [
     soilingIndex: 0,
     cleanlinessAlert: false,
     trafficCount: 42,
-    lastCleanedMinutesAgo: 45
+    lastCleanedMinutesAgo: 45,
+    captureProgress: 92,
+    contestState: 'STABLE',
+    influenceRadius: 32
   },
   {
     id: 'shadek_2f',
@@ -80,7 +84,10 @@ export const INITIAL_RESTROOMS: RestroomNode[] = [
     soilingIndex: 1,
     cleanlinessAlert: false,
     trafficCount: 38,
-    lastCleanedMinutesAgo: 110
+    lastCleanedMinutesAgo: 110,
+    captureProgress: 75,
+    contestState: 'CONTESTED',
+    influenceRadius: 26
   },
   {
     id: 'steinman_1f',
@@ -94,7 +101,10 @@ export const INITIAL_RESTROOMS: RestroomNode[] = [
     soilingIndex: 3,
     cleanlinessAlert: false,
     trafficCount: 89,
-    lastCleanedMinutesAgo: 160
+    lastCleanedMinutesAgo: 160,
+    captureProgress: 60,
+    contestState: 'CONTESTED',
+    influenceRadius: 22
   },
   {
     id: 'hackman_1f',
@@ -108,7 +118,10 @@ export const INITIAL_RESTROOMS: RestroomNode[] = [
     soilingIndex: 0,
     cleanlinessAlert: false,
     trafficCount: 24,
-    lastCleanedMinutesAgo: 90
+    lastCleanedMinutesAgo: 90,
+    captureProgress: 85,
+    contestState: 'STABLE',
+    influenceRadius: 30
   },
   {
     id: 'barshinger_lsb',
@@ -122,7 +135,10 @@ export const INITIAL_RESTROOMS: RestroomNode[] = [
     soilingIndex: 0,
     cleanlinessAlert: false,
     trafficCount: 31,
-    lastCleanedMinutesAgo: 30
+    lastCleanedMinutesAgo: 30,
+    captureProgress: 100,
+    contestState: 'FORTIFIED',
+    influenceRadius: 40
   },
   {
     id: 'stager_hall',
@@ -136,7 +152,10 @@ export const INITIAL_RESTROOMS: RestroomNode[] = [
     soilingIndex: 1,
     cleanlinessAlert: false,
     trafficCount: 45,
-    lastCleanedMinutesAgo: 130
+    lastCleanedMinutesAgo: 130,
+    captureProgress: 80,
+    contestState: 'STABLE',
+    influenceRadius: 28
   },
   {
     id: 'asfc_gym',
@@ -150,6 +169,9 @@ export const INITIAL_RESTROOMS: RestroomNode[] = [
     soilingIndex: 0,
     cleanlinessAlert: false,
     trafficCount: 56,
-    lastCleanedMinutesAgo: 75
+    lastCleanedMinutesAgo: 75,
+    captureProgress: 95,
+    contestState: 'STABLE',
+    influenceRadius: 35
   }
 ];
