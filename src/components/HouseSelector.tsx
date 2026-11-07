@@ -30,67 +30,45 @@ export const HouseSelector: React.FC<HouseSelectorProps> = ({
             role="radio"
             aria-checked={isSelected}
             onClick={() => onSelect(h.id)}
-            className={`relative p-3.5 rounded-2xl border-2 text-left transition-all duration-200 cursor-pointer select-none flex items-center justify-between ${
-              isWeis ? 'col-span-2' : ''
-            } ${
-              isSelected
-                ? 'shadow-md scale-[1.02]'
-                : 'border-[var(--line)] bg-white hover:border-[var(--ink2)]/30 hover:bg-[#FFFDF9] hover:translate-y-[-1px]'
-            }`}
-            style={
-              isSelected
-                ? {
-                    borderColor: h.color,
-                    backgroundColor: `${h.color}14`,
-                    boxShadow: `0 0 0 1.5px ${h.color}, 0 6px 18px ${h.color}25`,
-                  }
-                : undefined
-            }
+            className="p-3 rounded-2xl text-left transition-all duration-150 cursor-pointer select-none flex items-center justify-between min-w-0"
+            style={{
+              gridColumn: isWeis ? '1 / -1' : undefined,
+              border: isSelected ? `2.5px solid ${h.color}` : '2px solid #E5DFD5',
+              backgroundColor: isSelected ? `${h.color}15` : '#FFFFFF',
+              boxShadow: isSelected
+                ? `0 0 0 1px ${h.color}, 0 4px 14px ${h.color}25`
+                : '0 1px 3px rgba(42, 34, 56, 0.05)',
+            }}
           >
-            <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-2.5 min-w-0 pr-1">
               <span
-                className="w-4 h-4 rounded-full flex-none ring-2 ring-white shadow-sm transition-transform duration-200"
-                style={{
-                  background: h.color,
-                  transform: isSelected ? 'scale(1.15)' : 'scale(1)',
-                }}
+                className="w-3.5 h-3.5 rounded-full flex-none shadow-sm"
+                style={{ background: h.color }}
               />
-              <div className="min-w-0">
-                <span className="text-[14px] font-black text-[var(--ink)] block leading-snug truncate">
+              <div className="min-w-0 truncate">
+                <span className="text-[13.5px] font-black text-[var(--ink)] block leading-snug truncate">
                   {h.id} House
                 </span>
                 <span
-                  className="text-[11.5px] font-extrabold block leading-tight transition-colors duration-200"
+                  className="text-[11px] font-extrabold block leading-tight truncate"
                   style={{ color: isSelected ? h.color : 'var(--muted)' }}
                 >
-                  {isSelected ? '✓ Selected Faction' : 'College House'}
+                  {isSelected ? '✓ Active Faction' : 'College House'}
                 </span>
               </div>
             </div>
 
-            <div
-              className="w-5 h-5 rounded-full flex-none flex items-center justify-center transition-all duration-200 ml-2"
-              style={
-                isSelected
-                  ? {
-                      background: h.color,
-                      color: '#ffffff',
-                      boxShadow: `0 2px 6px ${h.color}40`,
-                    }
-                  : { border: '2px solid var(--line)', background: '#F8F6F2' }
-              }
-            >
+            <div className="flex-none ml-1.5">
               {isSelected ? (
-                <svg
-                  className="w-3.5 h-3.5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={3.5}
+                <span
+                  className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[11px] font-black shadow-sm"
+                  style={{ background: h.color }}
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              ) : null}
+                  ✓
+                </span>
+              ) : (
+                <span className="w-5 h-5 rounded-full border-2 border-[#D8CFC3] bg-[#F7F4EE] block" />
+              )}
             </div>
           </button>
         );

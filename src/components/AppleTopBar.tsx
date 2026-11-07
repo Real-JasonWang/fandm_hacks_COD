@@ -6,14 +6,12 @@ interface AppleTopBarProps {
   mode: ModeType;
   currentUser: UserAccount | null;
   onOpenSettings: () => void;
-  onOpenAuth: () => void;
 }
 
 export const AppleTopBar: React.FC<AppleTopBarProps> = ({
   mode,
   currentUser,
   onOpenSettings,
-  onOpenAuth,
 }) => {
   const isPlayful = mode === 'playful';
 
@@ -32,7 +30,7 @@ export const AppleTopBar: React.FC<AppleTopBarProps> = ({
           </b>
           <small className="text-[11.5px] text-[var(--muted)] font-bold block">
             {currentUser
-              ? `${currentUser.displayName} · ${currentUser.houseId}`
+              ? `${currentUser.displayName} · ${currentUser.houseId} House`
               : isPlayful
               ? 'F&M Gut Health & House Cup 💩'
               : 'F&M Wellness Check-in'}
@@ -42,19 +40,12 @@ export const AppleTopBar: React.FC<AppleTopBarProps> = ({
 
       <div className="flex items-center gap-2">
         <button
-          onClick={onOpenAuth}
-          className="apple-chip text-[12px] py-1 px-2.5 font-extrabold"
-          title="Campus Account Database"
-        >
-          {currentUser ? '👤 Account' : '🔑 Sign In'}
-        </button>
-
-        <button
           onClick={onOpenSettings}
-          className="w-[40px] h-[40px] rounded-[14px] bg-[var(--card)] shadow-[var(--shadow)] grid place-items-center text-[19px] transition active:scale-95 hover:bg-[#FFFDF9]"
-          aria-label="Settings and privacy"
+          className="apple-chip text-[12.5px] py-1.5 px-3 font-extrabold flex items-center gap-1.5 hover:border-[var(--ink2)]"
+          title="Settings and Preferences"
         >
-          ⚙️
+          <span>⚙️</span>
+          <span>Settings</span>
         </button>
       </div>
     </div>

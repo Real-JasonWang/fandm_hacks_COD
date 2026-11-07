@@ -253,7 +253,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
               </div>
             )}
 
-            <div className="border-2 border-dashed border-[#E3D6C6] rounded-2xl p-4 text-center bg-[#FFFDF9]">
+            <div className="bg-white rounded-[24px] p-5 text-center border-2 border-[#E8E0D5] shadow-sm">
               {selectedImage ? (
                 <div className="space-y-3">
                   {/* Heavily Blurred Specimen Container with Medical Privacy Mask */}
@@ -275,17 +275,17 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                           🙈
                         </div>
                         <b className="text-[13.5px] font-black text-white block tracking-wide">
-                          生物敏感标本已重度模糊保护
+                          Sensitive Specimen Shielded
                         </b>
                         <p className="text-[11px] text-white/80 font-bold max-w-[240px] mt-0.5 leading-snug">
-                          系统已自动施加高斯模糊遮罩 · 视觉防不适保护
+                          Heavy Gaussian blur applied automatically for visual comfort
                         </p>
                         <button
                           type="button"
-                          className="mt-2.5 px-3 py-1.5 bg-white/90 hover:bg-white text-[var(--ink)] text-[12px] font-black rounded-xl shadow-md flex items-center gap-1.5 transition active:scale-95 cursor-pointer"
+                          className="mt-2.5 px-3.5 py-1.5 bg-white/95 hover:bg-white text-[var(--ink)] text-[12px] font-black rounded-xl shadow-md flex items-center gap-1.5 transition active:scale-95 cursor-pointer"
                           onClick={() => setIsSpecimenMasked(false)}
                         >
-                          <span>👁️</span> 点击临时查看原图
+                          <span>👁️</span> Tap to Peek at Original Photo
                         </button>
                       </div>
                     )}
@@ -297,13 +297,13 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                         className="absolute top-2.5 right-2.5 px-2.5 py-1 bg-black/75 hover:bg-black text-white text-[11px] font-black rounded-lg shadow backdrop-blur-sm flex items-center gap-1 transition select-none cursor-pointer"
                         onClick={() => setIsSpecimenMasked(true)}
                       >
-                        <span>🙈</span> 重新施加模糊遮罩
+                        <span>🙈</span> Re-shield Specimen
                       </button>
                     )}
                   </div>
 
                   <label className="apple-chip cursor-pointer text-[12.5px] font-extrabold inline-flex items-center gap-1.5">
-                    <span>🔄</span> 重新拍摄 / 选取其他照片
+                    <span>🔄</span> Retake Photo / Choose Another
                     <input
                       type="file"
                       accept="image/*"
@@ -315,12 +315,12 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                 </div>
               ) : (
                 <label className="cursor-pointer block py-3">
-                  <div className="text-[32px] mb-1">📸</div>
-                  <b className="text-[14px] font-black text-[var(--ink)] block">
-                    拍摄或上传马桶便盆标本照片
+                  <div className="text-[34px] mb-1.5">📸</div>
+                  <b className="text-[15px] font-black text-[var(--ink)] block">
+                    Take or upload toilet bowl specimen photo
                   </b>
-                  <p className="text-[12px] text-[var(--muted)] font-semibold mt-0.5">
-                    仅在内存中处理；评估后自动施加高斯模糊遮罩保护。
+                  <p className="text-[12.5px] text-[var(--muted)] font-semibold mt-1 max-w-[280px] mx-auto">
+                    Streamed in RAM only; automatically shielded with a privacy blur upon grading.
                   </p>
                   <input
                     type="file"
@@ -335,7 +335,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
             {isVisionLoading && (
               <div className="text-center py-3 text-[14px] font-black text-[var(--peach-d)] animate-pulse">
-                ⏳ AI 正在执行 4 阶段临床全息形态学鉴别与防作伪分析...
+                ⏳ AI performing 4-stage clinical morphological grading &amp; anti-spoof checks...
               </div>
             )}
 
@@ -355,71 +355,71 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     </span>
                     <div>
                       <b className="text-[15px] font-black text-[#11634C] block leading-snug">
-                        AI 临床鉴别结论：布里斯托 Type {visionResult.bristolType || '—'}
+                        Clinical BSFS Conclusion: Bristol Type {visionResult.bristolType || '—'}
                       </b>
                       <span className="text-[11.5px] font-extrabold text-[var(--ink2)]">
-                        置信度：{(visionResult.confidenceScore * 100).toFixed(0)}% · 评估引擎：{visionResult.modelUsed}
+                        Confidence: {(visionResult.confidenceScore * 100).toFixed(0)}% · Model Engine: {visionResult.modelUsed}
                       </span>
                     </div>
                   </div>
                   <span className="apple-tag t-mint">
-                    已自动填充
+                    Auto-filled ✓
                   </span>
                 </div>
 
                 {/* Clinical Summary Tip */}
                 <div className="p-3 bg-white rounded-xl border border-[var(--line)] text-[12.5px] font-bold text-[var(--ink)] leading-relaxed">
-                  💡 <b>医学概述：</b>{visionResult.clinicalTip}
+                  💡 <b>Clinical Summary:</b> {visionResult.clinicalTip}
                 </div>
 
-                {/* Structured Chain-of-Thought / 详细思维链 */}
+                {/* Structured Chain-of-Thought */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <b className="text-[13px] font-black text-[var(--ink)] flex items-center gap-1.5">
-                      <span>🧠</span> AI 诊断思维链与判定依据 (Clinical Chain-of-Thought)
+                      <span>🧠</span> Clinical Chain-of-Thought &amp; Diagnostic Justification
                     </b>
-                    <span className="text-[10.5px] font-bold text-[var(--muted)]">4 阶段全息鉴别</span>
+                    <span className="text-[10.5px] font-bold text-[var(--muted)]">4-Stage Reasoning</span>
                   </div>
 
                   <div className="space-y-2 text-[12.5px]">
-                    {/* Step 1: 形态与质地边缘 */}
+                    {/* Stage 1 */}
                     <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
                       <div className="flex items-center gap-1.5 font-black text-[#2A2238]">
                         <span className="text-[14px]">🔍</span>
-                        <span>阶段一 · 几何形态与质地边缘特征</span>
+                        <span>Stage 1 · Specimen Morphology &amp; Edge Consistency</span>
                       </div>
                       <p className="text-[12px] font-semibold text-[var(--ink2)] leading-relaxed pl-5">
                         {visionResult.chainOfThought?.morphologyAnalysis}
                       </p>
                     </div>
 
-                    {/* Step 2: 水动力学与水体分散度 */}
+                    {/* Stage 2 */}
                     <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
                       <div className="flex items-center gap-1.5 font-black text-[#2A2238]">
                         <span className="text-[14px]">💧</span>
-                        <span>阶段二 · 水动力学与马桶水体分散度</span>
+                        <span>Stage 2 · Water Dynamics &amp; Basin Dispersion</span>
                       </div>
                       <p className="text-[12px] font-semibold text-[var(--ink2)] leading-relaxed pl-5">
                         {visionResult.chainOfThought?.moistureAnalysis}
                       </p>
                     </div>
 
-                    {/* Step 3: 布里斯托量表鉴别排他逻辑 */}
+                    {/* Stage 3 */}
                     <div className="p-3 bg-[#FFFDF9] rounded-xl border-2 border-[var(--peach-l)] shadow-sm space-y-1">
                       <div className="flex items-center gap-1.5 font-black text-[var(--peach-d)]">
                         <span className="text-[14px]">⚖️</span>
-                        <span>阶段三 · 布里斯托量表鉴别排他判定依据</span>
+                        <span>Stage 3 · Differential Diagnosis &amp; Exclusion Logic</span>
                       </div>
                       <p className="text-[12px] font-bold text-[var(--ink)] leading-relaxed pl-5">
                         {visionResult.chainOfThought?.differentialDiagnosis}
                       </p>
                     </div>
 
-                    {/* Step 4: 结肠生理动力学与护理建议 */}
+                    {/* Stage 4 */}
                     <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
                       <div className="flex items-center gap-1.5 font-black text-[#11634C]">
                         <span className="text-[14px]">🩺</span>
-                        <span>阶段四 · 胃肠生理动力学推断与建议</span>
+                        <span>Stage 4 · Colonic Motility &amp; Physiological Correlate</span>
                       </div>
                       <p className="text-[12px] font-semibold text-[var(--ink2)] leading-relaxed pl-5">
                         {visionResult.chainOfThought?.clinicalAssessment}
@@ -434,7 +434,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                   className="apple-btn text-[14px] mt-1"
                   onClick={() => setActiveTab('manual')}
                 >
-                  确认数据并返回表单检查 →
+                  Review and Confirm Form Values →
                 </button>
               </div>
             )}

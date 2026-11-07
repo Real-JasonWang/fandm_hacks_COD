@@ -21,8 +21,6 @@ interface SettingsSheetProps {
   onOpenAI: () => void;
   onOpenScience: () => void;
   onOpenFacilities: () => void;
-  onOpenStealth: () => void;
-  onOpenAuth: () => void;
   onLogout: () => void;
   onResetDemo: () => void;
   onWipeData: () => void;
@@ -37,8 +35,6 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
   onOpenAI,
   onOpenScience,
   onOpenFacilities,
-  onOpenStealth,
-  onOpenAuth,
   onLogout,
   onResetDemo,
   onWipeData,
@@ -96,35 +92,22 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
             <span className="text-[22px]">🎓</span>
             <div>
               <b className="text-[14px] font-black text-[var(--ink)] block truncate">
-                {currentUser ? currentUser.displayName : 'Guest Student'}
+                {currentUser ? currentUser.displayName : 'F&M Student'}
               </b>
               <p className="text-[12px] text-[var(--muted)] font-bold truncate">
-                {currentUser ? currentUser.email : 'No registered session'}
+                {currentUser ? currentUser.email : 'Local Session · @fandm.edu'}
               </p>
             </div>
           </div>
-          <div className="flex gap-1.5">
-            {currentUser ? (
-              <button
-                type="button"
-                className="apple-chip text-[11px] py-1 text-[var(--danger)] border-[var(--danger-l)] hover:bg-[var(--danger-l)]"
-                onClick={onLogout}
-              >
-                Sign Out
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="apple-chip text-[11px] py-1"
-                onClick={() => {
-                  onClose();
-                  onOpenAuth();
-                }}
-              >
-                Sign In
-              </button>
-            )}
-          </div>
+          {currentUser && (
+            <button
+              type="button"
+              className="apple-chip text-[11px] py-1 text-[var(--danger)] border-[var(--danger-l)] hover:bg-[var(--danger-l)]"
+              onClick={onLogout}
+            >
+              Sign Out
+            </button>
+          )}
         </div>
 
         {/* Style / Vibe */}
@@ -249,31 +232,6 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
               </div>
             )}
           </div>
-        </div>
-
-        {/* Stealth Disguise Trigger */}
-        <div className="apple-card p-3 my-0 flex items-center justify-between mb-4 bg-[#F8F9FA]">
-          <div className="flex items-center gap-2.5">
-            <span className="text-[20px]">🕵️</span>
-            <div>
-              <b className="text-[13.5px] font-black text-[var(--ink)] block">
-                Stealth Privacy Shield
-              </b>
-              <p className="text-[11.5px] text-[var(--muted)] font-bold">
-                Gesture: Double-tap screen anywhere
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            className="apple-chip text-[12px]"
-            onClick={() => {
-              onClose();
-              onOpenStealth();
-            }}
-          >
-            Open Disguise →
-          </button>
         </div>
 
         {/* Navigation / Action buttons */}

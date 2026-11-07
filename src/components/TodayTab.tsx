@@ -36,7 +36,7 @@ export const TodayTab: React.FC<TodayTabProps> = ({
     const now = new Date();
     const hours = now.getHours();
     const greeting = hours < 12 ? 'Good morning' : hours < 18 ? 'Good afternoon' : 'Good evening';
-    const dateStr = now.toLocaleDateString(undefined, {
+    const dateStr = now.toLocaleDateString('en-US', {
       weekday: 'long',
       month: 'long',
       day: 'numeric',

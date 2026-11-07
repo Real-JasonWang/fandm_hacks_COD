@@ -29,7 +29,6 @@ import { RestroomSheet } from './components/RestroomSheet';
 import { SettingsSheet } from './components/SettingsSheet';
 import { RedFlagModal, AIInfoModal, ScienceModal } from './components/InfoModals';
 import { OnboardingModal } from './components/OnboardingModal';
-import { StealthShield } from './components/StealthShield';
 import { AuthModal } from './components/AuthModal';
 
 export function App() {
@@ -55,8 +54,6 @@ export function App() {
   const [isRedFlagOpen, setIsRedFlagOpen] = useState(false);
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [isScienceOpen, setIsScienceOpen] = useState(false);
-  const [isStealthOpen, setIsStealthOpen] = useState(false);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [selectedRestroom, setSelectedRestroom] = useState<Restroom | null>(null);
 
   // Toast Notification
@@ -68,23 +65,6 @@ export function App() {
       saveSettings(settings);
     }
   }, [settings, currentUser]);
-
-  // Double-tap on mobile detector for stealth mode
-  useEffect(() => {
-    let lastTap = 0;
-    const handleTouchEnd = (e: TouchEvent) => {
-      const now = Date.now();
-      if (now - lastTap < 300) {
-        const target = e.target as HTMLElement;
-        if (!target.closest('button, input, textarea, select')) {
-          setIsStealthOpen((prev) => !prev);
-        }
-      }
-      lastTap = now;
-    };
-    window.addEventListener('touchend', handleTouchEnd);
-    return () => window.removeEventListener('touchend', handleTouchEnd);
-  }, []);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -267,15 +247,7 @@ export function App() {
   const lastEntry = settings.logs[settings.logs.length - 1];
 
   return (
-    <div
-      className="min-h-screen bg-[var(--bg)] text-[var(--ink)]"
-      onDoubleClick={(e) => {
-        const target = e.target as HTMLElement;
-        if (!target.closest('button, input, textarea, select')) {
-          setIsStealthOpen(true);
-        }
-      }}
-    >
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--ink)]">
       {/* Onboarding Modal (only displayed once authenticated if onboarding not finished) */}
       {!settings.onboarded && (
         <OnboardingModal
@@ -307,9 +279,6 @@ export function App() {
           currentUser={currentUser}
           onOpenSettings={() => {
             setIsSettingsOpen(true);
-          }}
-          onOpenAuth={() => {
-            setIsAuthOpen(true);
           }}
         />
 
@@ -413,11 +382,6 @@ export function App() {
           setIsSettingsOpen(false);
           setActiveTab('facilities');
         }}
-        onOpenStealth={() => setIsStealthOpen(true)}
-        onOpenAuth={() => {
-          setIsSettingsOpen(false);
-          setIsAuthOpen(true);
-        }}
         onLogout={handleLogout}
         onResetDemo={() => {
           setSettings((prev) => ({
@@ -441,12 +405,6 @@ export function App() {
         }}
       />
 
-      <AuthModal
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-        onAuthSuccess={handleAuthSuccess}
-      />
-
       <RedFlagModal
         isOpen={isRedFlagOpen}
         onClose={() => setIsRedFlagOpen(false)}
@@ -455,12 +413,6 @@ export function App() {
       <AIInfoModal isOpen={isAIOpen} onClose={() => setIsAIOpen(false)} />
 
       <ScienceModal isOpen={isScienceOpen} onClose={() => setIsScienceOpen(false)} />
-
-      {/* Dual-Mode Stealth Privacy Shield (Double-tap anywhere to open/close) */}
-      <StealthShield
-        isOpen={isStealthOpen}
-        onClose={() => setIsStealthOpen(false)}
-      />
 
       {/* Apple Toast */}
       <div className={`apple-toast ${toastMessage ? 'on' : ''}`}>
