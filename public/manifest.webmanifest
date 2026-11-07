@@ -1,0 +1,16 @@
+{
+  "name": "Call of Doodie — F&M Gut Health",
+  "short_name": "Doodie",
+  "description": "Poop · Sleep · Food check-ins, campus bathroom map and anonymous College House challenges for F&M students.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFF8F0",
+  "theme_color": "#FFF8F0",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

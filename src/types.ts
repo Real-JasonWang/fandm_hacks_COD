@@ -1,49 +1,116 @@
-// types.ts - hackathon types yolo
-// TODO: refactor this shit later, gradual territory fields added
+export type ModeType = 'playful' | 'discreet';
+
+export type HouseId = 'Bonchek' | 'Brooks' | 'Roschel' | 'Ware' | 'Weis';
+
+export interface House {
+  id: HouseId;
+  name: string;
+  color: string;
+  part: number; // participation %
+  checks: number;
+}
+
+export type BristolNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+
+export interface BristolInfo {
+  name: string;
+  fun: string;
+  zone: 'hard' | 'ideal' | 'soft' | 'loose';
+}
+
+export interface CheckInEntry {
+  id: string;
+  ts: number;
+  pooped: boolean;
+  bristol: BristolNumber | null;
+  symptoms: string[];
+  sleep: number;
+  water: number;
+  veg: number;
+  stress: number;
+}
+
+export interface Restroom {
+  id: string;
+  b: string; // building name
+  f: string; // floor
+  x: number;
+  y: number;
+  all: boolean;    // all-gender
+  acc: boolean;    // ADA accessible
+  per: boolean;    // period products
+  single: boolean; // single stall
+  baby: boolean;   // changing table
+}
+
+export interface RestroomReport {
+  clean: number;
+  supplies: number;
+  ok: number;
+  ts: number;
+}
+
+export interface AppSettings {
+  onboarded: boolean;
+  house: HouseId;
+  mode: ModeType;
+  logs: CheckInEntry[];
+  reports: Record<string, RestroomReport>;
+  installHidden: boolean;
+  demo?: boolean;
+}
+
+export type TabType = 'today' | 'insights' | 'map' | 'house' | 'facilities';
+
+export interface SymptomDef {
+  id: string;
+  label: string;
+  flag?: boolean;
+}
+
+// ==========================================
+// Legacy Types for Backwards Compatibility
+// ==========================================
 export type DormId = 'bonchek' | 'brooks' | 'ware' | 'weis' | 'new_college';
 
 export interface Dorm {
   id: DormId;
   name: string;
-  quadName: string;
-  colorHex: string;
-  residentCount: number; // N_dorm
-  powerMultiplier: number; // Sqrt normalized
-  territoryPercentage: number;
+  color: string;
+  motto: string;
+  territoryPercent: number;
+  activeAgents: number;
+  handicapWeight: number;
 }
 
 export interface RestroomNode {
   id: string;
+  name: string;
   buildingName: string;
   floor: number;
-  roomCode: string;
-  x: number; // canvas percent [0, 100]
-  y: number; // canvas percent [0, 100]
-  controllingDormId: DormId | null;
-  baseHp: number; // 0 - 100
-  soilingIndex: number; // 0 - 5
-  cleanlinessAlert: boolean;
-  trafficCount: number;
-  lastCleanedMinutesAgo: number;
-  captureProgress: number; // 0 - 100 gradual capture bar
-  contestState: 'STABLE' | 'CONTESTED' | 'FORTIFIED';
-  influenceRadius: number; // dynamic radius for canvas wave rings
+  lat: number;
+  lng: number;
+  xPercent: number;
+  yPercent: number;
+  ownerDormId: DormId;
+  baseHp: number;
+  contestState: 'FORTIFIED' | 'CONTESTED' | 'CRITICAL';
+  demandHeat: number;
+  supplyLevel: number;
+  genderNeutral: boolean;
+  handicapAccessible: boolean;
+  captureProgress: number;
+  influenceRadius: number;
 }
 
 export interface GemmaVisionResult {
-  isValid: boolean;
-  rejectionReason: string;
-  bristolType: number; // 1 - 7
+  bristolType: number;
   confidenceScore: number;
-  combatPoints: number; // 0 - 100
-  effectivePower: number;
-  cleanlinessAlert: boolean;
-  soilingSeverity: number;
-  waterTurbidity: 'CLEAR' | 'MILDLY_CLOUDY' | 'HIGHLY_TURBID';
-  steatorrheaDetected: boolean;
-  hematuriaDetected: boolean;
-  clinicalFeedback: string;
-  processingTimeMs: number;
+  isAuthenticHumanWaste: boolean;
+  hydrationLevel: 'OPTIMAL' | 'DEHYDRATED' | 'CRITICAL_DRY';
+  antiSpoofStagePassed: number;
+  latencyMs: number;
+  explanation: string;
 }
 
 export interface ConquestEvent {
