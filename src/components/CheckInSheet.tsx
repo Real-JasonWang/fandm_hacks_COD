@@ -198,40 +198,43 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
           </button>
         </div>
 
-        {/* Check-In Mode Switcher (Manual / Optional Vision / Optional NLP) */}
-        <div className="flex gap-1.5 p-1 bg-[#F3E9DC] rounded-2xl mb-3">
+        {/* Check-In Mode Switcher (Sleek Apple Segmented Control) */}
+        <div className="flex p-1 bg-[#EFE9DD] rounded-2xl mb-3.5 border border-[#DFD6C7] shadow-inner gap-1">
           <button
             type="button"
-            className={`flex-1 py-2 text-[12.5px] font-black rounded-xl transition ${
+            className={`flex-1 py-2 px-1.5 text-[12.5px] font-black rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer select-none whitespace-nowrap ${
               activeTab === 'manual'
-                ? 'bg-white text-[var(--ink)] shadow-sm'
-                : 'text-[var(--ink2)] hover:text-[var(--ink)]'
+                ? 'bg-white text-[var(--ink)] shadow-xs border border-[#DFD6C7]/60'
+                : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[#FAF7F0]/60'
             }`}
             onClick={() => setActiveTab('manual')}
           >
-            ✍️ Manual (Default)
+            <span>✏️</span>
+            <span>Manual</span>
           </button>
           <button
             type="button"
-            className={`flex-1 py-2 text-[12.5px] font-black rounded-xl transition ${
+            className={`flex-1 py-2 px-1.5 text-[12.5px] font-black rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer select-none whitespace-nowrap ${
               activeTab === 'vision'
-                ? 'bg-white text-[var(--ink)] shadow-sm'
-                : 'text-[var(--ink2)] hover:text-[var(--ink)]'
+                ? 'bg-white text-[var(--ink)] shadow-xs border border-[#DFD6C7]/60'
+                : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[#FAF7F0]/60'
             }`}
             onClick={() => setActiveTab('vision')}
           >
-            📷 Gemma 4 Vision
+            <span>📷</span>
+            <span>AI Vision</span>
           </button>
           <button
             type="button"
-            className={`flex-1 py-2 text-[12.5px] font-black rounded-xl transition ${
+            className={`flex-1 py-2 px-1.5 text-[12.5px] font-black rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer select-none whitespace-nowrap ${
               activeTab === 'nlp'
-                ? 'bg-white text-[var(--ink)] shadow-sm'
-                : 'text-[var(--ink2)] hover:text-[var(--ink)]'
+                ? 'bg-white text-[var(--ink)] shadow-xs border border-[#DFD6C7]/60'
+                : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[#FAF7F0]/60'
             }`}
             onClick={() => setActiveTab('nlp')}
           >
-            💬 Smart Speech/Text
+            <span>🎙️</span>
+            <span>Voice &amp; Chat</span>
           </button>
         </div>
 
