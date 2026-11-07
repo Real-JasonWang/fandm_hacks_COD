@@ -8,7 +8,9 @@ import {
   Volume2,
   VolumeX,
   Trophy,
-  Flame
+  Flame,
+  Clock,
+  Radio
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import type { Dorm, RestroomNode, DormId, GemmaVisionResult, ConquestEvent } from './types';
@@ -19,7 +21,7 @@ import { ScanModal } from './components/ScanModal';
 import { StealthShield } from './components/StealthShield';
 import { sound } from './lib/audio';
 
-// TODO: refactor this shit later, hackathon speed is all that matters
+// TODO: refactor this state monster into zustand later if time permits
 export function App() {
   const [dorms, setDorms] = useState<Dorm[]>(INITIAL_DORMS);
   const [restrooms, setRestrooms] = useState<RestroomNode[]>(INITIAL_RESTROOMS);
@@ -41,14 +43,36 @@ export function App() {
     toNodeId: string;
     progress: number;
   } | null>(null);
-  const [latestConquest, setLatestConquest] = useState<ConquestEvent | null>(null);
+  
+  // Rolling Event Ticker
+  const [events, setEvents] = useState<ConquestEvent[]>([
+    { id: '1', dormId: 'ware', dormName: 'Ware House', restroomName: 'Shadek Library 1F', effectivePower: 98, timestamp: '1m ago' },
+    { id: '2', dormId: 'brooks', dormName: 'Brooks House', restroomName: 'Hackman Labs', effectivePower: 86, timestamp: '4m ago' },
+    { id: '3', dormId: 'bonchek', dormName: 'Bonchek House', restroomName: 'Steinman Center', effectivePower: 92, timestamp: '9m ago' },
+  ]);
 
-  // Double-tap detector on mobile screen for stealth shield
+  // Hourly Yield Countdown (MM:SS)
+  const [yieldTimer, setYieldTimer] = useState(842); // seconds
+
   const lastTapRef = useState(0);
 
   const activeDorm = dorms.find((d) => d.id === activeDormId) || dorms[0];
 
-  // Handle double-tap anywhere for stealth privacy
+  // Yield timer countdown loop
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setYieldTimer((prev) => (prev > 0 ? prev - 1 : 3600));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTimer = (sec: number) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  // Double-tap detector on mobile screen for stealth shield
   const handleTouchStart = () => {
     const now = Date.now();
     if (now - lastTapRef[0] < 320) {
@@ -72,7 +96,7 @@ export function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [restrooms, selectedNode]);
 
-  // Kiosk Auto-Orbit Mode (cycles nodes every 6 seconds)
+  // Kiosk Auto-Orbit Mode
   useEffect(() => {
     if (viewMode !== 'kiosk') return;
     const interval = setInterval(() => {
@@ -84,19 +108,17 @@ export function App() {
     return () => clearInterval(interval);
   }, [viewMode, restrooms]);
 
-  // Execute the 2.5-second live action battle sequence!
+  // Execute the 2.5-second live action battle sequence
   const handleScanComplete = (result: GemmaVisionResult, targetNodeId: string) => {
     setIsScanModalOpen(false);
 
     console.log(`[Battle Engine] Starting 2.5s sequence for ${targetNodeId} (+${result.effectivePower} power)`);
 
-    // Step 1: Start Vector March (0.0s - 0.8s)
     let p = 0;
     const interval = setInterval(() => {
       p += 0.05;
       if (p >= 1) {
         clearInterval(interval);
-        // Step 2: Node Impact (0.8s)
         sound.playImpact();
         if (navigator.vibrate) {
           navigator.vibrate([40]);
@@ -121,7 +143,6 @@ export function App() {
           })
         );
 
-        // Step 3: Consolidation & Victory Chime (1.8s)
         setTimeout(() => {
           sound.playCapture();
           confetti({
@@ -131,7 +152,7 @@ export function App() {
             colors: ['#FFE600', activeDorm.colorHex, '#FFFFFF']
           });
 
-          const conquest: ConquestEvent = {
+          const newEvt: ConquestEvent = {
             id: Date.now().toString(),
             dormId: activeDormId,
             dormName: activeDorm.name,
@@ -139,7 +160,7 @@ export function App() {
             effectivePower: result.effectivePower,
             timestamp: 'Just now'
           };
-          setLatestConquest(conquest);
+          setEvents((prev) => [newEvt, ...prev.slice(0, 7)]);
 
           // Update dorm territory percentages
           setDorms((prev) => {
@@ -149,7 +170,6 @@ export function App() {
             }));
           });
 
-          // Reset vector
           setActiveVector(null);
         }, 600);
       } else {
@@ -162,7 +182,6 @@ export function App() {
     }, 35);
   };
 
-  // Custodial Clean Action
   const handleSanitizeRestroom = (id: string) => {
     setRestrooms((prev) =>
       prev.map((r) => {
@@ -184,10 +203,8 @@ export function App() {
       onTouchStart={handleTouchStart}
       className="w-screen h-screen bg-[#0B0C10] text-[#F1F3F5] flex flex-col font-sans select-none overflow-hidden"
     >
-      {/* Stealth Privacy Shield Modal */}
       <StealthShield isOpen={isStealthOpen} onClose={() => setIsStealthOpen(false)} />
 
-      {/* Gemma 4 Scanning Modal */}
       <ScanModal
         isOpen={isScanModalOpen}
         onClose={() => setIsScanModalOpen(false)}
@@ -196,10 +213,9 @@ export function App() {
         onScanComplete={handleScanComplete}
       />
 
-      {/* TOP BAR: Title, Dynamic Island, Multi-Screen & Custodial Switcher */}
+      {/* TOP HEADER: Brand, Live Ticker, Form Factor & Custodial Toggles */}
       <header className="h-14 bg-[#121316] border-b border-[#22252C] px-4 flex items-center justify-between z-30 flex-shrink-0">
-        {/* Brand Lockup */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2.5">
           <div className="w-7 h-7 rounded bg-[#FFE600] flex items-center justify-center font-bold text-black text-xs font-mono shadow-md shadow-[#FFE600]/20">
             COD
           </div>
@@ -208,31 +224,38 @@ export function App() {
               Call of Doodie: <span className="text-[#FFE600]">Modern Stoolware</span>
             </h1>
             <div className="text-[10px] text-[#64748B] font-mono leading-none">
-              F&M Edition · Gemma 4 Vision
+              F&M Main Campus · Gemma 4 Vision
             </div>
           </div>
         </div>
 
-        {/* Dynamic Island Banner / Live Alert */}
-        {latestConquest && (
-          <div className="hidden sm:flex items-center space-x-2 px-3 py-1 bg-[#1C1E24] border border-[#FFE600]/30 rounded-full animate-in slide-in-from-top duration-300">
-            <span className="w-2 h-2 rounded-full bg-[#FFE600] animate-ping" />
-            <span className="text-xs text-[#F1F3F5]">
-              <strong>{latestConquest.dormName}</strong> captured {latestConquest.restroomName} (+{latestConquest.effectivePower})
-            </span>
+        {/* Rolling Live Battle Feed & Yield Timer */}
+        <div className="hidden md:flex items-center space-x-4 bg-[#16171B] border border-[#22252C] px-3 py-1 rounded-full text-xs">
+          <div className="flex items-center space-x-1.5 text-[#F59E0B] font-mono">
+            <Radio className="w-3.5 h-3.5 animate-pulse text-[#EF4444]" />
+            <span className="font-bold">{events[0].dormName}</span>
+            <span className="text-[#94A3B8]">captured</span>
+            <span className="text-white">{events[0].restroomName}</span>
+            <span className="text-[#FFE600] font-bold">+{events[0].effectivePower}</span>
           </div>
-        )}
+          <span className="text-[#333842]">|</span>
+          <div className="flex items-center space-x-1 font-mono text-[11px] text-[#94A3B8]">
+            <Clock className="w-3.5 h-3.5 text-[#64748B]" />
+            <span>Hourly Yield:</span>
+            <span className="text-[#10B981] font-bold">{formatTimer(yieldTimer)}</span>
+          </div>
+        </div>
 
-        {/* Triple Screen & Custodial Controls */}
+        {/* Action Controls */}
         <div className="flex items-center space-x-2">
-          {/* Faction Selector */}
+          {/* Active Faction Select */}
           <select
             value={activeDormId}
             onChange={(e) => {
               sound.playClick();
               setActiveDormId(e.target.value as DormId);
             }}
-            className="hidden md:block bg-[#1C1E24] border border-[#2A2D35] text-xs font-mono px-2 py-1 rounded text-[#E2E8F0] focus:outline-none"
+            className="hidden lg:block bg-[#1C1E24] border border-[#2A2D35] text-xs font-mono px-2 py-1 rounded text-[#E2E8F0] focus:outline-none"
           >
             {dorms.map((d) => (
               <option key={d.id} value={d.id}>
@@ -257,7 +280,7 @@ export function App() {
             <span className="hidden sm:inline">{custodialMode ? 'Custodial View' : 'Dorm Game View'}</span>
           </button>
 
-          {/* Form Factor Toggle */}
+          {/* Form Factor Switcher */}
           <div className="hidden lg:flex items-center bg-[#1C1E24] border border-[#2A2D35] rounded p-0.5 space-x-0.5">
             <button
               onClick={() => {
@@ -291,19 +314,19 @@ export function App() {
             </button>
           </div>
 
-          {/* Stealth Trigger Button */}
+          {/* Stealth Button */}
           <button
             onClick={() => {
               sound.playClick();
               setIsStealthOpen(true);
             }}
             className="p-1.5 rounded bg-[#1C1E24] text-[#94A3B8] hover:text-white"
-            title="Emergency Stealth Shield (Double-Tap Screen)"
+            title="Double-Tap Screen for Stealth"
           >
             <Shield className="w-4 h-4" />
           </button>
 
-          {/* Audio Mute */}
+          {/* Sound Toggle */}
           <button
             onClick={() => {
               sound.playClick();
@@ -316,9 +339,21 @@ export function App() {
         </div>
       </header>
 
+      {/* PERSISTENT CAMPUS TERRITORY DOMINANCE BAR */}
+      <div className="h-1.5 w-full bg-[#121316] flex overflow-hidden flex-shrink-0">
+        {dorms.map((d) => (
+          <div
+            key={d.id}
+            className="h-full transition-all duration-700 relative group"
+            style={{ width: `${d.territoryPercentage}%`, backgroundColor: d.colorHex }}
+            title={`${d.name}: ${d.territoryPercentage}%`}
+          />
+        ))}
+      </div>
+
       {/* MAIN VIEWPORT LAYOUT */}
       <main className="flex-1 flex overflow-hidden relative">
-        {/* DESKTOP LEFT SIDEBAR: Dorm Leaderboard (Shown in desktop mode) */}
+        {/* DESKTOP LEFT SIDEBAR: Faction Standings & Live Event Feed */}
         {viewMode === 'desktop' && !custodialMode && (
           <aside className="w-72 bg-[#121316] border-r border-[#22252C] flex flex-col p-4 space-y-4 flex-shrink-0 overflow-y-auto">
             <div className="flex items-center justify-between">
@@ -329,7 +364,8 @@ export function App() {
               <span className="text-[10px] font-mono text-[#10B981]">Live Season</span>
             </div>
 
-            <div className="space-y-3">
+            {/* Faction Cards */}
+            <div className="space-y-2.5">
               {dorms.map((d, index) => (
                 <div
                   key={d.id}
@@ -355,14 +391,35 @@ export function App() {
                     />
                   </div>
                   <div className="flex items-center justify-between mt-1 text-[10px] text-[#64748B] font-mono">
-                    <span>{d.residentCount} students</span>
-                    <span>Power: {d.powerMultiplier.toFixed(2)}x</span>
+                    <span>{d.residentCount} residents</span>
+                    <span>Hits: {d.powerMultiplier.toFixed(2)}x</span>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Habit Streak Notice */}
+            {/* Live Conquest Feed List */}
+            <div className="space-y-2 pt-2 border-t border-[#22252C]">
+              <div className="text-[10px] font-mono uppercase text-[#64748B] tracking-wider">
+                Recent Campus Conquests
+              </div>
+              <div className="space-y-1.5">
+                {events.slice(0, 4).map((ev) => (
+                  <div key={ev.id} className="p-2 rounded bg-[#16171B] border border-[#22252C] text-[11px] space-y-0.5">
+                    <div className="flex items-center justify-between font-bold">
+                      <span style={{ color: dorms.find((d) => d.id === ev.dormId)?.colorHex }}>{ev.dormName}</span>
+                      <span className="font-mono text-[10px] text-[#64748B]">{ev.timestamp}</span>
+                    </div>
+                    <div className="text-[#94A3B8] text-[10px] flex items-center justify-between">
+                      <span>{ev.restroomName}</span>
+                      <span className="text-[#FFE600] font-mono font-bold">+{ev.effectivePower}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Habit Streak Card */}
             <div className="p-3 bg-[#16171B] border border-[#22252C] rounded-lg mt-auto flex items-center space-x-3 text-xs">
               <Flame className="w-5 h-5 text-[#F59E0B]" />
               <div>
@@ -387,7 +444,7 @@ export function App() {
             custodialMode={custodialMode}
           />
 
-          {/* MOBILE / FIELD AGENT FLOATING FOOTER (The 10% Yellow Action Token) */}
+          {/* MOBILE ACTION BUTTON: Log Stool */}
           {!custodialMode && (
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-sm px-4 z-20 flex flex-col items-center space-y-2 pointer-events-auto">
               <button
@@ -401,7 +458,7 @@ export function App() {
                 <span className="text-xs font-mono font-normal opacity-75">· {selectedNode.buildingName}</span>
               </button>
 
-              <div className="flex items-center space-x-2 text-[11px] text-[#94A3B8] bg-[#0B0C10]/80 backdrop-blur px-3 py-1 rounded-full border border-white/5 font-mono">
+              <div className="flex items-center space-x-2 text-[11px] text-[#94A3B8] bg-[#0B0C10]/85 backdrop-blur px-3 py-1 rounded-full border border-white/5 font-mono">
                 <span>Selected: {selectedNode.roomCode}</span>
                 <span>·</span>
                 <span className="text-[#10B981]">{selectedNode.baseHp} HP</span>
@@ -412,7 +469,7 @@ export function App() {
           )}
         </section>
 
-        {/* RIGHT SIDEBAR: Building Telemetry Inspector OR Custodial Queue */}
+        {/* RIGHT SIDEBAR: Telemetry Inspector or Custodial Console */}
         <aside className="w-80 bg-[#121316] border-l border-[#22252C] flex flex-col flex-shrink-0 z-10">
           {custodialMode ? (
             <CustodialHeatmap
@@ -430,7 +487,7 @@ export function App() {
                     sound.playClick();
                     setIsScanModalOpen(true);
                   }}
-                  className="px-2 py-1 bg-[#FFE600] text-black font-bold text-[10px] uppercase rounded"
+                  className="px-2.5 py-1 bg-[#FFE600] text-black font-bold text-[10px] uppercase rounded hover:bg-[#E6CF00]"
                 >
                   Attack Node
                 </button>
@@ -479,7 +536,7 @@ export function App() {
                       sound.playClick();
                       setSelectedNode(r);
                     }}
-                    className={`w-full p-2 rounded text-left border flex items-center justify-between text-[11px] ${
+                    className={`w-full p-2 rounded text-left border flex items-center justify-between text-[11px] transition-all ${
                       selectedNode.id === r.id ? 'border-[#FFE600] bg-[#1C1E24] text-white' : 'border-[#22252C] bg-[#16171B] text-[#94A3B8] hover:text-[#F1F3F5]'
                     }`}
                   >
