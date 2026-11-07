@@ -10,7 +10,8 @@ import {
   Trophy,
   Flame,
   Clock,
-  Radio
+  Radio,
+  Activity
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import type { Dorm, RestroomNode, DormId, GemmaVisionResult, ConquestEvent } from './types';
@@ -19,6 +20,7 @@ import { CampusMap } from './components/CampusMap';
 import { CustodialHeatmap } from './components/CustodialHeatmap';
 import { ScanModal } from './components/ScanModal';
 import { StealthShield } from './components/StealthShield';
+import { HealthTelemetryDrawer } from './components/HealthTelemetryDrawer';
 import { sound } from './lib/audio';
 
 // TODO: refactor this state monster into zustand later if time permits
@@ -35,6 +37,7 @@ export function App() {
   // Modals & Overlays
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
   const [isStealthOpen, setIsStealthOpen] = useState(false);
+  const [isHealthDrawerOpen, setIsHealthDrawerOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   // Battle Vector & Live Sequence Animation
@@ -239,6 +242,12 @@ export function App() {
         onScanComplete={handleScanComplete}
       />
 
+      <HealthTelemetryDrawer
+        isOpen={isHealthDrawerOpen}
+        onClose={() => setIsHealthDrawerOpen(false)}
+        dormName={activeDorm.name}
+      />
+
       {/* TOP HEADER: Brand, Live Ticker, Form Factor & Custodial Toggles */}
       <header className="h-14 bg-[#121316] border-b border-[#22252C] px-4 flex items-center justify-between z-30 flex-shrink-0">
         <div className="flex items-center space-x-2.5">
@@ -289,6 +298,19 @@ export function App() {
               </option>
             ))}
           </select>
+
+          {/* Personal Health Telemetry */}
+          <button
+            onClick={() => {
+              sound.playClick();
+              setIsHealthDrawerOpen(true);
+            }}
+            className="px-2.5 py-1 text-xs rounded font-mono bg-[#1C1E24] hover:bg-[#2A2D35] text-[#38BDF8] flex items-center space-x-1.5 transition-colors cursor-pointer"
+            title="Open Bristol Stool Telemetry & Hydration Rings"
+          >
+            <Activity className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Telemetry</span>
+          </button>
 
           {/* Custodial View Switcher */}
           <button
