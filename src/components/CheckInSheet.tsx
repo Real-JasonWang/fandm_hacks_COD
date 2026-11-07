@@ -52,6 +52,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
   // Vision AI State
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isSpecimenMasked, setIsSpecimenMasked] = useState<boolean>(true);
   const [isVisionLoading, setIsVisionLoading] = useState(false);
   const [visionResult, setVisionResult] = useState<VisionAnalysisResult | null>(null);
   const [visionError, setVisionError] = useState<string | null>(null);
@@ -98,6 +99,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
     setVisionError(null);
     setVisionResult(null);
+    setIsSpecimenMasked(true);
 
     const reader = new FileReader();
     reader.onload = async () => {
@@ -253,14 +255,55 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
             <div className="border-2 border-dashed border-[#E3D6C6] rounded-2xl p-4 text-center bg-[#FFFDF9]">
               {selectedImage ? (
-                <div className="space-y-2">
-                  <img
-                    src={selectedImage}
-                    alt="Preview"
-                    className="max-h-[160px] mx-auto rounded-xl object-contain shadow-sm"
-                  />
-                  <label className="apple-chip cursor-pointer">
-                    Take New Photo / Choose Another
+                <div className="space-y-3">
+                  {/* Heavily Blurred Specimen Container with Medical Privacy Mask */}
+                  <div className="relative max-w-[340px] mx-auto rounded-2xl overflow-hidden border-2 border-[var(--line)] shadow-sm bg-neutral-900">
+                    <img
+                      src={selectedImage}
+                      alt="Stool Specimen"
+                      className={`max-h-[190px] w-full object-cover transition-all duration-300 ${
+                        isSpecimenMasked
+                          ? 'filter blur-[32px] scale-115 brightness-[0.7] contrast-[1.2]'
+                          : 'filter blur-0 scale-100'
+                      }`}
+                    />
+
+                    {/* Heavy Dark/Frosted Privacy Shield Overlay */}
+                    {isSpecimenMasked && (
+                      <div className="absolute inset-0 bg-black/65 backdrop-blur-md flex flex-col items-center justify-center p-3 text-center select-none">
+                        <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-[22px] mb-1.5 shadow-md">
+                          🙈
+                        </div>
+                        <b className="text-[13.5px] font-black text-white block tracking-wide">
+                          生物敏感标本已重度模糊保护
+                        </b>
+                        <p className="text-[11px] text-white/80 font-bold max-w-[240px] mt-0.5 leading-snug">
+                          系统已自动施加高斯模糊遮罩 · 视觉防不适保护
+                        </p>
+                        <button
+                          type="button"
+                          className="mt-2.5 px-3 py-1.5 bg-white/90 hover:bg-white text-[var(--ink)] text-[12px] font-black rounded-xl shadow-md flex items-center gap-1.5 transition active:scale-95 cursor-pointer"
+                          onClick={() => setIsSpecimenMasked(false)}
+                        >
+                          <span>👁️</span> 点击临时查看原图
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Re-shield Toggle Button */}
+                    {!isSpecimenMasked && (
+                      <button
+                        type="button"
+                        className="absolute top-2.5 right-2.5 px-2.5 py-1 bg-black/75 hover:bg-black text-white text-[11px] font-black rounded-lg shadow backdrop-blur-sm flex items-center gap-1 transition select-none cursor-pointer"
+                        onClick={() => setIsSpecimenMasked(true)}
+                      >
+                        <span>🙈</span> 重新施加模糊遮罩
+                      </button>
+                    )}
+                  </div>
+
+                  <label className="apple-chip cursor-pointer text-[12.5px] font-extrabold inline-flex items-center gap-1.5">
+                    <span>🔄</span> 重新拍摄 / 选取其他照片
                     <input
                       type="file"
                       accept="image/*"
@@ -274,10 +317,10 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                 <label className="cursor-pointer block py-3">
                   <div className="text-[32px] mb-1">📸</div>
                   <b className="text-[14px] font-black text-[var(--ink)] block">
-                    Snap or upload toilet basin photo
+                    拍摄或上传马桶便盆标本照片
                   </b>
                   <p className="text-[12px] text-[var(--muted)] font-semibold mt-0.5">
-                    Streamed in RAM only; immediately destroyed upon grading.
+                    仅在内存中处理；评估后自动施加高斯模糊遮罩保护。
                   </p>
                   <input
                     type="file"
@@ -292,7 +335,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
             {isVisionLoading && (
               <div className="text-center py-3 text-[14px] font-black text-[var(--peach-d)] animate-pulse">
-                ⏳ Gemma 4 performing 5-stage clinical reasoning &amp; anti-spoof checks...
+                ⏳ AI 正在执行 4 阶段临床全息形态学鉴别与防作伪分析...
               </div>
             )}
 
@@ -303,24 +346,95 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
             )}
 
             {visionResult && (
-              <div className="p-3.5 bg-[var(--mint-l)] text-[#11634C] rounded-2xl space-y-1.5 text-[13px] font-bold">
-                <div className="flex justify-between items-center">
-                  <span className="font-black text-[14px]">
-                    ✓ Evaluated: Type {visionResult.bristolType || '—'}
-                  </span>
-                  <span className="text-[11px] opacity-80">
-                    Confidence: {(visionResult.confidenceScore * 100).toFixed(0)}% ({visionResult.modelUsed})
+              <div className="apple-card my-3 p-4 space-y-3.5 border-2 border-[var(--mint)] bg-[#F4FBF8]">
+                {/* Header Banner */}
+                <div className="flex items-center justify-between border-b border-[var(--mint-l)] pb-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-8 h-8 rounded-xl bg-[var(--mint)] text-white font-black text-[15px] flex items-center justify-center shadow-sm flex-none">
+                      {visionResult.bristolType || '✓'}
+                    </span>
+                    <div>
+                      <b className="text-[15px] font-black text-[#11634C] block leading-snug">
+                        AI 临床鉴别结论：布里斯托 Type {visionResult.bristolType || '—'}
+                      </b>
+                      <span className="text-[11.5px] font-extrabold text-[var(--ink2)]">
+                        置信度：{(visionResult.confidenceScore * 100).toFixed(0)}% · 评估引擎：{visionResult.modelUsed}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="apple-tag t-mint">
+                    已自动填充
                   </span>
                 </div>
-                <p className="text-[12px] opacity-90 font-semibold">
-                  {visionResult.clinicalTip}
-                </p>
+
+                {/* Clinical Summary Tip */}
+                <div className="p-3 bg-white rounded-xl border border-[var(--line)] text-[12.5px] font-bold text-[var(--ink)] leading-relaxed">
+                  💡 <b>医学概述：</b>{visionResult.clinicalTip}
+                </div>
+
+                {/* Structured Chain-of-Thought / 详细思维链 */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <b className="text-[13px] font-black text-[var(--ink)] flex items-center gap-1.5">
+                      <span>🧠</span> AI 诊断思维链与判定依据 (Clinical Chain-of-Thought)
+                    </b>
+                    <span className="text-[10.5px] font-bold text-[var(--muted)]">4 阶段全息鉴别</span>
+                  </div>
+
+                  <div className="space-y-2 text-[12.5px]">
+                    {/* Step 1: 形态与质地边缘 */}
+                    <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
+                      <div className="flex items-center gap-1.5 font-black text-[#2A2238]">
+                        <span className="text-[14px]">🔍</span>
+                        <span>阶段一 · 几何形态与质地边缘特征</span>
+                      </div>
+                      <p className="text-[12px] font-semibold text-[var(--ink2)] leading-relaxed pl-5">
+                        {visionResult.chainOfThought?.morphologyAnalysis}
+                      </p>
+                    </div>
+
+                    {/* Step 2: 水动力学与水体分散度 */}
+                    <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
+                      <div className="flex items-center gap-1.5 font-black text-[#2A2238]">
+                        <span className="text-[14px]">💧</span>
+                        <span>阶段二 · 水动力学与马桶水体分散度</span>
+                      </div>
+                      <p className="text-[12px] font-semibold text-[var(--ink2)] leading-relaxed pl-5">
+                        {visionResult.chainOfThought?.moistureAnalysis}
+                      </p>
+                    </div>
+
+                    {/* Step 3: 布里斯托量表鉴别排他逻辑 */}
+                    <div className="p-3 bg-[#FFFDF9] rounded-xl border-2 border-[var(--peach-l)] shadow-sm space-y-1">
+                      <div className="flex items-center gap-1.5 font-black text-[var(--peach-d)]">
+                        <span className="text-[14px]">⚖️</span>
+                        <span>阶段三 · 布里斯托量表鉴别排他判定依据</span>
+                      </div>
+                      <p className="text-[12px] font-bold text-[var(--ink)] leading-relaxed pl-5">
+                        {visionResult.chainOfThought?.differentialDiagnosis}
+                      </p>
+                    </div>
+
+                    {/* Step 4: 结肠生理动力学与护理建议 */}
+                    <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
+                      <div className="flex items-center gap-1.5 font-black text-[#11634C]">
+                        <span className="text-[14px]">🩺</span>
+                        <span>阶段四 · 胃肠生理动力学推断与建议</span>
+                      </div>
+                      <p className="text-[12px] font-semibold text-[var(--ink2)] leading-relaxed pl-5">
+                        {visionResult.chainOfThought?.clinicalAssessment}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Confirm Button */}
                 <button
                   type="button"
-                  className="apple-btn ghost mt-2 bg-white text-[13px] py-1.5"
+                  className="apple-btn text-[14px] mt-1"
                   onClick={() => setActiveTab('manual')}
                 >
-                  Review and confirm form values →
+                  确认数据并返回表单检查 →
                 </button>
               </div>
             )}
