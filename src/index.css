@@ -33,6 +33,7 @@
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  font-family: var(--font);
 }
 
 html, body {
@@ -47,10 +48,14 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-button, input, optgroup, select, textarea {
-  font-family: inherit;
+button, input, optgroup, select, textarea, h1, h2, h3, h4, h5, h6, p, span, div, b, strong, small {
+  font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+svg text {
+  font-family: var(--font) !important;
 }
 
 button {

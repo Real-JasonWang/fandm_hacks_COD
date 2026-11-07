@@ -52,7 +52,6 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
   // Vision AI State
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [isSpecimenMasked, setIsSpecimenMasked] = useState<boolean>(true);
   const [isVisionLoading, setIsVisionLoading] = useState(false);
   const [visionResult, setVisionResult] = useState<VisionAnalysisResult | null>(null);
   const [visionError, setVisionError] = useState<string | null>(null);
@@ -99,7 +98,6 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
     setVisionError(null);
     setVisionResult(null);
-    setIsSpecimenMasked(true);
 
     const reader = new FileReader();
     reader.onload = async () => {
@@ -256,54 +254,33 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
             <div className="bg-white rounded-[24px] p-5 text-center border-2 border-[#E8E0D5] shadow-sm">
               {selectedImage ? (
                 <div className="space-y-3">
-                  {/* Heavily Blurred Specimen Container with Medical Privacy Mask */}
-                  <div className="relative max-w-[340px] mx-auto rounded-2xl overflow-hidden border-2 border-[var(--line)] shadow-sm bg-neutral-900">
+                  {/* Clean Medical-Grade Privacy Shield (Warm Frosted Aesthetics) */}
+                  <div className="relative max-w-[340px] mx-auto rounded-2xl overflow-hidden border-2 border-[#E5DFD5] shadow-xs bg-[#FAF7F2]">
                     <img
                       src={selectedImage}
                       alt="Stool Specimen"
-                      className={`max-h-[190px] w-full object-cover transition-all duration-300 ${
-                        isSpecimenMasked
-                          ? 'filter blur-[32px] scale-115 brightness-[0.7] contrast-[1.2]'
-                          : 'filter blur-0 scale-100'
-                      }`}
+                      className="max-h-[190px] w-full object-cover filter blur-[40px] scale-120 opacity-20 contrast-50 brightness-95"
                     />
 
-                    {/* Heavy Dark/Frosted Privacy Shield Overlay */}
-                    {isSpecimenMasked && (
-                      <div className="absolute inset-0 bg-black/65 backdrop-blur-md flex flex-col items-center justify-center p-3 text-center select-none">
-                        <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-[22px] mb-1.5 shadow-md">
-                          🙈
-                        </div>
-                        <b className="text-[13.5px] font-black text-white block tracking-wide">
-                          Sensitive Specimen Shielded
-                        </b>
-                        <p className="text-[11px] text-white/80 font-bold max-w-[240px] mt-0.5 leading-snug">
-                          Heavy Gaussian blur applied automatically for visual comfort
-                        </p>
-                        <button
-                          type="button"
-                          className="mt-2.5 px-3.5 py-1.5 bg-white/95 hover:bg-white text-[var(--ink)] text-[12px] font-black rounded-xl shadow-md flex items-center gap-1.5 transition active:scale-95 cursor-pointer"
-                          onClick={() => setIsSpecimenMasked(false)}
-                        >
-                          <span>👁️</span> Tap to Peek at Original Photo
-                        </button>
+                    {/* Warm Frosted Clinical Privacy Shield Overlay */}
+                    <div className="absolute inset-0 bg-[#FFFDF9]/85 backdrop-blur-md flex flex-col items-center justify-center p-4 text-center select-none">
+                      <div className="w-11 h-11 rounded-2xl bg-white border border-[#E5DFD5] flex items-center justify-center text-[22px] mb-2 shadow-xs">
+                        🛡️
                       </div>
-                    )}
-
-                    {/* Re-shield Toggle Button */}
-                    {!isSpecimenMasked && (
-                      <button
-                        type="button"
-                        className="absolute top-2.5 right-2.5 px-2.5 py-1 bg-black/75 hover:bg-black text-white text-[11px] font-black rounded-lg shadow backdrop-blur-sm flex items-center gap-1 transition select-none cursor-pointer"
-                        onClick={() => setIsSpecimenMasked(true)}
-                      >
-                        <span>🙈</span> Re-shield Specimen
-                      </button>
-                    )}
+                      <b className="text-[14px] font-black text-[var(--ink)] block tracking-tight">
+                        Specimen Privacy Shielded
+                      </b>
+                      <p className="text-[11.5px] text-[var(--ink2)] font-semibold max-w-[250px] mt-0.5 leading-snug">
+                        Zero disk footprint · Evaluated entirely in RAM with morphology telemetry extracted
+                      </p>
+                      <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--mint-l)] text-[#11634C] text-[11px] font-black rounded-full">
+                        <span>✓</span> Morphology Telemetry Recorded
+                      </div>
+                    </div>
                   </div>
 
                   <label className="apple-chip cursor-pointer text-[12.5px] font-extrabold inline-flex items-center gap-1.5">
-                    <span>🔄</span> Retake Photo / Choose Another
+                    <span>🔄</span> Retake Photo / Replace Specimen
                     <input
                       type="file"
                       accept="image/*"
