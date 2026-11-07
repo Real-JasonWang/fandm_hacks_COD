@@ -421,9 +421,9 @@ export async function registerAccount(params: {
     salt,
     passwordHash,
     createdAt: Date.now(),
-    logs: seedLogs(),
-    streak: 1,
-    totalPoints: 10,
+    logs: [],
+    streak: 0,
+    totalPoints: 0,
   };
 
   users.push(newUser);
@@ -569,6 +569,22 @@ export function updateUserLogs(userId: string, newLog: CheckInEntry): void {
       ...newLog,
       userId,
     }).catch(() => {});
+
+    const activeSession = getCurrentSession();
+    if (activeSession && activeSession.id === userId) {
+      setCurrentSession(users[index]);
+    }
+  }
+}
+
+// Replace all of current user's personal logs in database (for reset/wipe)
+export function replaceUserLogs(userId: string, logs: CheckInEntry[]): void {
+  const users = getAllUsers();
+  const index = users.findIndex((u) => u.id === userId);
+  if (index !== -1) {
+    users[index].logs = logs;
+    users[index].totalPoints = logs.reduce((acc, cur) => acc + (10 + (cur.water >= 6 ? 5 : 0) + (cur.sleep >= 7 ? 5 : 0)), 0);
+    saveAllUsers(users);
 
     const activeSession = getCurrentSession();
     if (activeSession && activeSession.id === userId) {

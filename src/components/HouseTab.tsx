@@ -188,7 +188,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
           <span className="apple-tag t-lav font-bold">Sub-Linear Handicap</span>
         </div>
         <p className="text-[12px] text-[var(--muted)] font-bold mt-0.5 mb-3">
-          % of residents who checked in 3+ days this week — balanced mathematically by dorm size ($N$).
+          % of residents who checked in 3+ days this week — balanced mathematically by dorm size (N).
         </p>
 
         <div className="space-y-2.5">

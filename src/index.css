@@ -129,6 +129,24 @@ button:focus-visible, [tabindex]:focus-visible {
   box-shadow: 0 4px 14px rgba(42, 34, 56, 0.22);
 }
 
+.apple-chip.flag-chip {
+  border-color: #F8B4AB;
+  background: #FFF5F4;
+  color: #C93A30;
+}
+
+.apple-chip.flag-chip:hover {
+  background: #FFEBE8;
+  border-color: #C93A30;
+}
+
+.apple-chip.flag-chip.on {
+  background: #C93A30 !important;
+  border-color: #C93A30 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(201, 58, 48, 0.35) !important;
+}
+
 .apple-tag {
   display: inline-flex;
   align-items: center;

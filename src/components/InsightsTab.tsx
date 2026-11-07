@@ -42,6 +42,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
     idealPct7,
     avgSleep7,
     avgWater7,
+    hasLogs,
   } = useMemo(() => {
     const dayKeyOf = (ts: number) => {
       const d = new Date(ts);
@@ -171,6 +172,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
       idealPct7,
       avgSleep7,
       avgWater7,
+      hasLogs: withB.length > 0,
     };
   }, [settings.logs]);
 
@@ -227,9 +229,17 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
           <h3 className="font-black text-[16px]">Weekly Summary</h3>
         </div>
         <p className="text-[14px] text-[var(--ink2)] font-semibold leading-relaxed">
-          You checked in <b>{daysLogged7} of 7 days</b> this week. <b>{idealPct7}%</b> of your bowel movements were in the <b>ideal zone</b> (Type 3–4). You averaged <b>{avgSleep7} h</b> of sleep and <b>{avgWater7} glasses</b> of water a day.
-          {patterns.length > 0 && (
-            <span> The strongest physiological correlation: <b>{patterns[0].title.toLowerCase()}</b>.</span>
+          {daysLogged7 > 0 ? (
+            <>
+              You checked in <b>{daysLogged7} of 7 days</b> this week. <b>{idealPct7}%</b> of your bowel movements were in the <b>ideal zone</b> (Type 3–4). You averaged <b>{avgSleep7} h</b> of sleep and <b>{avgWater7} glasses</b> of water a day.
+              {patterns.length > 0 && (
+                <span> The strongest physiological correlation: <b>{patterns[0].title.toLowerCase()}</b>.</span>
+              )}
+            </>
+          ) : (
+            <>
+              No bowel movement telemetry recorded in the last 7 days yet. Complete your first daily check-in to generate your baseline and start tracking your Bristol stool trends!
+            </>
           )}
         </p>
         <p className="text-[11.5px] text-[var(--muted)] font-bold mt-2">
@@ -298,10 +308,36 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                 d={pathD}
                 fill="none"
                 stroke="#8B5A3C"
-                strokeWidth="2"
+                strokeWidth="2.5"
                 strokeLinejoin="round"
                 strokeLinecap="round"
               />
+            )}
+
+            {/* Empty state hint when no stool entries exist */}
+            {!hasLogs && (
+              <g>
+                <text
+                  x={W / 2}
+                  y={H / 2 - 4}
+                  textAnchor="middle"
+                  fontSize="12.5"
+                  fontWeight="800"
+                  fill="var(--ink2)"
+                >
+                  No Check-in Data Yet
+                </text>
+                <text
+                  x={W / 2}
+                  y={H / 2 + 14}
+                  textAnchor="middle"
+                  fontSize="10.5"
+                  fontWeight="700"
+                  fill="var(--muted)"
+                >
+                  Log daily to visualize your real 14-day Bristol motility curve
+                </text>
+              </g>
             )}
 
             {/* Data points */}
@@ -321,7 +357,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                     >
                       {i === 13
                         ? 'Today'
-                        : d.date.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}
+                        : d.date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
                     </text>
                   )}
                   {d.rec && d.rec.bristol !== null && (
@@ -332,7 +368,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                         setActiveTooltip({
                           x: xPos,
                           y: getY(rec.bristol!),
-                          dateStr: d.date.toLocaleDateString(undefined, {
+                          dateStr: d.date.toLocaleDateString('en-US', {
                             weekday: 'short',
                             month: 'short',
                             day: 'numeric',

@@ -13,6 +13,7 @@ import {
   getCurrentSession,
   logoutSession,
   updateUserLogs,
+  replaceUserLogs,
   updateUserHouse,
   type UserAccount,
 } from './lib/authDatabase';
@@ -385,11 +386,17 @@ export function App() {
         }}
         onLogout={handleLogout}
         onResetDemo={() => {
+          const freshLogs = seedLogs();
+          const freshReports = seedReports();
           setSettings((prev) => ({
             ...prev,
-            logs: seedLogs(),
-            reports: seedReports(),
+            logs: freshLogs,
+            reports: freshReports,
           }));
+          if (currentUser) {
+            replaceUserLogs(currentUser.id, freshLogs);
+            setCurrentUser((prev) => (prev ? { ...prev, logs: freshLogs } : null));
+          }
           setIsSettingsOpen(false);
           showToast('Demo dataset reset to 2-week history.');
         }}
@@ -400,6 +407,10 @@ export function App() {
               logs: [],
               reports: {},
             }));
+            if (currentUser) {
+              replaceUserLogs(currentUser.id, []);
+              setCurrentUser((prev) => (prev ? { ...prev, logs: [], totalPoints: 0, streak: 0 } : null));
+            }
             setIsSettingsOpen(false);
             showToast('Personal check-ins deleted.');
           }

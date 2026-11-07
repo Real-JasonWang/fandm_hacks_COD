@@ -8,17 +8,21 @@ export const GEMINI_MODEL_STORAGE = 'cod_gemini_model';
 export const PRELOADED_API_KEY = (import.meta.env.VITE_GEMINI_API_KEY as string) || '';
 
 // Default and Cascade Models
-export const DEFAULT_GEMINI_MODEL = 'gemini-3.8-flash';
+export const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
 
 export const SUPPORTED_AI_MODELS = [
-  { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash (Latest Flash Vision & NLP)', tag: 'Recommended' },
-  { id: 'gemini-3.5-flash', name: 'Gemini 3.5 Flash', tag: 'Fast' },
-  { id: 'gemini-3.5-flash-lite', name: 'Gemini 3.5 Flash Lite', tag: 'Lite' },
+  { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash (Production Flash & Vision)', tag: 'Recommended' },
+  { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (High Speed & Efficiency)', tag: 'Fast' },
+  { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (Next-Gen Multimodal)', tag: 'Next-Gen' },
+  { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash (Experimental Flash Vision)', tag: 'Experimental' },
   { id: 'gemma-4-31b-it', name: 'Gemma 4 31B Dense (Multimodal Vision)', tag: 'Dense' },
   { id: 'gemma-4-26b-a4b-it', name: 'Gemma 4 26B/4B MoE (Multimodal Vision)', tag: 'MoE' },
 ];
 
 export const FALLBACK_CASCADE = [
+  'gemini-2.5-flash',
+  'gemini-1.5-flash',
+  'gemini-2.0-flash',
   'gemini-3.8-flash',
   'gemini-3.5-flash',
   'gemini-3.5-flash-lite',
@@ -181,14 +185,22 @@ function createGenAI(customKey?: string) {
 export async function testGeminiApiKey(apiKey: string): Promise<{ success: boolean; message: string }> {
   try {
     const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.5-flash',
-      contents: 'Ping: Reply with "OK" if connected.',
-    });
-    if (response.text) {
-      return { success: true, message: 'Google Gemini / Gemma API connection verified successfully!' };
+    const modelsToTry = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash'];
+    let lastError: unknown = null;
+    for (const m of modelsToTry) {
+      try {
+        const response = await ai.models.generateContent({
+          model: m,
+          contents: 'Ping: Reply with "OK" if connected.',
+        });
+        if (response.text) {
+          return { success: true, message: `Google Gemini API connection verified (${m})!` };
+        }
+      } catch (e) {
+        lastError = e;
+      }
     }
-    return { success: false, message: 'Received empty response from API.' };
+    throw lastError || new Error('Received empty response from API.');
   } catch (err: unknown) {
     return { success: false, message: formatAiErrorMessage(err) };
   }

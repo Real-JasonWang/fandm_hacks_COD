@@ -154,10 +154,10 @@ export function loadSettings(): AppSettings {
     onboarded: false,
     house: "Ware",
     mode: "playful",
-    logs: seedLogs(),
+    logs: [],
     reports: seedReports(),
     installHidden: false,
-    demo: true,
+    demo: false,
   };
 }
 

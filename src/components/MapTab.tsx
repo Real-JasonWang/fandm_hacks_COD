@@ -62,7 +62,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
   ];
 
   return (
-    <div className="apple-view space-y-3">
+    <div className="apple-view space-y-3 pb-24">
       <div>
         <h1 className="text-[27px] font-black tracking-tight text-[var(--ink)]">
           Bathroom map

@@ -61,6 +61,15 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
   const [isNlpLoading, setIsNlpLoading] = useState(false);
   const [nlpMessage, setNlpMessage] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const toggleSymptom = (id: string) => {
@@ -539,13 +548,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                 <button
                   key={s.id}
                   type="button"
-                  className={`apple-chip ${s.flag ? 'border-[#F3C1BB]' : ''} ${
-                    isOn
-                      ? s.flag
-                        ? 'bg-[var(--danger)] text-white border-[var(--danger)]'
-                        : 'on'
-                      : ''
-                  }`}
+                  className={`apple-chip ${s.flag ? 'flag-chip' : ''} ${isOn ? 'on' : ''}`}
                   onClick={() => toggleSymptom(s.id)}
                 >
                   {s.flag ? '⚠️ ' : ''}

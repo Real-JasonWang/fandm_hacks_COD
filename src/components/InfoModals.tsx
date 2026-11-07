@@ -5,7 +5,19 @@ interface InfoModalProps {
   onClose: () => void;
 }
 
+function useEscapeKey(isOpen: boolean, onClose: () => void) {
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+}
+
 export const RedFlagModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
+  useEscapeKey(isOpen, onClose);
   if (!isOpen) return null;
 
   return (
@@ -73,6 +85,7 @@ export const RedFlagModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
 };
 
 export const AIInfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
+  useEscapeKey(isOpen, onClose);
   if (!isOpen) return null;
 
   return (
@@ -194,6 +207,7 @@ export const AIInfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
 };
 
 export const ScienceModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
+  useEscapeKey(isOpen, onClose);
   if (!isOpen) return null;
 
   return (

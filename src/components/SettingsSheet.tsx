@@ -45,6 +45,14 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
   const [showKey, setShowKey] = useState(false);
 
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   const handleSaveApiKey = () => {
     setStoredApiKey(apiKey);
     setStoredModel(model);
