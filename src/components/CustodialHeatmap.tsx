@@ -1,6 +1,7 @@
-import React from 'react';
+// TODO: refactor this shit later, glove mode and checklist are super handy for facilities
+import React, { useState } from 'react';
 import type { RestroomNode } from '../types';
-import { Sparkles, Navigation, Clock, AlertTriangle } from 'lucide-react';
+import { Sparkles, Navigation, Clock, AlertTriangle, CheckSquare, Square, Send } from 'lucide-react';
 import { sound } from '../lib/audio';
 
 interface CustodialHeatmapProps {
@@ -16,6 +17,18 @@ export const CustodialHeatmap: React.FC<CustodialHeatmapProps> = ({
   onSelectNode,
   selectedNode,
 }) => {
+  const [checklist, setChecklist] = useState<Record<string, boolean>>({
+    tp: true,
+    soap: true,
+    sanitizer: true,
+    mop: false,
+  });
+
+  const toggleCheck = (key: string) => {
+    sound.playClick();
+    setChecklist((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
   // Calculate dynamic urgency metric
   const sortedRestrooms = [...restrooms].sort((a, b) => {
     const urgencyA = 0.35 * (a.trafficCount / 15) + 0.45 * a.soilingIndex + 0.2 * (a.lastCleanedMinutesAgo / 240);
@@ -116,23 +129,104 @@ export const CustodialHeatmap: React.FC<CustodialHeatmapProps> = ({
                 </div>
               </div>
 
-              {/* 64px Glove-Ready Sanitation Action Button */}
+              {/* 64px Glove-Ready Sanitation Action Button & Restock Checklist */}
               {isSelected && (
-                <div className="mt-3 pt-3 border-t border-[#2A2D35] flex items-center justify-between">
-                  <div className="text-xs text-[#94A3B8]">
-                    Reset facility status and clear alerts
+                <div className="mt-3 pt-3 border-t border-[#2A2D35] space-y-3">
+                  <div className="text-[10px] font-mono uppercase text-[#64748B] tracking-wider">
+                    Sanitation Protocol Checklist:
                   </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      sound.playCapture();
-                      onSanitizeRestroom(r.id);
-                    }}
-                    className="h-12 px-5 bg-[#F59E0B] hover:bg-[#D97706] active:bg-[#B45309] text-black font-bold text-xs uppercase tracking-wider rounded-md flex items-center space-x-2 transition-transform active:scale-95 cursor-pointer shadow-lg shadow-[#F59E0B]/20"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    <span>Mark Sanitized & Restocked</span>
-                  </button>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleCheck('tp');
+                      }}
+                      className="flex items-center space-x-2 p-2 rounded bg-[#16171B] border border-[#262A33] text-left cursor-pointer"
+                    >
+                      {checklist.tp ? (
+                        <CheckSquare className="w-4 h-4 text-[#10B981]" />
+                      ) : (
+                        <Square className="w-4 h-4 text-[#64748B]" />
+                      )}
+                      <span className={checklist.tp ? 'text-white' : 'text-[#64748B]'}>2-Ply TP Stocked</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleCheck('soap');
+                      }}
+                      className="flex items-center space-x-2 p-2 rounded bg-[#16171B] border border-[#262A33] text-left cursor-pointer"
+                    >
+                      {checklist.soap ? (
+                        <CheckSquare className="w-4 h-4 text-[#10B981]" />
+                      ) : (
+                        <Square className="w-4 h-4 text-[#64748B]" />
+                      )}
+                      <span className={checklist.soap ? 'text-white' : 'text-[#64748B]'}>Soap Refilled</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleCheck('sanitizer');
+                      }}
+                      className="flex items-center space-x-2 p-2 rounded bg-[#16171B] border border-[#262A33] text-left cursor-pointer"
+                    >
+                      {checklist.sanitizer ? (
+                        <CheckSquare className="w-4 h-4 text-[#10B981]" />
+                      ) : (
+                        <Square className="w-4 h-4 text-[#64748B]" />
+                      )}
+                      <span className={checklist.sanitizer ? 'text-white' : 'text-[#64748B]'}>Bleach Disinfected</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleCheck('mop');
+                      }}
+                      className="flex items-center space-x-2 p-2 rounded bg-[#16171B] border border-[#262A33] text-left cursor-pointer"
+                    >
+                      {checklist.mop ? (
+                        <CheckSquare className="w-4 h-4 text-[#10B981]" />
+                      ) : (
+                        <Square className="w-4 h-4 text-[#64748B]" />
+                      )}
+                      <span className={checklist.mop ? 'text-white' : 'text-[#64748B]'}>Mop Sanitized</span>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center space-x-2 pt-1">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        sound.playCapture();
+                        onSanitizeRestroom(r.id);
+                      }}
+                      className="flex-1 h-12 bg-[#F59E0B] hover:bg-[#D97706] active:bg-[#B45309] text-black font-bold text-xs uppercase tracking-wider rounded-md flex items-center justify-center space-x-2 cursor-pointer shadow-lg shadow-[#F59E0B]/20"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      <span>Complete Sanitization</span>
+                    </button>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        sound.playClick();
+                        alert(`Radio dispatch sent to Floor Crew for ${r.buildingName}`);
+                      }}
+                      className="h-12 px-3 bg-[#1C1E24] hover:bg-[#2A2D35] text-[#CBD5E1] rounded-md flex items-center justify-center cursor-pointer"
+                      title="Dispatch Floor Crew"
+                    >
+                      <Send className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
