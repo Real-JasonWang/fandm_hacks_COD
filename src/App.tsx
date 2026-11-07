@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { sound } from './lib/audio';
 import type {
   AppSettings,
   TabType,
@@ -9,7 +8,13 @@ import type {
   Restroom,
   CheckInEntry,
 } from './types';
-import { loadSettings, saveSettings, seedLogs, seedReports } from './data/appleData';
+import { loadSettings, saveSettings, seedLogs, seedReports, calculateCheckInPoints } from './data/appleData';
+import {
+  getCurrentSession,
+  logoutSession,
+  updateUserLogs,
+  type UserAccount,
+} from './lib/authDatabase';
 
 import { AppleTopBar } from './components/AppleTopBar';
 import { AppleBottomNav } from './components/AppleBottomNav';
@@ -24,9 +29,23 @@ import { SettingsSheet } from './components/SettingsSheet';
 import { RedFlagModal, AIInfoModal, ScienceModal } from './components/InfoModals';
 import { OnboardingModal } from './components/OnboardingModal';
 import { StealthShield } from './components/StealthShield';
+import { AuthModal } from './components/AuthModal';
 
 export function App() {
-  const [settings, setSettings] = useState<AppSettings>(() => loadSettings());
+  const [currentUser, setCurrentUser] = useState<UserAccount | null>(() => getCurrentSession());
+  const [settings, setSettings] = useState<AppSettings>(() => {
+    const s = loadSettings();
+    const session = getCurrentSession();
+    if (session) {
+      return {
+        ...s,
+        house: session.houseId as HouseId,
+        logs: session.logs.length > 0 ? session.logs : s.logs,
+      };
+    }
+    return s;
+  });
+
   const [activeTab, setActiveTab] = useState<TabType>('today');
 
   // Modals & Sheets
@@ -36,15 +55,18 @@ export function App() {
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [isScienceOpen, setIsScienceOpen] = useState(false);
   const [isStealthOpen, setIsStealthOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [selectedRestroom, setSelectedRestroom] = useState<Restroom | null>(null);
 
   // Toast Notification
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Save to localStorage whenever settings change
+  // Save to localStorage whenever settings change (only if logged in)
   useEffect(() => {
-    saveSettings(settings);
-  }, [settings]);
+    if (currentUser) {
+      saveSettings(settings);
+    }
+  }, [settings, currentUser]);
 
   // Double-tap on mobile detector for stealth mode
   useEffect(() => {
@@ -52,10 +74,8 @@ export function App() {
     const handleTouchEnd = (e: TouchEvent) => {
       const now = Date.now();
       if (now - lastTap < 300) {
-        // Double tap detected!
         const target = e.target as HTMLElement;
         if (!target.closest('button, input, textarea, select')) {
-          sound.playClick();
           setIsStealthOpen((prev) => !prev);
         }
       }
@@ -84,15 +104,42 @@ export function App() {
 
   // Tab change handler
   const handleTabChange = (tab: TabType) => {
-    sound.playClick();
     triggerHaptic();
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Auth state handlers
+  const handleAuthSuccess = (user: UserAccount) => {
+    setCurrentUser(user);
+    setSettings((prev) => ({
+      ...prev,
+      house: user.houseId as HouseId,
+      logs: user.logs.length > 0 ? user.logs : prev.logs,
+    }));
+    if (settings.mode === 'playful') {
+      confetti({ particleCount: 50, spread: 55 });
+    }
+    showToast(`Signed in as ${user.displayName} (${user.email})`);
+  };
+
+  const handleLogout = () => {
+    logoutSession();
+    setCurrentUser(null);
+    setSettings((prev) => ({
+      ...prev,
+      logs: [],
+    }));
+    try {
+      localStorage.removeItem('cod_demo_v1');
+    } catch {
+      // ignore
+    }
+    showToast('Signed out of student session.');
+  };
+
   // Save Check-in handler
   const handleSaveCheckIn = (entryData: Omit<CheckInEntry, 'id' | 'ts'>) => {
-    sound.playCapture();
     triggerHaptic([20, 40, 60]);
 
     const newEntry: CheckInEntry = {
@@ -106,20 +153,23 @@ export function App() {
       logs: [...prev.logs, newEntry],
     }));
 
+    if (currentUser) {
+      updateUserLogs(currentUser.id, newEntry);
+    }
+
     setIsCheckInOpen(false);
 
-    // Calculate points
-    let pts = 10;
-    if (newEntry.water >= 6) pts += 5;
-    if (newEntry.sleep >= 7) pts += 5;
+    const pts = calculateCheckInPoints(newEntry);
 
-    // Confetti celebration
-    confetti({
-      particleCount: 65,
-      spread: 60,
-      origin: { y: 0.65 },
-      colors: ['#FF9F6B', '#23A27E', '#6E5FE6', '#FFC94A'],
-    });
+    // Confetti celebration only in playful mode
+    if (settings.mode === 'playful') {
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.65 },
+        colors: ['#FF9F6B', '#23A27E', '#6E5FE6', '#FFC94A'],
+      });
+    }
 
     const isRedFlag = newEntry.symptoms.some((s) =>
       ['blood', 'black', 'pain'].includes(s)
@@ -132,7 +182,7 @@ export function App() {
     } else {
       showToast(
         `+${pts} pts for ${settings.house} House! ${
-          settings.mode === 'playful' ? '🎉💩' : '🎉'
+          settings.mode === 'playful' ? '🎉💩' : '✓'
         }`
       );
     }
@@ -143,7 +193,6 @@ export function App() {
     restroomId: string,
     type: 'clean' | 'supplies' | 'ok'
   ) => {
-    sound.playClick();
     triggerHaptic();
 
     setSettings((prev) => {
@@ -175,12 +224,11 @@ export function App() {
     });
 
     setSelectedRestroom(null);
-    showToast('Report received! Routed to F&M Facilities 🧽');
+    showToast('Report submitted! Routed to Facilities queue 🧽');
   };
 
   // Facilities mark clean
   const handleMarkCleaned = (restroomId: string) => {
-    sound.playCapture();
     triggerHaptic();
 
     setSettings((prev) => ({
@@ -199,6 +247,22 @@ export function App() {
     showToast('Marked clean & restocked ✓ — campus map updated');
   };
 
+  // Strict Auth Gate: If user is not logged in, render only the F&M login/registration screen
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-[var(--bg)]">
+        <AuthModal
+          isOpen={true}
+          isFullScreen={true}
+          onAuthSuccess={handleAuthSuccess}
+        />
+        <div className={`apple-toast ${toastMessage ? 'on' : ''}`}>
+          {toastMessage}
+        </div>
+      </div>
+    );
+  }
+
   const lastEntry = settings.logs[settings.logs.length - 1];
 
   return (
@@ -207,19 +271,19 @@ export function App() {
       onDoubleClick={(e) => {
         const target = e.target as HTMLElement;
         if (!target.closest('button, input, textarea, select')) {
-          sound.playClick();
           setIsStealthOpen(true);
         }
       }}
     >
-      {/* Onboarding Modal if not completed */}
+      {/* Onboarding Modal (only displayed once authenticated if onboarding not finished) */}
       {!settings.onboarded && (
         <OnboardingModal
           initialHouse={settings.house}
           initialMode={settings.mode}
           onComplete={(house: HouseId, mode: ModeType) => {
-            sound.playCapture();
-            confetti({ particleCount: 50, spread: 50 });
+            if (mode === 'playful') {
+              confetti({ particleCount: 50, spread: 50 });
+            }
             setSettings((prev) => ({
               ...prev,
               onboarded: true,
@@ -235,9 +299,12 @@ export function App() {
         {/* Top Header Bar */}
         <AppleTopBar
           mode={settings.mode}
+          currentUser={currentUser}
           onOpenSettings={() => {
-            sound.playClick();
             setIsSettingsOpen(true);
+          }}
+          onOpenAuth={() => {
+            setIsAuthOpen(true);
           }}
         />
 
@@ -246,7 +313,6 @@ export function App() {
           <TodayTab
             settings={settings}
             onOpenCheckIn={() => {
-              sound.playClick();
               setIsCheckInOpen(true);
             }}
             onOpenRedFlag={() => setIsRedFlagOpen(true)}
@@ -269,7 +335,6 @@ export function App() {
           <MapTab
             settings={settings}
             onOpenRestroom={(r) => {
-              sound.playClick();
               setSelectedRestroom(r);
             }}
           />
@@ -292,7 +357,6 @@ export function App() {
           activeTab={activeTab}
           onChangeTab={handleTabChange}
           onOpenCheckIn={() => {
-            sound.playClick();
             setIsCheckInOpen(true);
           }}
         />
@@ -324,13 +388,12 @@ export function App() {
       <SettingsSheet
         isOpen={isSettingsOpen}
         settings={settings}
+        currentUser={currentUser}
         onClose={() => setIsSettingsOpen(false)}
         onUpdateMode={(mode) => {
-          sound.playClick();
           setSettings((prev) => ({ ...prev, mode }));
         }}
         onUpdateHouse={(house) => {
-          sound.playClick();
           setSettings((prev) => ({ ...prev, house }));
           showToast(`Switched to ${house} House!`);
         }}
@@ -341,27 +404,37 @@ export function App() {
           setActiveTab('facilities');
         }}
         onOpenStealth={() => setIsStealthOpen(true)}
+        onOpenAuth={() => {
+          setIsSettingsOpen(false);
+          setIsAuthOpen(true);
+        }}
+        onLogout={handleLogout}
         onResetDemo={() => {
-          sound.playCapture();
           setSettings((prev) => ({
             ...prev,
             logs: seedLogs(),
             reports: seedReports(),
           }));
           setIsSettingsOpen(false);
-          showToast('Demo dataset reset to 2-week history');
+          showToast('Demo dataset reset to 2-week history.');
         }}
         onWipeData={() => {
-          if (confirm('Are you sure you want to delete all your personal check-ins?')) {
+          if (confirm('Are you sure you want to delete all personal logs?')) {
             setSettings((prev) => ({
               ...prev,
               logs: [],
               reports: {},
             }));
             setIsSettingsOpen(false);
-            showToast('All personal logs deleted');
+            showToast('Personal check-ins deleted.');
           }
         }}
+      />
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onAuthSuccess={handleAuthSuccess}
       />
 
       <RedFlagModal
@@ -373,7 +446,7 @@ export function App() {
 
       <ScienceModal isOpen={isScienceOpen} onClose={() => setIsScienceOpen(false)} />
 
-      {/* Dual-Mode Stealth Privacy Shield (Double-tap to open/close) */}
+      {/* Dual-Mode Stealth Privacy Shield (Double-tap anywhere to open/close) */}
       <StealthShield
         isOpen={isStealthOpen}
         onClose={() => setIsStealthOpen(false)}
