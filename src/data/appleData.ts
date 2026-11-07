@@ -86,14 +86,7 @@ export function calculateCheckInPoints(entry: { water: number; sleep: number }):
 }
 
 export function seedReports(): Record<string, RestroomReport> {
-  const h = 3600e3;
-  const now = Date.now();
-  return {
-    scc1: { clean: 3, supplies: 1, ok: 0, ts: now - 0.5 * h },
-    lib1: { clean: 0, supplies: 2, ok: 1, ts: now - 1.2 * h },
-    asfc: { clean: 1, supplies: 0, ok: 2, ts: now - 3 * h },
-    stag: { clean: 2, supplies: 0, ok: 0, ts: now - 0.8 * h },
-  };
+  return {};
 }
 
 export function seedLogs(): CheckInEntry[] {
@@ -112,6 +105,7 @@ export function loadSettings(): AppSettings {
         logs: Array.isArray(parsed.logs)
           ? parsed.logs.filter((l: CheckInEntry) => l && typeof l.id === 'string' && !l.id.startsWith('s'))
           : [],
+        reports: typeof parsed.reports === 'object' && parsed.reports !== null ? parsed.reports : {},
       };
     }
   } catch (e) {
@@ -122,7 +116,7 @@ export function loadSettings(): AppSettings {
     house: "Ware",
     mode: "playful",
     logs: [],
-    reports: seedReports(),
+    reports: {},
     installHidden: false,
     demo: false,
   };

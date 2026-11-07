@@ -279,20 +279,75 @@ export const campusDB = new CampusDatabaseEngine();
 // ==========================================
 // In-Memory & Synchronous Cache Layer
 // ==========================================
+export function createCase1HealthyLogs(): CheckInEntry[] {
+  const now = Date.now();
+  const dayMs = 864e5;
+  return [
+    { id: 'case1_01', ts: now - 4 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 0 },
+    { id: 'case1_02', ts: now - 3 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 6, veg: 2, stress: 1 },
+    { id: 'case1_03', ts: now - 2 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 7.0, water: 8, veg: 4, stress: 0 },
+    { id: 'case1_04', ts: now - 1 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 1 },
+    { id: 'case1_05', ts: now, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 7, veg: 3, stress: 0 },
+  ];
+}
+
+export function createCase2StressLogs(): CheckInEntry[] {
+  const now = Date.now();
+  const dayMs = 864e5;
+  return [
+    { id: 'case2_01', ts: now - 5 * dayMs, pooped: true, bristol: 2, symptoms: ['bloating', 'straining'], sleep: 5.0, water: 3, veg: 1, stress: 3 },
+    { id: 'case2_02', ts: now - 4 * dayMs, pooped: true, bristol: 2, symptoms: ['straining'], sleep: 4.5, water: 2, veg: 0, stress: 4 },
+    { id: 'case2_03', ts: now - 3 * dayMs, pooped: true, bristol: 6, symptoms: ['cramps', 'urgency'], sleep: 5.0, water: 4, veg: 1, stress: 4 },
+    { id: 'case2_04', ts: now - 2 * dayMs, pooped: true, bristol: 5, symptoms: ['gas'], sleep: 6.0, water: 5, veg: 2, stress: 2 },
+    { id: 'case2_05', ts: now - 1 * dayMs, pooped: true, bristol: 6, symptoms: ['urgency'], sleep: 4.0, water: 3, veg: 1, stress: 4 },
+    { id: 'case2_06', ts: now, pooped: true, bristol: 3, symptoms: [], sleep: 7.0, water: 6, veg: 3, stress: 1 },
+  ];
+}
+
+function createBrooksStudentLogs(): CheckInEntry[] {
+  const now = Date.now();
+  const dayMs = 864e5;
+  return [
+    { id: 'brooks_01', ts: now - 3 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.0, water: 6, veg: 2, stress: 1 },
+    { id: 'brooks_02', ts: now - 2 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 6.5, water: 5, veg: 2, stress: 2 },
+    { id: 'brooks_03', ts: now - 1 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.0, water: 6, veg: 3, stress: 1 },
+  ];
+}
+
+function createWeisStudentLogs(): CheckInEntry[] {
+  const now = Date.now();
+  const dayMs = 864e5;
+  return [
+    { id: 'weis_01', ts: now - 4 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 1 },
+    { id: 'weis_02', ts: now - 3 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 8.0, water: 6, veg: 3, stress: 0 },
+    { id: 'weis_03', ts: now - 2 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.0, water: 7, veg: 2, stress: 1 },
+    { id: 'weis_04', ts: now - 1 * dayMs, pooped: true, bristol: 3, symptoms: [], sleep: 7.5, water: 6, veg: 3, stress: 1 },
+  ];
+}
+
+function createRoschelStudentLogs(): CheckInEntry[] {
+  const now = Date.now();
+  const dayMs = 864e5;
+  return [
+    { id: 'roschel_01', ts: now - 2 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.0, water: 6, veg: 2, stress: 1 },
+    { id: 'roschel_02', ts: now - 1 * dayMs, pooped: true, bristol: 4, symptoms: [], sleep: 7.5, water: 7, veg: 3, stress: 1 },
+  ];
+}
+
 function getSeedUsers(): UserAccount[] {
   return [
     {
       id: 'user_fandm_demo',
       email: 'diplomat@fandm.edu',
-      displayName: 'Franklin Diplomat',
+      displayName: 'Alex Diplomat',
       universityId: 'fandm',
       houseId: 'Ware',
       salt: SEED_SALT,
       passwordHash: SEED_PBKDF2_HASH,
       createdAt: Date.now() - 14 * 864e5,
-      logs: [],
-      streak: 0,
-      totalPoints: 0,
+      logs: createCase1HealthyLogs(),
+      streak: 5,
+      totalPoints: 100,
     },
     {
       id: 'user_fandm_ben',
@@ -303,9 +358,48 @@ function getSeedUsers(): UserAccount[] {
       salt: SEED_SALT,
       passwordHash: SEED_PBKDF2_HASH,
       createdAt: Date.now() - 7 * 864e5,
-      logs: [],
-      streak: 0,
-      totalPoints: 0,
+      logs: createCase2StressLogs(),
+      streak: 6,
+      totalPoints: 85,
+    },
+    {
+      id: 'user_fandm_david',
+      email: 'david@fandm.edu',
+      displayName: 'David Brooks',
+      universityId: 'fandm',
+      houseId: 'Brooks',
+      salt: SEED_SALT,
+      passwordHash: SEED_PBKDF2_HASH,
+      createdAt: Date.now() - 5 * 864e5,
+      logs: createBrooksStudentLogs(),
+      streak: 3,
+      totalPoints: 55,
+    },
+    {
+      id: 'user_fandm_leo',
+      email: 'leo@fandm.edu',
+      displayName: 'Leo Weis',
+      universityId: 'fandm',
+      houseId: 'Weis',
+      salt: SEED_SALT,
+      passwordHash: SEED_PBKDF2_HASH,
+      createdAt: Date.now() - 6 * 864e5,
+      logs: createWeisStudentLogs(),
+      streak: 4,
+      totalPoints: 75,
+    },
+    {
+      id: 'user_fandm_maya',
+      email: 'maya@fandm.edu',
+      displayName: 'Maya Roschel',
+      universityId: 'fandm',
+      houseId: 'Roschel',
+      salt: SEED_SALT,
+      passwordHash: SEED_PBKDF2_HASH,
+      createdAt: Date.now() - 4 * 864e5,
+      logs: createRoschelStudentLogs(),
+      streak: 2,
+      totalPoints: 35,
     },
   ];
 }
@@ -473,7 +567,13 @@ export async function loginAccount(
     user.passwordHash === computedHash ||
     user.passwordHash === SEED_SHA256_SALT_HASH ||
     user.passwordHash === SEED_PBKDF2_HASH ||
-    (cleanPassword === 'admin123' && (cleanEmail === 'diplomat@fandm.edu' || cleanEmail === 'ben@fandm.edu'));
+    (cleanPassword === 'admin123' && [
+      'diplomat@fandm.edu',
+      'ben@fandm.edu',
+      'david@fandm.edu',
+      'leo@fandm.edu',
+      'maya@fandm.edu',
+    ].includes(cleanEmail));
 
   if (!isMatch) {
     return { success: false, error: 'Incorrect password. Please verify and try again.' };

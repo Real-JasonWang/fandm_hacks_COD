@@ -241,25 +241,52 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         </button>
       </form>
 
-      {/* One-Tap Demo Access */}
-      <div className="pt-3 border-t border-[var(--line)]">
-        <p className="text-[12px] font-bold text-[var(--muted)] text-center mb-2">
-          Fast Demo Accounts (F&amp;M Hackathon Judges):
-        </p>
-        <div className="flex gap-2">
+      {/* One-Tap Demo Access with Two Case Scenarios */}
+      <div className="pt-3 border-t border-[var(--line)] space-y-2">
+        <div className="flex items-center justify-between">
+          <p className="text-[12px] font-extrabold text-[var(--muted)] uppercase tracking-wider">
+            Fast Demo Accounts (F&amp;M Hackathon Judges)
+          </p>
+          <span className="text-[10px] font-extrabold text-[var(--mint-d)] bg-[var(--mint-l)] px-2 py-0.5 rounded-full">
+            1-Click Test
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 gap-2">
+          {/* Case 1: Healthy Baseline Routine */}
           <button
             type="button"
-            className="apple-btn ghost flex-1 text-[12px] py-2"
+            className="w-full text-left p-2.5 rounded-2xl border border-[var(--line)] bg-[#FAF8FE] hover:border-[var(--lav)] hover:bg-[#F4EFFD] transition-all flex items-start gap-2.5 group"
             onClick={() => handleQuickDemo('diplomat@fandm.edu')}
           >
-            🎓 Ware Diplomat Demo
+            <span className="text-[22px] flex-none mt-0.5 group-hover:scale-110 transition-transform">🎓</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between items-center">
+                <b className="text-[13px] font-black text-[var(--ink)]">Case 1: Ware Diplomat (Healthy Routine)</b>
+                <span className="text-[11px] font-black text-[#5040C0]">Sign In →</span>
+              </div>
+              <p className="text-[11.5px] font-semibold text-[var(--ink2)] leading-tight mt-0.5">
+                diplomat@fandm.edu · Ware House · Optimal Bristol Type 4 baseline, 7.5h sleep, 7 glasses water.
+              </p>
+            </div>
           </button>
+
+          {/* Case 2: Academic Exam Stress & Gut-Brain Axis */}
           <button
             type="button"
-            className="apple-btn ghost flex-1 text-[12px] py-2"
+            className="w-full text-left p-2.5 rounded-2xl border border-[var(--line)] bg-[#FFF9F5] hover:border-[var(--peach)] hover:bg-[#FFF3EC] transition-all flex items-start gap-2.5 group"
             onClick={() => handleQuickDemo('ben@fandm.edu')}
           >
-            🏛️ Bonchek Ben Demo
+            <span className="text-[22px] flex-none mt-0.5 group-hover:scale-110 transition-transform">🏛️</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between items-center">
+                <b className="text-[13px] font-black text-[var(--ink)]">Case 2: Bonchek Ben (Exam Stress &amp; IBS)</b>
+                <span className="text-[11px] font-black text-[var(--peach-d)]">Sign In →</span>
+              </div>
+              <p className="text-[11.5px] font-semibold text-[var(--ink2)] leading-tight mt-0.5">
+                ben@fandm.edu · Bonchek House · Midterm sleep deprivation, high stress, and gut motility swings.
+              </p>
+            </div>
           </button>
         </div>
       </div>
