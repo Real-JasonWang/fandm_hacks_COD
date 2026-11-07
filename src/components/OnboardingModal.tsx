@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import type { HouseId, ModeType } from '../types';
-import { HouseSelector } from './HouseSelector';
+import { HOUSES } from '../data/appleData';
 
 interface OnboardingModalProps {
   initialHouse: HouseId;
   initialMode: ModeType;
+  userName?: string;
   onComplete: (house: HouseId, mode: ModeType) => void;
 }
 
 export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   initialHouse,
   initialMode,
+  userName,
   onComplete,
 }) => {
-  const [selectedHouse, setSelectedHouse] = useState<HouseId>(initialHouse);
   const [selectedMode, setSelectedMode] = useState<ModeType>(initialMode);
+  const houseConfig = HOUSES.find((h) => h.id === initialHouse);
 
   return (
     <div className="fixed inset-0 z-50 bg-[var(--bg)] overflow-auto px-6 py-10 flex flex-col justify-between">
@@ -31,7 +33,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
         </h1>
 
         <p className="text-[14.5px] font-semibold text-[var(--ink2)] leading-relaxed">
-          Everyone does it, almost nobody tracks it — but stool motility and consistency are two of the clearest biometric indicators of student stress and recovery.
+          {userName ? `Welcome, ${userName}! ` : ''}Everyone does it, almost nobody tracks it — but stool motility and consistency are two of the clearest biometric indicators of student stress and recovery.
         </p>
 
         {/* 3 Icons Trio */}
@@ -50,15 +52,25 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           </div>
         </div>
 
-        {/* House Selection */}
-        <div>
-          <p className="text-[14px] font-black text-[var(--ink)] mb-2">
-            Which F&amp;M College House are you in?
-          </p>
-          <HouseSelector
-            selectedHouse={selectedHouse}
-            onSelect={setSelectedHouse}
-          />
+        {/* Confirmed College House Faction (Set during registration) */}
+        <div className="p-3.5 bg-white rounded-2xl border-2 border-[#E5DFD5] shadow-sm flex items-center justify-between">
+          <div className="flex items-center gap-3 min-w-0">
+            <span
+              className="w-4 h-4 rounded-full flex-none shadow-sm"
+              style={{ background: houseConfig?.color || 'var(--peach)' }}
+            />
+            <div className="min-w-0">
+              <span className="text-[11px] font-black text-[var(--muted)] block uppercase tracking-wider">
+                Your F&amp;M College House
+              </span>
+              <b className="text-[14.5px] font-black text-[var(--ink)] block truncate">
+                {initialHouse} House
+              </b>
+            </div>
+          </div>
+          <span className="text-[11px] font-black text-[#11634C] bg-[var(--mint-l)] px-2.5 py-1 rounded-full flex-none">
+            ✓ Set at Registration
+          </span>
         </div>
 
         {/* Vibe Selection */}
@@ -88,7 +100,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           <button
             type="button"
             className="apple-btn text-[18px]"
-            onClick={() => onComplete(selectedHouse, selectedMode)}
+            onClick={() => onComplete(initialHouse, selectedMode)}
           >
             Let's go →
           </button>

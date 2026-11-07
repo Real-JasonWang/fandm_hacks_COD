@@ -251,8 +251,9 @@ export function App() {
       {/* Onboarding Modal (only displayed once authenticated if onboarding not finished) */}
       {!settings.onboarded && (
         <OnboardingModal
-          initialHouse={settings.house}
+          initialHouse={currentUser ? (currentUser.houseId as HouseId) : settings.house}
           initialMode={settings.mode}
+          userName={currentUser?.displayName}
           onComplete={(house: HouseId, mode: ModeType) => {
             if (mode === 'playful') {
               confetti({ particleCount: 50, spread: 50 });
