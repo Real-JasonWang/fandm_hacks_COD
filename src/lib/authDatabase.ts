@@ -1,4 +1,4 @@
-import type { CheckInEntry, BristolNumber } from '../types';
+import type { CheckInEntry, BristolNumber, ColorSchemeId, ThemeMode } from '../types';
 
 export interface UniversityDef {
   id: string;
@@ -41,6 +41,8 @@ export interface UserAccount {
   totalPoints: number;
   isDemo?: boolean;
   avatar?: string;
+  themeMode?: ThemeMode;
+  colorScheme?: ColorSchemeId;
 }
 
 export interface UserCredentialRecord {
@@ -682,8 +684,10 @@ export async function registerAccount(params: {
   universityId: string;
   houseId: string;
   displayName?: string;
+  themeMode?: ThemeMode;
+  colorScheme?: ColorSchemeId;
 }): Promise<{ success: boolean; user?: UserAccount; error?: string }> {
-  const { email, password, universityId, houseId, displayName } = params;
+  const { email, password, universityId, houseId, displayName, themeMode = 'auto', colorScheme = 'peach' } = params;
   const cleanEmail = email.trim().toLowerCase();
 
   // 1. Verify university domain strictly @fandm.edu
@@ -723,6 +727,8 @@ export async function registerAccount(params: {
     streak: 0,
     totalPoints: 0,
     isDemo: false,
+    themeMode,
+    colorScheme,
   };
 
   users.push(newUser);
@@ -866,6 +872,22 @@ export function updateUserAvatar(userId: string, avatar: string): void {
   const index = users.findIndex((u) => u.id === userId);
   if (index !== -1) {
     users[index].avatar = avatar;
+    saveAllUsers(users);
+
+    const activeSession = getCurrentSession();
+    if (activeSession && activeSession.id === userId) {
+      setCurrentSession(users[index]);
+    }
+  }
+}
+
+// Update current user's color scheme and dark/light mode
+export function updateUserTheme(userId: string, themeMode: ThemeMode, colorScheme: ColorSchemeId): void {
+  const users = getAllUsers();
+  const index = users.findIndex((u) => u.id === userId);
+  if (index !== -1) {
+    users[index].themeMode = themeMode;
+    users[index].colorScheme = colorScheme;
     saveAllUsers(users);
 
     const activeSession = getCurrentSession();

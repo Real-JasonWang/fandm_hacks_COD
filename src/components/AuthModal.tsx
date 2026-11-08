@@ -6,7 +6,9 @@ import {
   type UserAccount,
 } from '../lib/authDatabase';
 import { HouseSelector } from './HouseSelector';
-import type { HouseId } from '../types';
+import type { HouseId, ColorSchemeId, ThemeMode } from '../types';
+import { COLOR_SCHEMES } from '../data/appleData';
+import { applyTheme } from '../lib/themeManager';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -28,6 +30,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [password, setPassword] = useState<string>('admin123');
   const [houseId, setHouseId] = useState<string>('Ware');
   const [displayName, setDisplayName] = useState<string>('');
+  const [colorScheme, setColorScheme] = useState<ColorSchemeId>('peach');
+  const [themeMode, setThemeMode] = useState<ThemeMode>('auto');
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -59,6 +63,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           universityId: 'fandm',
           houseId,
           displayName,
+          themeMode,
+          colorScheme,
         });
         if (!res.success || !res.user) {
           setErrorMessage(res.error || 'Registration failed.');
@@ -170,6 +176,93 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 selectedHouse={houseId}
                 onSelect={(id: HouseId) => setHouseId(id)}
               />
+            </div>
+
+            {/* Color Scheme Preference */}
+            <div>
+              <div className="flex justify-between items-center mb-1.5">
+                <label className="text-[12.5px] font-extrabold text-[var(--ink)]">
+                  Pick Your Color Style
+                </label>
+                <span className="text-[11px] font-extrabold text-[var(--muted)]">
+                  7 Custom Palettes
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {COLOR_SCHEMES.map((cs) => {
+                  const isSelected = colorScheme === cs.id;
+                  return (
+                    <button
+                      key={cs.id}
+                      type="button"
+                      onClick={() => {
+                        setColorScheme(cs.id);
+                        applyTheme(themeMode, cs.id);
+                      }}
+                      className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all cursor-pointer ${
+                        isSelected
+                          ? 'border-[var(--brand)] bg-[var(--card)] shadow-xs scale-[1.02]'
+                          : 'border-[var(--line)] bg-[var(--card)] hover:border-[var(--brand)] opacity-80 hover:opacity-100'
+                      }`}
+                      style={isSelected ? { outline: `2px solid ${cs.primary}` } : undefined}
+                    >
+                      <span
+                        className="w-5 h-5 rounded-full flex-none shadow-xs border border-black/10 flex items-center justify-center text-[10px] text-white font-black"
+                        style={{ background: cs.primary }}
+                      >
+                        {isSelected ? '✓' : ''}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <span className="text-[12.5px] font-black text-[var(--ink)] block truncate">
+                          {cs.name}
+                        </span>
+                        <span className="text-[10.5px] font-bold text-[var(--muted)] block truncate">
+                          {cs.emoji} {cs.description.split('&')[0]}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Appearance Mode Picker */}
+            <div>
+              <label className="text-[12.5px] font-extrabold text-[var(--ink)] block mb-1.5">
+                Appearance Mode
+              </label>
+              <div className="apple-seg tri">
+                <button
+                  type="button"
+                  className={themeMode === 'auto' ? 'on' : ''}
+                  onClick={() => {
+                    setThemeMode('auto');
+                    applyTheme('auto', colorScheme);
+                  }}
+                >
+                  📱 Auto
+                </button>
+                <button
+                  type="button"
+                  className={themeMode === 'light' ? 'on' : ''}
+                  onClick={() => {
+                    setThemeMode('light');
+                    applyTheme('light', colorScheme);
+                  }}
+                >
+                  ☀️ Light
+                </button>
+                <button
+                  type="button"
+                  className={themeMode === 'dark' ? 'on' : ''}
+                  onClick={() => {
+                    setThemeMode('dark');
+                    applyTheme('dark', colorScheme);
+                  }}
+                >
+                  🌙 Dark
+                </button>
+              </div>
             </div>
           </>
         )}
@@ -296,8 +389,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   // If Full-Screen Mode (User is not logged in):
   if (isFullScreen) {
     return (
-      <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center p-4">
-        <div className="max-w-[460px] w-full bg-[var(--card)] rounded-[28px] p-6 shadow-[var(--shadow-hover)] border border-[var(--line)]">
+      <div className="rainbow-diffuse-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden py-10">
+        {/* Multi-layer 7-Color Diffuse Fusion Mesh Aurora Orbs (七彩弥散融合) */}
+        <div className="rainbow-aurora-orb rainbow-orb-1" />
+        <div className="rainbow-aurora-orb rainbow-orb-2" />
+        <div className="rainbow-aurora-orb rainbow-orb-3" />
+        <div className="rainbow-aurora-orb rainbow-orb-4" />
+        <div className="rainbow-aurora-orb rainbow-orb-5" />
+        <div className="rainbow-aurora-orb rainbow-orb-6" />
+        <div className="rainbow-aurora-orb rainbow-orb-7" />
+
+        {/* Frosted Glass Floating Login Card */}
+        <div className="max-w-[480px] w-full frosted-glass-card rounded-[32px] p-6 sm:p-7 relative z-10 animate-in fade-in zoom-in-95 duration-200">
           {formContent}
           <p className="text-[11.5px] text-[var(--muted)] font-bold text-center mt-4">
             🔒 Private student login · Required for House Cup challenges

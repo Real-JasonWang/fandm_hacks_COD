@@ -53,7 +53,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
         </div>
 
         {/* Confirmed College House Faction (Set during registration) */}
-        <div className="p-3.5 bg-white rounded-2xl border-2 border-[#E5DFD5] shadow-sm flex items-center justify-between">
+        <div className="p-3.5 bg-[var(--card)] rounded-2xl border-2 border-[var(--line)] shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-3 min-w-0">
             <span
               className="w-4 h-4 rounded-full flex-none shadow-sm"

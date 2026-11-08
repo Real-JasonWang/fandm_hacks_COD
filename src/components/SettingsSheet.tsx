@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import type { AppSettings, HouseId, ModeType } from '../types';
+import type { AppSettings, HouseId, ModeType, ThemeMode, ColorSchemeId } from '../types';
 import { HouseSelector } from './HouseSelector';
+import { COLOR_SCHEMES } from '../data/appleData';
 import {
   getStoredApiKey,
   setStoredApiKey,
@@ -17,6 +18,8 @@ interface SettingsSheetProps {
   currentUser: UserAccount | null;
   onClose: () => void;
   onUpdateMode: (mode: ModeType) => void;
+  onUpdateThemeMode: (themeMode: ThemeMode) => void;
+  onUpdateColorScheme: (colorScheme: ColorSchemeId) => void;
   onUpdateHouse: (house: HouseId) => void;
   onUpdateAvatar?: (avatar: string) => void;
   onOpenAI: () => void;
@@ -32,6 +35,8 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
   currentUser,
   onClose,
   onUpdateMode,
+  onUpdateThemeMode,
+  onUpdateColorScheme,
   onUpdateHouse,
   onUpdateAvatar,
   onOpenAI,
@@ -146,6 +151,81 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
               </div>
             </div>
           )}
+        </div>
+
+        {/* Appearance Mode (Auto / Light / Dark) */}
+        <div className="text-[15px] font-black text-[var(--ink)] mb-1.5 flex items-center justify-between">
+          <span>Appearance Mode</span>
+          <span className="text-[11.5px] font-extrabold text-[var(--muted)]">
+            {(settings.themeMode || 'auto') === 'auto' ? 'Matches Device' : (settings.themeMode || 'auto') === 'dark' ? 'Dark Theme' : 'Light Theme'}
+          </span>
+        </div>
+        <div className="apple-seg tri mb-1.5">
+          <button
+            type="button"
+            className={(settings.themeMode || 'auto') === 'auto' ? 'on' : ''}
+            onClick={() => onUpdateThemeMode('auto')}
+          >
+            📱 Auto
+          </button>
+          <button
+            type="button"
+            className={settings.themeMode === 'light' ? 'on' : ''}
+            onClick={() => onUpdateThemeMode('light')}
+          >
+            ☀️ Light
+          </button>
+          <button
+            type="button"
+            className={settings.themeMode === 'dark' ? 'on' : ''}
+            onClick={() => onUpdateThemeMode('dark')}
+          >
+            🌙 Dark
+          </button>
+        </div>
+        <p className="text-[12px] text-[var(--muted)] font-bold mb-4">
+          Auto adapts dynamically whenever your device switches between day and night mode.
+        </p>
+
+        {/* 7 Global Color Palettes */}
+        <div className="text-[15px] font-black text-[var(--ink)] mb-1.5 flex items-center justify-between">
+          <span>Color Palette</span>
+          <span className="text-[11.5px] font-extrabold text-[var(--brand)]">
+            {COLOR_SCHEMES.find((c) => c.id === (settings.colorScheme || 'peach'))?.name || 'Warm Peach'}
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          {COLOR_SCHEMES.map((cs) => {
+            const isSelected = (settings.colorScheme || 'peach') === cs.id;
+            return (
+              <button
+                key={cs.id}
+                type="button"
+                onClick={() => onUpdateColorScheme(cs.id)}
+                className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all cursor-pointer ${
+                  isSelected
+                    ? 'border-[var(--brand)] bg-[var(--card)] shadow-xs scale-[1.02]'
+                    : 'border-[var(--line)] bg-[var(--card)] hover:border-[var(--brand)] opacity-85 hover:opacity-100'
+                }`}
+                style={isSelected ? { outline: `2px solid ${cs.primary}` } : undefined}
+              >
+                <span
+                  className="w-5 h-5 rounded-full flex-none shadow-xs border border-black/10 flex items-center justify-center text-[10px] text-white font-black"
+                  style={{ background: cs.primary }}
+                >
+                  {isSelected ? '✓' : ''}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <span className="text-[12.5px] font-black text-[var(--ink)] block truncate">
+                    {cs.name}
+                  </span>
+                  <span className="text-[10.5px] font-bold text-[var(--muted)] block truncate">
+                    {cs.emoji} {cs.description.split('&')[0]}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         {/* Style / Vibe */}

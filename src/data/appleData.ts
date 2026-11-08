@@ -1,4 +1,77 @@
-import type { House, BristolInfo, BristolNumber, Restroom, RestroomReport, CheckInEntry, SymptomDef, AppSettings } from '../types';
+import type { House, BristolInfo, BristolNumber, Restroom, RestroomReport, CheckInEntry, SymptomDef, AppSettings, ColorSchemeDef } from '../types';
+
+export const COLOR_SCHEMES: ColorSchemeDef[] = [
+  {
+    id: 'peach',
+    name: 'Warm Peach',
+    emoji: '🍑',
+    primary: '#FF9F6B',
+    dark: '#D9662E',
+    light: '#FFE3D2',
+    accent: '#D9662E',
+    description: 'Classic warm peach & cozy terracotta',
+  },
+  {
+    id: 'diplomat',
+    name: 'Diplomat Blue',
+    emoji: '🎓',
+    primary: '#2563EB',
+    dark: '#1D4ED8',
+    light: '#DBEAFE',
+    accent: '#1E40AF',
+    description: 'F&M true blue & collegiate pride',
+  },
+  {
+    id: 'matcha',
+    name: 'Fresh Matcha',
+    emoji: '🍵',
+    primary: '#10B981',
+    dark: '#047857',
+    light: '#D1FAE5',
+    accent: '#065F46',
+    description: 'Calming sage & soothing herbal green',
+  },
+  {
+    id: 'lavender',
+    name: 'Royal Lavender',
+    emoji: '💜',
+    primary: '#8B5CF6',
+    dark: '#6D28D9',
+    light: '#EDE9FE',
+    accent: '#5B21B6',
+    description: 'Serene iris & electric purple',
+  },
+  {
+    id: 'amber',
+    name: 'Sunset Amber',
+    emoji: '🍯',
+    primary: '#F59E0B',
+    dark: '#B45309',
+    light: '#FEF3C7',
+    accent: '#92400E',
+    description: 'Golden hour honey & warm sunshine',
+  },
+  {
+    id: 'blossom',
+    name: 'Cherry Blossom',
+    emoji: '🌸',
+    primary: '#EC4899',
+    dark: '#BE185D',
+    light: '#FCE7F3',
+    accent: '#9D174D',
+    description: 'Sweet strawberry rose & soft blush',
+  },
+  {
+    id: 'teal',
+    name: 'Ocean Teal',
+    emoji: '🌊',
+    primary: '#06B6D4',
+    dark: '#0E7490',
+    light: '#CFFAFE',
+    accent: '#155E75',
+    description: 'Pacific breeze & sparkling cyan',
+  },
+];
 
 export const HOUSES: House[] = [
   // F&M College Houses (Official Colors: Roschel = Purple, Bonchek = Red, Brooks = Yellow, Ware = Blue, Weis = Green)
@@ -153,6 +226,8 @@ export function loadSettings(): AppSettings {
     onboarded: false,
     house: "Ware",
     mode: "playful",
+    themeMode: "auto",
+    colorScheme: "peach",
     logs: [],
     reports: {},
     installHidden: false,

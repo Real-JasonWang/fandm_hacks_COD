@@ -5,11 +5,13 @@ import type {
   TabType,
   HouseId,
   ModeType,
+  ThemeMode,
+  ColorSchemeId,
   Restroom,
   RestroomReportType,
   CheckInEntry,
 } from './types';
-import { loadSettings, saveSettings, seedReports, calculateCheckInPoints, HOUSES } from './data/appleData';
+import { loadSettings, saveSettings, seedReports, calculateCheckInPoints, HOUSES, COLOR_SCHEMES } from './data/appleData';
 import {
   getCurrentSession,
   logoutSession,
@@ -17,8 +19,10 @@ import {
   replaceUserLogs,
   updateUserHouse,
   updateUserAvatar,
+  updateUserTheme,
   type UserAccount,
 } from './lib/authDatabase';
+import { applyTheme } from './lib/themeManager';
 
 import { AppleTopBar } from './components/AppleTopBar';
 import { AppleBottomNav } from './components/AppleBottomNav';
@@ -67,6 +71,22 @@ export function App() {
     }
   }, [settings, currentUser]);
 
+  // Reactive theme application & system auto theme sync
+  useEffect(() => {
+    const tMode = settings.themeMode || 'auto';
+    const cScheme = settings.colorScheme || 'peach';
+    applyTheme(tMode, cScheme);
+
+    if (tMode === 'auto' && typeof window !== 'undefined' && window.matchMedia) {
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleMqChange = () => {
+        applyTheme('auto', settings.colorScheme || 'peach');
+      };
+      mq.addEventListener('change', handleMqChange);
+      return () => mq.removeEventListener('change', handleMqChange);
+    }
+  }, [settings.themeMode, settings.colorScheme]);
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => {
@@ -94,11 +114,19 @@ export function App() {
   // Auth state handlers
   const handleAuthSuccess = (user: UserAccount) => {
     setCurrentUser(user);
+    const userThemeMode = user.themeMode || settings.themeMode || 'auto';
+    const userColorScheme = user.colorScheme || settings.colorScheme || 'peach';
+
     setSettings((prev) => ({
       ...prev,
       house: user.houseId as HouseId,
+      themeMode: userThemeMode,
+      colorScheme: userColorScheme,
       logs: user.logs, // Strictly real authentic user logs, never fall back to fake demo logs!
     }));
+
+    applyTheme(userThemeMode, userColorScheme);
+
     if (settings.mode === 'playful') {
       confetti({ particleCount: 50, spread: 55 });
     }
@@ -379,6 +407,27 @@ export function App() {
         onClose={() => setIsSettingsOpen(false)}
         onUpdateMode={(mode) => {
           setSettings((prev) => ({ ...prev, mode }));
+        }}
+        onUpdateThemeMode={(themeMode: ThemeMode) => {
+          triggerHaptic();
+          setSettings((prev) => ({ ...prev, themeMode }));
+          applyTheme(themeMode, settings.colorScheme || 'peach');
+          if (currentUser) {
+            updateUserTheme(currentUser.id, themeMode, settings.colorScheme || 'peach');
+          }
+          const label =
+            themeMode === 'auto' ? 'Auto (Device)' : themeMode === 'dark' ? 'Dark Mode' : 'Light Mode';
+          showToast(`Theme switched to ${label}`);
+        }}
+        onUpdateColorScheme={(colorScheme: ColorSchemeId) => {
+          triggerHaptic();
+          setSettings((prev) => ({ ...prev, colorScheme }));
+          applyTheme(settings.themeMode || 'auto', colorScheme);
+          if (currentUser) {
+            updateUserTheme(currentUser.id, settings.themeMode || 'auto', colorScheme);
+          }
+          const csObj = COLOR_SCHEMES.find((c) => c.id === colorScheme);
+          showToast(`Palette switched to ${csObj ? csObj.name : colorScheme} ${csObj ? csObj.emoji : ''}`);
         }}
         onUpdateHouse={(house) => {
           triggerHaptic();

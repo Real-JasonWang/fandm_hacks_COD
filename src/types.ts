@@ -1,5 +1,27 @@
 export type ModeType = 'playful' | 'discreet';
 
+export type ThemeMode = 'auto' | 'light' | 'dark';
+
+export type ColorSchemeId =
+  | 'peach'
+  | 'diplomat'
+  | 'matcha'
+  | 'lavender'
+  | 'amber'
+  | 'blossom'
+  | 'teal';
+
+export interface ColorSchemeDef {
+  id: ColorSchemeId;
+  name: string;
+  emoji: string;
+  primary: string;
+  dark: string;
+  light: string;
+  accent: string;
+  description: string;
+}
+
 export type HouseId =
   | 'Bonchek'
   | 'Brooks'
@@ -69,6 +91,8 @@ export interface AppSettings {
   onboarded: boolean;
   house: HouseId;
   mode: ModeType;
+  themeMode?: ThemeMode;
+  colorScheme?: ColorSchemeId;
   logs: CheckInEntry[];
   reports: Record<string, RestroomReport>;
   installHidden: boolean;
