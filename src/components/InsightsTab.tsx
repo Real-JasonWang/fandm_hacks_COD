@@ -274,7 +274,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
       </div>
 
       {/* Weekly AI Summary */}
-      <div className="apple-card" style={{ background: 'linear-gradient(135deg, #F0EDFF, #FFFFFF)' }}>
+      <div className="apple-card" style={{ background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.12), var(--card))' }}>
         <div className="flex items-center gap-2 mb-2">
           <span className="text-[22px]">🤖</span>
           <h3 className="font-black text-[16px]">Weekly Summary</h3>

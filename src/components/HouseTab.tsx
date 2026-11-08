@@ -204,7 +204,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
       <div
         className="apple-card"
         style={{
-          background: `linear-gradient(135deg, ${currentHouse.color}22, #FFFFFF)`,
+          background: `linear-gradient(135deg, ${currentHouse.color}25, var(--card))`,
         }}
       >
         <div className="flex items-center justify-between">

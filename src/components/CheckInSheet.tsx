@@ -266,10 +266,10 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
               </div>
             )}
 
-            <div className="bg-white rounded-[24px] p-5 text-center border-2 border-[#E8E0D5] shadow-sm">
+            <div className="bg-[var(--card)] rounded-[24px] p-5 text-center border-2 border-[var(--line)] shadow-sm">
               {selectedImage ? (
                 <div className="space-y-3">
-                  <div className="relative max-w-[340px] mx-auto rounded-2xl overflow-hidden border-2 border-[#E5DFD5] shadow-xs bg-[#FAF7F2]">
+                  <div className="relative max-w-[340px] mx-auto rounded-2xl overflow-hidden border-2 border-[var(--line)] shadow-xs bg-[var(--bg)]">
                     <img
                       src={selectedImage}
                       alt="Photo"
@@ -277,8 +277,8 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     />
 
                     {/* Privacy Shield Overlay */}
-                    <div className="absolute inset-0 bg-[#FFFDF9]/85 backdrop-blur-md flex flex-col items-center justify-center p-4 text-center select-none">
-                      <div className="w-11 h-11 rounded-2xl bg-white border border-[#E5DFD5] flex items-center justify-center text-[22px] mb-2 shadow-xs">
+                    <div className="absolute inset-0 bg-[var(--card)]/90 backdrop-blur-md flex flex-col items-center justify-center p-4 text-center select-none">
+                      <div className="w-11 h-11 rounded-2xl bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center text-[22px] mb-2 shadow-xs">
                         🛡️
                       </div>
                       <b className="text-[14px] font-black text-[var(--ink)] block tracking-tight">
@@ -325,7 +325,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
             </div>
 
             {isVisionLoading && (
-              <div className="text-center py-3 text-[14px] font-black text-[var(--peach-d)] animate-pulse">
+              <div className="text-center py-3 text-[14px] font-black text-[var(--brand)] animate-pulse">
                 ⏳ Checking shape and texture...
               </div>
             )}
@@ -337,7 +337,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
             )}
 
             {visionResult && (
-              <div className="apple-card my-3 p-4 space-y-3.5 border-2 border-[var(--mint)] bg-[#F4FBF8]">
+              <div className="apple-card my-3 p-4 space-y-3.5 border-2 border-[var(--mint)] bg-[var(--card)]">
                 {/* Header Banner */}
                 <div className="flex items-center justify-between border-b border-[var(--mint-l)] pb-2.5">
                   <div className="flex items-center gap-2.5">
@@ -345,7 +345,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                       {visionResult.bristolType || '✓'}
                     </span>
                     <div>
-                      <b className="text-[15px] font-black text-[#11634C] block leading-snug">
+                      <b className="text-[15px] font-black text-[var(--ink)] block leading-snug">
                         Bristol Type {visionResult.bristolType || '-'}
                       </b>
                       <span className="text-[11.5px] font-extrabold text-[var(--ink2)]">
@@ -359,7 +359,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                 </div>
 
                 {/* Tip */}
-                <div className="p-3 bg-white rounded-xl border border-[var(--line)] text-[12.5px] font-bold text-[var(--ink)] leading-relaxed">
+                <div className="p-3 bg-[var(--bg)] rounded-xl border border-[var(--line)] text-[12.5px] font-bold text-[var(--ink)] leading-relaxed">
                   💡 <b>Tip:</b> {visionResult.quickTip}
                 </div>
 
@@ -374,8 +374,8 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
                   <div className="space-y-2 text-[12.5px]">
                     {/* Step 1 */}
-                    <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
-                      <div className="flex items-center gap-1.5 font-black text-[#2A2238]">
+                    <div className="p-3 bg-[var(--bg)] rounded-xl border border-[var(--line)] shadow-sm space-y-1">
+                      <div className="flex items-center gap-1.5 font-black text-[var(--ink)]">
                         <span className="text-[14px]">🔍</span>
                         <span>Step 1 · Shape &amp; Texture</span>
                       </div>
@@ -385,8 +385,8 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     </div>
 
                     {/* Step 2 */}
-                    <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
-                      <div className="flex items-center gap-1.5 font-black text-[#2A2238]">
+                    <div className="p-3 bg-[var(--bg)] rounded-xl border border-[var(--line)] shadow-sm space-y-1">
+                      <div className="flex items-center gap-1.5 font-black text-[var(--ink)]">
                         <span className="text-[14px]">💧</span>
                         <span>Step 2 · Moisture</span>
                       </div>
@@ -396,8 +396,8 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     </div>
 
                     {/* Step 3 */}
-                    <div className="p-3 bg-[#FFFDF9] rounded-xl border-2 border-[var(--peach-l)] shadow-sm space-y-1">
-                      <div className="flex items-center gap-1.5 font-black text-[var(--peach-d)]">
+                    <div className="p-3 bg-[var(--bg)] rounded-xl border-2 border-[var(--brand)] shadow-sm space-y-1">
+                      <div className="flex items-center gap-1.5 font-black text-[var(--brand)]">
                         <span className="text-[14px]">⚖️</span>
                         <span>Step 3 · Why this Type?</span>
                       </div>
@@ -407,8 +407,8 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     </div>
 
                     {/* Step 4 */}
-                    <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
-                      <div className="flex items-center gap-1.5 font-black text-[#11634C]">
+                    <div className="p-3 bg-[var(--bg)] rounded-xl border border-[var(--line)] shadow-sm space-y-1">
+                      <div className="flex items-center gap-1.5 font-black text-[var(--mint)]">
                         <span className="text-[14px]">🩺</span>
                         <span>Step 4 · Digestion Speed</span>
                       </div>
@@ -448,7 +448,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
             </div>
 
             <textarea
-              className="w-full h-24 p-3 bg-[#FFFDF9] border border-[var(--line)] rounded-xl text-[14px] font-semibold text-[var(--ink)] focus:outline-none focus:border-[var(--lav)] resize-none"
+              className="w-full h-24 p-3 bg-[var(--bg)] border border-[var(--line)] rounded-xl text-[14px] font-semibold text-[var(--ink)] focus:outline-none focus:border-[var(--brand)] resize-none"
               placeholder="e.g. Slept 7.5 hours last night, drank 6 glasses of water today, smooth stool like a banana, slight bloating, mild exam stress..."
               value={nlpText}
               onChange={(e) => setNlpText(e.target.value)}
