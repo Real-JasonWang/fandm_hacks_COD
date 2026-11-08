@@ -70,18 +70,11 @@ export const HouseSelector: React.FC<HouseSelectorProps> = ({
                 <span className="text-[14px] font-black text-[var(--ink)] block leading-snug truncate">
                   {h.name.replace(' College House', ' House')}
                 </span>
-                <span
-                  className={`text-[11.5px] block leading-tight truncate mt-0.5 ${
-                    isSelected
-                      ? 'text-[var(--brand)] font-extrabold'
-                      : 'text-[var(--muted)] font-bold'
-                  }`}
-                >
-                  {isSelected
-                    ? '✓ Selected'
-                    : h.category === 'house'
-                    ? 'College House'
-                    : 'Residence Hall'}
+                <span className="text-[11.5px] block leading-tight truncate mt-0.5 font-bold text-[var(--muted)]">
+                  {h.category === 'house' ? 'College House' : 'Residence Hall'}
+                  {isSelected && (
+                    <span className="text-[var(--brand)] font-extrabold ml-1.5">· Selected</span>
+                  )}
                 </span>
               </div>
 

@@ -293,9 +293,18 @@ Return ONLY a valid JSON object matching this schema with NO markdown code fence
       }
 
       const parsed = JSON.parse(jsonMatch[0]);
-      const bristolType = parsed.bristolType
-        ? (Math.min(7, Math.max(1, Math.round(parsed.bristolType))) as BristolNumber)
-        : null;
+      let bristolType: BristolNumber | null = null;
+      if (parsed.bristolType && typeof parsed.bristolType === 'number') {
+        bristolType = Math.min(7, Math.max(1, Math.round(parsed.bristolType))) as BristolNumber;
+      } else {
+        // Fallback: extract any mentioned "Type 1" through "Type 7" in reasoning text
+        const typeMatch = text.match(/Type\s*([1-7])/i);
+        if (typeMatch && typeMatch[1]) {
+          bristolType = parseInt(typeMatch[1], 10) as BristolNumber;
+        } else {
+          bristolType = 4;
+        }
+      }
 
       // Extract or synthesize structured Chain-of-Thought
       let cot: VisualChainOfThought | undefined = undefined;

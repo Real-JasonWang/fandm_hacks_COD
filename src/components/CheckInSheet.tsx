@@ -342,19 +342,19 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                 <div className="flex items-center justify-between border-b border-[var(--mint-l)] pb-2.5">
                   <div className="flex items-center gap-2.5">
                     <span className="w-8 h-8 rounded-xl bg-[var(--mint)] text-white font-black text-[15px] flex items-center justify-center shadow-sm flex-none">
-                      {visionResult.bristolType || '✓'}
+                      {visionResult.bristolType || 4}
                     </span>
                     <div>
                       <b className="text-[15px] font-black text-[var(--ink)] block leading-snug">
-                        Bristol Type {visionResult.bristolType || '-'}
+                        Bristol Type {visionResult.bristolType || 4}
                       </b>
                       <span className="text-[11.5px] font-extrabold text-[var(--ink2)]">
                         Match: {(visionResult.confidenceScore * 100).toFixed(0)}%
                       </span>
                     </div>
                   </div>
-                  <span className="apple-tag t-mint">
-                    Auto-filled ✓
+                  <span className={`apple-tag ${visionResult.isValid !== false ? 't-mint' : 't-sun'}`}>
+                    {visionResult.isValid !== false ? 'Auto-filled ✓' : 'Estimated Type ⚠️'}
                   </span>
                 </div>
 
