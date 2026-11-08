@@ -890,18 +890,22 @@ button:focus-visible, [tabindex]:focus-visible {
   left: 50%;
   top: calc(env(safe-area-inset-top, 0px) + 14px);
   transform: translate(-50%, -140%);
-  background: var(--ink);
-  color: #fff;
-  padding: 12px 18px;
-  border-radius: 18px;
+  background: #1C1924;
+  color: #FFFFFF;
+  padding: 12px 22px;
+  border-radius: 9999px;
   font-weight: 800;
-  z-index: 60;
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+  z-index: 100;
   opacity: 0;
   visibility: hidden;
   transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.25, 1.2), opacity 0.2s, visibility 0s 0.3s;
   max-width: 90vw;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  pointer-events: none;
 }
 
 .apple-toast.on {
@@ -909,6 +913,13 @@ button:focus-visible, [tabindex]:focus-visible {
   opacity: 1;
   visibility: visible;
   transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.25, 1.2), opacity 0.2s;
+}
+
+html[data-theme="dark"] .apple-toast {
+  background: #2D2738;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
 }
 
 /* Animation view */

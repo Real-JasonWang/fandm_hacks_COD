@@ -75,10 +75,15 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
         {/* Vibe Selection */}
         <div>
-          <p className="text-[14px] font-black text-[var(--ink)] mb-2">
-            Pick a vibe
-          </p>
-          <div className="apple-seg">
+          <div className="flex items-center justify-between mb-1.5">
+            <p className="text-[14px] font-black text-[var(--ink)]">
+              Choose your mode
+            </p>
+            <span className="text-[11px] font-black text-[var(--brand)]">
+              {selectedMode === 'playful' ? 'Full Fun + AI' : 'Quiet (No AI)'}
+            </span>
+          </div>
+          <div className="apple-seg mb-2">
             <button
               type="button"
               className={selectedMode === 'playful' ? 'on' : ''}
@@ -94,6 +99,11 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               🌿 Discreet
             </button>
           </div>
+          <p className="text-[12px] text-[var(--muted)] font-semibold leading-snug">
+            {selectedMode === 'playful'
+              ? 'Playful: Full experience with emojis, house challenges, and AI tools.'
+              : 'Discreet: Named Gut Log. Emojis and all camera and AI tools are turned off.'}
+          </p>
         </div>
 
         <div className="pt-4">

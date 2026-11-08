@@ -9,7 +9,6 @@ export const COLOR_SCHEMES: ColorSchemeDef[] = [
     dark: '#D9662E',
     light: '#FFE3D2',
     accent: '#D9662E',
-    description: 'Classic warm peach & cozy terracotta',
   },
   {
     id: 'diplomat',
@@ -19,7 +18,6 @@ export const COLOR_SCHEMES: ColorSchemeDef[] = [
     dark: '#1D4ED8',
     light: '#DBEAFE',
     accent: '#1E40AF',
-    description: 'F&M true blue & collegiate pride',
   },
   {
     id: 'matcha',
@@ -29,7 +27,6 @@ export const COLOR_SCHEMES: ColorSchemeDef[] = [
     dark: '#047857',
     light: '#D1FAE5',
     accent: '#065F46',
-    description: 'Calming sage & soothing herbal green',
   },
   {
     id: 'lavender',
@@ -39,7 +36,6 @@ export const COLOR_SCHEMES: ColorSchemeDef[] = [
     dark: '#6D28D9',
     light: '#EDE9FE',
     accent: '#5B21B6',
-    description: 'Serene iris & electric purple',
   },
   {
     id: 'amber',
@@ -49,7 +45,6 @@ export const COLOR_SCHEMES: ColorSchemeDef[] = [
     dark: '#B45309',
     light: '#FEF3C7',
     accent: '#92400E',
-    description: 'Golden hour honey & warm sunshine',
   },
   {
     id: 'blossom',
@@ -59,7 +54,6 @@ export const COLOR_SCHEMES: ColorSchemeDef[] = [
     dark: '#BE185D',
     light: '#FCE7F3',
     accent: '#9D174D',
-    description: 'Sweet strawberry rose & soft blush',
   },
   {
     id: 'teal',
@@ -69,7 +63,6 @@ export const COLOR_SCHEMES: ColorSchemeDef[] = [
     dark: '#0E7490',
     light: '#CFFAFE',
     accent: '#155E75',
-    description: 'Pacific breeze & sparkling cyan',
   },
 ];
 

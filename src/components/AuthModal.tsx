@@ -212,14 +212,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       >
                         {isSelected ? '✓' : ''}
                       </span>
-                      <div className="min-w-0 flex-1">
-                        <span className="text-[12.5px] font-black text-[var(--ink)] block truncate">
-                          {cs.name}
-                        </span>
-                        <span className="text-[10.5px] font-bold text-[var(--muted)] block truncate">
-                          {cs.emoji} {cs.description.split('&')[0]}
-                        </span>
-                      </div>
+                      <span className="text-[13px] font-black text-[var(--ink)] block truncate">
+                        {cs.name}
+                      </span>
                     </button>
                   );
                 })}

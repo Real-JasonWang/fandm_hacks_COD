@@ -215,24 +215,22 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
                 >
                   {isSelected ? '✓' : ''}
                 </span>
-                <div className="min-w-0 flex-1">
-                  <span className="text-[12.5px] font-black text-[var(--ink)] block truncate">
-                    {cs.name}
-                  </span>
-                  <span className="text-[10.5px] font-bold text-[var(--muted)] block truncate">
-                    {cs.emoji} {cs.description.split('&')[0]}
-                  </span>
-                </div>
+                <span className="text-[13px] font-black text-[var(--ink)] block truncate">
+                  {cs.name}
+                </span>
               </button>
             );
           })}
         </div>
 
         {/* Style / Vibe */}
-        <div className="text-[15px] font-black text-[var(--ink)] mb-1.5">
-          Interface Vibe
+        <div className="text-[15px] font-black text-[var(--ink)] mb-1.5 flex items-center justify-between">
+          <span>Interface Vibe</span>
+          <span className="text-[11.5px] font-extrabold text-[var(--brand)]">
+            {settings.mode === 'playful' ? 'Full Fun + AI' : 'Quiet (No AI)'}
+          </span>
         </div>
-        <div className="apple-seg">
+        <div className="apple-seg mb-2">
           <button
             type="button"
             className={settings.mode === 'playful' ? 'on' : ''}
@@ -248,9 +246,13 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
             🌿 Discreet
           </button>
         </div>
-        <p className="text-[12px] text-[var(--muted)] font-bold mt-1.5 mb-4">
-          Discreet mode removes emoji &amp; jokes and renames the app "Gut Log" for discreet in-class check-ins.
-        </p>
+        <div className="p-2.5 rounded-xl bg-[var(--card)] border border-[var(--line)] text-[12px] font-semibold text-[var(--ink2)] mb-4 leading-snug">
+          {settings.mode === 'playful' ? (
+            <span>💩 <b>Playful:</b> Shows emojis, friendly jokes, AI camera tools, and voice chat.</span>
+          ) : (
+            <span>🌿 <b>Discreet:</b> Renames app to <i>Gut Log</i>. Emojis and all camera and AI tools are turned off for class.</span>
+          )}
+        </div>
 
         {/* College House Grid */}
         <div className="text-[15px] font-black text-[var(--ink)] mb-2">
@@ -283,6 +285,13 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
           <p className="text-[12px] text-[var(--ink2)] font-semibold">
             Powers the optional camera scanner and voice/chat logging. Stored locally on your device.
           </p>
+
+          {settings.mode === 'discreet' && (
+            <div className="p-2.5 bg-[var(--sun-l)] text-[#7A5300] rounded-xl text-[12px] font-bold flex items-center gap-1.5">
+              <span>🌿</span>
+              <span>Discreet mode is active. Camera and AI features are turned off.</span>
+            </div>
+          )}
 
           <div className="space-y-2">
             <div className="relative">

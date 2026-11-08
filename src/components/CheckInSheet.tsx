@@ -63,6 +63,12 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
   const [nlpError, setNlpError] = useState<string | null>(null);
 
   React.useEffect(() => {
+    if (!isPlayful && activeTab !== 'manual') {
+      setActiveTab('manual');
+    }
+  }, [isPlayful, activeTab]);
+
+  React.useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -198,33 +204,42 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
           </button>
         </div>
 
-        {/* Check-In Mode Switcher (Identical to "Did you poop today?" apple-seg) */}
-        <div className="apple-seg tri mb-3">
-          <button
-            type="button"
-            className={activeTab === 'manual' ? 'on' : ''}
-            onClick={() => setActiveTab('manual')}
-          >
-            ✏️ Manual
-          </button>
-          <button
-            type="button"
-            className={activeTab === 'vision' ? 'on' : ''}
-            onClick={() => setActiveTab('vision')}
-          >
-            📷 AI Vision
-          </button>
-          <button
-            type="button"
-            className={activeTab === 'nlp' ? 'on' : ''}
-            onClick={() => setActiveTab('nlp')}
-          >
-            🎙️ Voice &amp; Chat
-          </button>
-        </div>
+        {/* Check-In Mode Switcher */}
+        {isPlayful ? (
+          <div className="apple-seg tri mb-3">
+            <button
+              type="button"
+              className={activeTab === 'manual' ? 'on' : ''}
+              onClick={() => setActiveTab('manual')}
+            >
+              ✏️ Manual
+            </button>
+            <button
+              type="button"
+              className={activeTab === 'vision' ? 'on' : ''}
+              onClick={() => setActiveTab('vision')}
+            >
+              📷 AI Vision
+            </button>
+            <button
+              type="button"
+              className={activeTab === 'nlp' ? 'on' : ''}
+              onClick={() => setActiveTab('nlp')}
+            >
+              🎙️ Voice &amp; Chat
+            </button>
+          </div>
+        ) : (
+          <div className="p-2.5 mb-3 bg-[var(--card)] rounded-xl border border-[var(--line)] flex items-center justify-between text-[12px] font-bold text-[var(--muted)]">
+            <span>🌿 Discreet Mode · Manual Health Log</span>
+            <span className="text-[11px] font-black text-[#11634C] bg-[var(--mint-l)] px-2.5 py-0.5 rounded-full">
+              Camera &amp; AI Disabled
+            </span>
+          </div>
+        )}
 
-        {/* OPTION B: AI Photo Check (Optional) */}
-        {activeTab === 'vision' && (
+        {/* OPTION B: AI Photo Check (Optional, Playful Mode Only) */}
+        {isPlayful && activeTab === 'vision' && (
           <div className="apple-card p-4 space-y-3 my-2 border-2 border-[var(--peach-l)]">
             <div className="flex items-center gap-2">
               <span className="text-[22px]">🤖</span>
@@ -417,8 +432,8 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
           </div>
         )}
 
-        {/* OPTION C: Natural Language Semantic Log (Opt-in) */}
-        {activeTab === 'nlp' && (
+        {/* OPTION C: Natural Language Semantic Log (Opt-in, Playful Mode Only) */}
+        {isPlayful && activeTab === 'nlp' && (
           <div className="apple-card p-4 space-y-3 my-2 border-2 border-[var(--lav-l)]">
             <div className="flex items-center gap-2">
               <span className="text-[22px]">💬</span>
@@ -463,9 +478,9 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
           </div>
         )}
 
-        {/* Standard Manual Form (Always viewable and verifiable) */}
+        {/* Standard Manual Form */}
         <div className="text-[15px] font-black text-[var(--ink)] my-2">
-          {isPlayful ? 'Did you poop today?' : 'Bowel movement'}
+          {isPlayful ? 'Did you poop today?' : 'Did you have a bowel movement today?'}
         </div>
         <div className="apple-seg">
           <button
@@ -487,7 +502,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
               setFormError(null);
             }}
           >
-            Not today
+            {isPlayful ? 'Not today' : 'No'}
           </button>
         </div>
 
@@ -495,9 +510,9 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
         {pooped && (
           <div className="mt-3">
             <div className="text-[15px] font-black text-[var(--ink)] mb-2">
-              What did it look like?{' '}
+              {isPlayful ? 'What did it look like?' : 'Stool shape & consistency'}{' '}
               <span className="text-[12px] text-[var(--muted)] font-bold">
-                (Bristol Stool Scale)
+                (Bristol Scale)
               </span>
             </div>
 
@@ -678,7 +693,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
             aria-disabled={pooped && !bristol}
             onClick={handleSave}
           >
-            Save check-in · +{calculatePoints()} pts
+            {isPlayful ? `Save check-in · +${calculatePoints()} pts` : `Save entry · +${calculatePoints()} pts`}
           </button>
           <p className="text-[12px] text-[var(--muted)] font-bold text-center mt-2.5">
             🔒 Saved locally in this browser. Zero photos stored on disk.

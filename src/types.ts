@@ -19,7 +19,7 @@ export interface ColorSchemeDef {
   dark: string;
   light: string;
   accent: string;
-  description: string;
+  description?: string;
 }
 
 export type HouseId =
