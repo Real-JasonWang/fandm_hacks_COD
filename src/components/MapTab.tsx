@@ -372,7 +372,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
             <iframe
               src="https://map.concept3d.com/?id=1202#!ct/32461,57938?s/"
               title="Franklin & Marshall College Restroom Map"
-              className="w-full h-full border-0 block rounded-[20px]"
+              className="w-full h-full border-0 block rounded-[20px] campus-map-frame"
               loading="lazy"
               allow="geolocation; fullscreen"
             />
