@@ -292,10 +292,10 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
       <div className="apple-card">
         <div className="flex justify-between items-center mb-1">
           <h3 className="font-black text-[16px]">F&amp;M Leaderboard</h3>
-          <span className="apple-tag t-lav font-bold">Sub-Linear Handicap</span>
+          <span className="apple-tag t-lav font-bold">Adjusted for Dorm Size</span>
         </div>
         <p className="text-[12px] text-[var(--muted)] font-bold mt-0.5 mb-3">
-          % of residents who checked in 3+ days this week: balanced mathematically by dorm size (N).
+          % of students logging 3+ days this week, balanced fairly for dorm size.
         </p>
 
         <div className="space-y-2.5">
@@ -328,7 +328,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
                 </div>
                 <div className="flex justify-between text-[11px] text-[var(--muted)] font-bold pl-[94px] pr-1">
                   <span>{h.activeCount}/{h.registeredCount} active ({h.checks} check-ins) · Raw: {h.part}%</span>
-                  <span>Handicap: {h.multiplier}×</span>
+                  <span>Size factor: {h.multiplier}×</span>
                 </div>
               </div>
             );
@@ -404,7 +404,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
         <div className="apple-banner mt-3 bg-[#FFF3E8] text-[#8A4317]">
           <span>🤝</span>
           <div className="text-[13px] leading-snug">
-            We reward <b>healthy habits, not biological perfection</b>. Your stool type never penalizes points, ensuring students with IBS, Crohn's, or acute stress compete completely on equal footing.
+            We reward <b>healthy habits, not perfect digestion</b>. Your stool type never loses points, so everyone competes fairly even with stomach conditions or stress.
           </div>
         </div>
       </div>

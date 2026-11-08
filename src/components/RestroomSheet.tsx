@@ -35,7 +35,7 @@ export const RestroomSheet: React.FC<RestroomSheetProps> = ({
   const getStatusText = () => {
     if (!report) return null;
     if (report.maintenance && report.maintenance >= 1) {
-      return `🔧 Facilities alert: ${report.maintenance} maintenance report(s) filed · ${formatMinutesAgo(report.ts)}`;
+      return `🔧 Alert: ${report.maintenance} repair report(s) filed · ${formatMinutesAgo(report.ts)}`;
     }
     if (report.clean >= 2) {
       return `${report.clean} students reported it needs cleaning · ${formatMinutesAgo(report.ts)}`;
@@ -80,7 +80,7 @@ export const RestroomSheet: React.FC<RestroomSheetProps> = ({
 
         <p className="text-[14px] font-semibold text-[var(--ink2)] mb-2.5">
           {restroom.f}{' '}
-          {restroom.all ? '· All-gender facility' : "· Women's & men's facilities"}
+          {restroom.all ? '· All-gender' : "· Women's & men's"}
         </p>
 
         {/* Feature Tags */}
@@ -104,7 +104,7 @@ export const RestroomSheet: React.FC<RestroomSheetProps> = ({
           </div>
         ) : (
           <p className="text-[12.5px] text-[var(--muted)] font-bold mb-4">
-            No crowdsourced reports in the last few hours.
+            No student reports in the last few hours.
           </p>
         )}
 
@@ -117,7 +117,7 @@ export const RestroomSheet: React.FC<RestroomSheetProps> = ({
             className="apple-btn ghost"
             onClick={() => onReport(restroom.id, 'ok')}
           >
-            ✨ Clean & fully stocked
+            ✨ Clean &amp; fully stocked
           </button>
           <button
             className="apple-btn ghost"
@@ -140,7 +140,7 @@ export const RestroomSheet: React.FC<RestroomSheetProps> = ({
         </div>
 
         <p className="text-[12px] text-[var(--muted)] font-bold mt-4 text-center">
-          Reports are completely anonymous and route directly to the Facilities dispatch queue.
+          Reports are 100% anonymous and sent directly to campus cleaning staff.
         </p>
       </div>
     </>

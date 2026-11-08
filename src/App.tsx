@@ -9,7 +9,7 @@ import type {
   RestroomReportType,
   CheckInEntry,
 } from './types';
-import { loadSettings, saveSettings, seedReports, calculateCheckInPoints } from './data/appleData';
+import { loadSettings, saveSettings, seedReports, calculateCheckInPoints, HOUSES } from './data/appleData';
 import {
   getCurrentSession,
   logoutSession,
@@ -157,8 +157,10 @@ export function App() {
       ['blood', 'black', 'pain'].includes(s)
     );
 
+    const currentHouseObj = HOUSES.find((h) => h.id === settings.house);
+    const houseLabel = currentHouseObj ? currentHouseObj.name : `${settings.house} House`;
     showToast(
-      `+${pts} pts for ${settings.house} House! ${
+      `+${pts} pts for ${houseLabel}! ${
         settings.mode === 'playful' ? '🎉💩' : '✓'
       }`
     );
@@ -213,8 +215,8 @@ export function App() {
       type === 'ok'
         ? 'Marked clean & stocked! ✓'
         : type === 'maintenance'
-        ? 'Dispatched urgent maintenance work order to F&M Facilities 🔧'
-        : 'Report submitted! Routed to Facilities queue 🧽';
+        ? 'Urgent repair report sent to campus staff 🔧'
+        : 'Report sent to campus cleaning staff 🧽';
     showToast(msg);
   };
 
@@ -385,7 +387,8 @@ export function App() {
             updateUserHouse(currentUser.id, house);
             setCurrentUser((prev) => (prev ? { ...prev, houseId: house } : null));
           }
-          showToast(`Switched to ${house} College House!`);
+          const chosen = HOUSES.find((h) => h.id === house);
+          showToast(`Switched to ${chosen ? chosen.name : house}!`);
         }}
         onUpdateAvatar={(avatar) => {
           triggerHaptic();

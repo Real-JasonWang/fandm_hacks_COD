@@ -174,7 +174,7 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
 
         {/* College House Grid */}
         <div className="text-[15px] font-black text-[var(--ink)] mb-2">
-          Your College House Faction
+          Your College House or Hall
         </div>
         <HouseSelector
           selectedHouse={settings.house}
@@ -224,7 +224,7 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
 
             <div className="space-y-1.5">
               <label className="text-[11.5px] font-extrabold text-[var(--ink2)] block">
-                Primary Model (with automatic fallback cascade):
+                Preferred AI Model:
               </label>
               <select
                 className="w-full py-2 px-2.5 text-[12.5px] font-extrabold bg-[#FFFDF9] border border-[var(--line)] rounded-xl text-[var(--ink)] focus:outline-none"
@@ -299,7 +299,7 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
               onOpenFacilities();
             }}
           >
-            🧽 Facilities view (staff queue)
+            🧽 Campus cleaning queue
           </button>
           <button className="apple-btn ghost" onClick={onResetDemo}>
             ↺ Reset demo dataset

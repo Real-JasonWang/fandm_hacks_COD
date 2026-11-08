@@ -185,7 +185,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
           Bathroom reports
         </h1>
         <p className="text-[14px] font-semibold text-[var(--ink2)]">
-          Live student crowdsourced reports, cleanliness tracking, and amenity status on F&amp;M campus.
+          Live student reports, cleanliness ratings, and restroom supplies on F&amp;M campus.
         </p>
       </div>
 
@@ -490,7 +490,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
                     </span>
                   ) : (
                     <span className="apple-tag t-lav text-[11px] font-black whitespace-nowrap">
-                      ✓ Operational
+                      ✓ Open &amp; Ready
                     </span>
                   )}
                   <span className="text-[12px] font-extrabold text-[var(--brand)] group-hover:translate-x-1 transition-transform flex items-center gap-0.5">

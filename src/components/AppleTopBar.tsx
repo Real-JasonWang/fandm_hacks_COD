@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ModeType } from '../types';
 import type { UserAccount } from '../lib/authDatabase';
+import { HOUSES } from '../data/appleData';
 
 interface AppleTopBarProps {
   mode: ModeType;
@@ -14,6 +15,8 @@ export const AppleTopBar: React.FC<AppleTopBarProps> = ({
   onOpenSettings,
 }) => {
   const isPlayful = mode === 'playful';
+  const houseObj = currentUser ? HOUSES.find((h) => h.id === currentUser.houseId) : null;
+  const houseName = houseObj ? houseObj.name : currentUser?.houseId || '';
 
   return (
     <div className="flex items-center justify-between py-2 mb-3">
@@ -30,7 +33,7 @@ export const AppleTopBar: React.FC<AppleTopBarProps> = ({
           </b>
           <small className="text-[11.5px] text-[var(--muted)] font-bold block truncate">
             {currentUser
-              ? `${currentUser.displayName} · ${currentUser.houseId} House`
+              ? `${currentUser.displayName} · ${houseName}`
               : isPlayful
               ? 'F&M Gut Health & House Cup 💩'
               : 'F&M Wellness Check-in'}

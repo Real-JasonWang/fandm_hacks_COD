@@ -8,7 +8,7 @@ interface TodayTabProps {
   onOpenCheckIn: () => void;
   onOpenRedFlag: () => void;
   onGoToHouse: () => void;
-  onHideInstall: () => void;
+  onHideInstall?: () => void;
 }
 
 export const TodayTab: React.FC<TodayTabProps> = ({
@@ -16,7 +16,6 @@ export const TodayTab: React.FC<TodayTabProps> = ({
   onOpenCheckIn,
   onOpenRedFlag,
   onGoToHouse,
-  onHideInstall,
 }) => {
   const isPlayful = settings.mode === 'playful';
 
@@ -105,28 +104,11 @@ export const TodayTab: React.FC<TodayTabProps> = ({
         <p className="text-[14px] font-semibold text-[var(--ink2)]">{dateStr}</p>
       </div>
 
-      {!settings.installHidden && (
-        <div className="apple-banner">
-          <span className="text-[20px]">📲</span>
-          <div className="flex-1 text-[13.5px] leading-snug">
-            <b>Use it like a native iOS/Android app.</b> On iPhone: Safari → Share →{' '}
-            <b>Add to Home Screen</b>.
-          </div>
-          <button
-            onClick={onHideInstall}
-            className="text-[18px] opacity-70 hover:opacity-100 font-bold px-1"
-            aria-label="Dismiss"
-          >
-            ×
-          </button>
-        </div>
-      )}
-
       {isFlagged && (
         <div className="apple-banner red">
           <span className="text-[20px]">❗</span>
           <div className="flex-1 text-[13.5px] leading-snug">
-            <b>You logged a warning sign recently.</b> Blood, black stool, or severe abdominal pain should be checked by a healthcare provider.{' '}
+            <b>Warning sign logged recently.</b> Blood, black stool, or bad stomach pain should be checked by a doctor or nurse.{' '}
             <button
               onClick={onOpenRedFlag}
               className="underline font-bold hover:opacity-80"
@@ -222,7 +204,7 @@ export const TodayTab: React.FC<TodayTabProps> = ({
             </h3>
             <p className="text-[13px] font-semibold text-[var(--ink2)]">
               {weekPoints} pts this week for{' '}
-              <b style={{ color: currentHouse.color }}>{currentHouse.id} House</b>
+              <b style={{ color: currentHouse.color }}>{currentHouse.name}</b>
             </p>
           </div>
           <button className="apple-chip" onClick={onGoToHouse}>

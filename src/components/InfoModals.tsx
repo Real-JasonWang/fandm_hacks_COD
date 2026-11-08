@@ -38,7 +38,7 @@ export const RedFlagModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         <p className="text-[14px] text-[var(--ink2)] font-semibold leading-relaxed mb-3">
-          Blood in your stool, black or tarry stool, or acute severe abdominal pain can stem from various causes: most are treatable, but they should be promptly evaluated by a licensed clinician, not a smartphone app.
+          Blood, black stool, or bad stomach pain can have many causes. Most are easy to treat, but they should be checked promptly by a doctor or nurse, not a phone app.
         </p>
 
         <div className="apple-card space-y-3 mb-3">
@@ -122,7 +122,7 @@ export const AIInfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 Finds patterns in <i>your</i> personal data
               </b>
               <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                Correlates sleep duration, hydration, fiber, and academic stress with stool consistency.
+                Connects your sleep, water, fiber, and school stress with how easily you poop.
               </p>
             </div>
           </div>
@@ -136,7 +136,7 @@ export const AIInfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 Generates a plain-English weekly digest
               </b>
               <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                Synthesizes biological signals like an encouraging health coach.
+                Summarizes your week just like a helpful health coach.
               </p>
             </div>
           </div>
@@ -150,7 +150,7 @@ export const AIInfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 Suggests actionable micro-habits
               </b>
               <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                Only recommends validated gastrointestinal health practices.
+                Only recommends simple, proven everyday habits.
               </p>
             </div>
           </div>
@@ -167,7 +167,7 @@ export const AIInfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 Diagnose medical conditions
               </b>
               <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                It can advise consulting Health Services, but never diagnoses pathology.
+                It may suggest seeing a nurse or doctor, but never gives medical diagnoses.
               </p>
             </div>
           </div>
@@ -181,7 +181,7 @@ export const AIInfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 Store or transmit stool photos
               </b>
               <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                Privacy-first architecture with zero invasive surveillance.
+                Built for 100% privacy with zero tracking.
               </p>
             </div>
           </div>
@@ -195,7 +195,7 @@ export const AIInfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 Send personal health logs to any server
               </b>
               <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                All data is preserved strictly within your local browser storage.
+                All data stays safely on your own phone or computer.
               </p>
             </div>
           </div>
@@ -204,7 +204,7 @@ export const AIInfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
         <div className="apple-banner text-[13px] leading-snug">
           <span>ℹ️</span>
           <div>
-            <b>Engine Architecture:</b> Pattern detection runs locally using standard stats and health benchmarks. Zero third-party analytics.
+            <b>How it works:</b> Pattern detection runs right on your device using simple stats and benchmarks. Zero third-party analytics.
           </div>
         </div>
       </div>
@@ -243,7 +243,7 @@ export const ScienceModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 Bristol Stool Form Scale (BSFS)
               </b>
               <p className="text-[12.5px] text-[var(--ink2)] font-semibold">
-                Classifies bowel movements into 7 distinct types (Lewis &amp; Heaton, <i>Scand. J. Gastroenterology</i>, 1997). Gold standard utilized worldwide by doctors.
+                Groups bowel movements into 7 simple types (Bristol Scale, 1997). Used worldwide by doctors.
               </p>
             </div>
           </div>
@@ -268,10 +268,10 @@ export const ScienceModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div>
               <b className="text-[14px] font-black text-[var(--ink)] block">
-                Sleep &amp; Circadian Motility
+                Sleep &amp; Body Clock
               </b>
               <p className="text-[12.5px] text-[var(--ink2)] font-semibold">
-                Adults require 7+ hours of consolidated sleep. Disrupted circadian rhythms trigger visceral hypersensitivity and colonic dysmotility.
+                Young adults need 7+ hours of good sleep. Poor sleep disrupts digestion and can cause an upset stomach.
               </p>
             </div>
           </div>
@@ -282,10 +282,10 @@ export const ScienceModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div>
               <b className="text-[14px] font-black text-[var(--ink)] block">
-                Dietary Soluble &amp; Insoluble Fiber
+                Dietary Fiber
               </b>
               <p className="text-[12.5px] text-[var(--ink2)] font-semibold">
-                Target intake is ~25 g/day for women and ~38 g/day for men. Most college students average less than 12 g daily.
+                Target is ~25 g/day for women and ~38 g/day for men. Most college students get less than half of that.
               </p>
             </div>
           </div>
@@ -299,7 +299,7 @@ export const ScienceModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 The Gut-Brain Axis
               </b>
               <p className="text-[12.5px] text-[var(--ink2)] font-semibold">
-                Psychological stress stimulates autonomic corticotropin-releasing factor (CRF), accelerating or stalling intestinal transit.
+                School and exam stress triggers hormones that can suddenly speed up or slow down your gut.
               </p>
             </div>
           </div>

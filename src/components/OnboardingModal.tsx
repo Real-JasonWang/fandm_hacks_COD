@@ -33,7 +33,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
         </h1>
 
         <p className="text-[14.5px] font-semibold text-[var(--ink2)] leading-relaxed">
-          {userName ? `Welcome, ${userName}! ` : ''}Everyone does it, almost nobody tracks it: but stool motility and consistency are two of the clearest biometric indicators of student stress and recovery.
+          {userName ? `Welcome, ${userName}! ` : ''}Everyone does it, but almost nobody tracks it. How often and how easily you poop are two of the best signs of your stress, sleep, and health.
         </p>
 
         {/* 3 Icons Trio */}
@@ -61,10 +61,10 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
             />
             <div className="min-w-0">
               <span className="text-[11px] font-black text-[var(--muted)] block uppercase tracking-wider">
-                Your F&amp;M College House
+                Your F&amp;M Residence
               </span>
               <b className="text-[14.5px] font-black text-[var(--ink)] block truncate">
-                {initialHouse} House
+                {houseConfig?.name || initialHouse}
               </b>
             </div>
           </div>

@@ -445,7 +445,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
               disabled={isNlpLoading || !nlpText.trim()}
               onClick={handleNlpParse}
             >
-              {isNlpLoading ? '⏳ AI extracting health parameters...' : '✨ Parse & Auto-fill Form'}
+              {isNlpLoading ? '⏳ Reading your notes...' : '✨ Fill out form'}
             </button>
 
             {nlpMessage && (

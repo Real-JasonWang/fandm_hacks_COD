@@ -178,7 +178,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         <div>
           <div className="flex justify-between items-center mb-1">
             <label htmlFor="auth-email" className="text-[12.5px] font-extrabold text-[var(--ink)]">
-              F&amp;M Institutional Email
+              F&amp;M College Email
             </label>
             <span
               className={`text-[11px] font-extrabold px-2 py-0.5 rounded-full ${
@@ -234,7 +234,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           style={tab === 'register' && !domainCheck.isValid ? { opacity: 0.5 } : undefined}
         >
           {isLoading
-            ? 'Verifying F&M credentials...'
+            ? 'Signing in...'
             : tab === 'login'
             ? 'Sign In to F&M House Cup →'
             : 'Register with Verified @fandm.edu →'}
@@ -266,7 +266,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <span className="text-[11px] font-black text-[#5040C0]">Sign In →</span>
               </div>
               <p className="text-[11.5px] font-semibold text-[var(--ink2)] leading-tight mt-0.5">
-                diplomat@fandm.edu · Ware House · Optimal Bristol Type 4 baseline, 7.5h sleep, 7 glasses water.
+                diplomat@fandm.edu · Ware House · Ideal Type 4 stool, 7.5h sleep, 7 glasses of water.
               </p>
             </div>
           </button>
@@ -284,7 +284,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <span className="text-[11px] font-black text-[var(--peach-d)]">Sign In →</span>
               </div>
               <p className="text-[11.5px] font-semibold text-[var(--ink2)] leading-tight mt-0.5">
-                ben@fandm.edu · Bonchek House · Midterm sleep deprivation, high stress, and gut motility swings.
+                ben@fandm.edu · Bonchek House · Lack of sleep, high midterm stress, and upset stomach.
               </p>
             </div>
           </button>
@@ -300,7 +300,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         <div className="max-w-[460px] w-full bg-[var(--card)] rounded-[28px] p-6 shadow-[var(--shadow-hover)] border border-[var(--line)]">
           {formContent}
           <p className="text-[11.5px] text-[var(--muted)] font-bold text-center mt-4">
-            🔒 Private student database · Verification required for campus challenges
+            🔒 Private student login · Required for House Cup challenges
           </p>
         </div>
       </div>

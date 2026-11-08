@@ -124,7 +124,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
       patterns.push({
         em: "😴",
         bg: "var(--lav-l)",
-        title: "7+ hours sleep → optimal transit",
+        title: "7+ hours sleep → smooth digestion",
         text: `On nights with 7+ hours of sleep, ${idealWithGoodSleep}% of your bowel movements stayed in the ideal zone, vs only ${idealWithOtherSleep}% on shorter nights.`,
         a: idealWithGoodSleep,
         b: idealWithOtherSleep,
@@ -181,11 +181,11 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
           em: "🧠",
           bg: "var(--peach-l)",
           title: "Stress shows up in your gut",
-          text: `On stressed days, ${a}% of logs shifted off baseline (hard or loose), vs only ${b}% on calm days. That's the gut-brain axis in real time.`,
+          text: `On stressed days, ${a}% of logs were hard or loose, vs only ${b}% on calm days. That shows stress affects your stomach directly.`,
           a,
           b,
-          la: "Stressed days (off-baseline)",
-          lb: "Calm days (off-baseline)",
+          la: "Stressed days (irregular)",
+          lb: "Calm days (irregular)",
           col: "var(--peach-d)",
         });
       }
@@ -197,11 +197,11 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
         em: "🧘",
         bg: "var(--peach-l)",
         title: "Calm days protect gut stability",
-        text: `During low-stress periods, ${idealWithLoStress}% of your logs maintained steady motility, vs only ${idealWithOtherStress}% during high-stress periods.`,
+        text: `During low-stress times, ${idealWithLoStress}% of your bowel movements were normal, vs only ${idealWithOtherStress}% during high-stress days.`,
         a: idealWithLoStress,
         b: idealWithOtherStress,
-        la: "Calm days (stable rate)",
-        lb: "Stressed days (stable rate)",
+        la: "Calm days (normal rate)",
+        lb: "Stressed days (normal rate)",
         col: "var(--peach-d)",
       });
     }
@@ -284,7 +284,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
             <>
               You checked in <b>{daysLogged7} of 7 days</b> this week. <b>{idealPct7}%</b> of your bowel movements were in the <b>ideal zone</b> (Type 3-4). You averaged <b>{avgSleep7} h</b> of sleep and <b>{avgWater7} glasses</b> of water a day.
               {patterns.length > 0 && (
-                <span> The strongest physiological correlation: <b>{patterns[0].title.toLowerCase()}</b>.</span>
+                <span> Strongest pattern: <b>{patterns[0].title.toLowerCase()}</b>.</span>
               )}
             </>
           ) : (
@@ -386,7 +386,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                   fontWeight="700"
                   fill="var(--muted)"
                 >
-                  Log daily to visualize your real 14-day Bristol motility curve
+                  Log daily to see your real 14-day digestion chart
                 </text>
               </g>
             )}
@@ -532,7 +532,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
         </h2>
         {patterns.length === 0 ? (
           <p className="text-[14px] text-[var(--ink2)] font-semibold">
-            No strong physiological correlations yet: keep logging daily check-ins!
+            No clear patterns yet. Keep logging daily check-ins!
           </p>
         ) : (
           <div className="space-y-2.5">
@@ -602,7 +602,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                 Refill your bottle at every class change
               </b>
               <p className="text-[12.5px] text-[var(--ink2)] font-semibold">
-                Easiest way to reach the 6+ glass baseline.
+                Easiest way to reach 6+ glasses a day.
               </p>
             </div>
           </div>
@@ -616,7 +616,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
                 Add one fruit or veg at Dining Hall lunch
               </b>
               <p className="text-[12.5px] text-[var(--ink2)] font-semibold">
-                Dietary soluble fiber is the #1 remedy for hard stools.
+                Fiber is the best way to soften hard stools.
               </p>
             </div>
           </div>
@@ -627,10 +627,10 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
             </div>
             <div>
               <b className="text-[14px] font-extrabold text-[var(--ink)] block">
-                Protect 7 hours before midterms & exams
+                Protect 7 hours before midterms &amp; exams
               </b>
               <p className="text-[12.5px] text-[var(--ink2)] font-semibold">
-                Your data shows sleep directly stabilizes motility.
+                Your logs show that sleep directly helps digestion.
               </p>
             </div>
           </div>

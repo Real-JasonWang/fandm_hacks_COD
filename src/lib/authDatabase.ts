@@ -663,13 +663,13 @@ export function validateCampusEmail(
   if (!trimmed.endsWith(uni.requiredDomain.toLowerCase())) {
     return {
       isValid: false,
-      error: `Registration restricted: Joining the F&M House Cup requires a verified ${uni.requiredDomain} email address.`,
+      error: `Registration requires a verified ${uni.requiredDomain} email address.`,
     };
   }
 
   const parts = trimmed.split('@');
   if (parts.length !== 2 || parts[0].length < 2) {
-    return { isValid: false, error: 'Please enter a valid Franklin & Marshall student username before @fandm.edu.' };
+    return { isValid: false, error: 'Please enter a valid F&M student username before @fandm.edu.' };
   }
 
   return { isValid: true };
@@ -702,7 +702,7 @@ export async function registerAccount(params: {
   if (users.some((u) => u.email.toLowerCase() === cleanEmail)) {
     return {
       success: false,
-      error: 'An account with this institutional email already exists. Please sign in.',
+      error: 'An account with this email already exists. Please sign in.',
     };
   }
 
@@ -745,7 +745,7 @@ export async function loginAccount(
   const user = users.find((u) => u.email.toLowerCase() === cleanEmail);
 
   if (!user) {
-    return { success: false, error: 'No registered F&M student account found with this email address.' };
+    return { success: false, error: 'No account found with this email address.' };
   }
 
   const userSalt = user.salt || SEED_SALT;
@@ -768,7 +768,7 @@ export async function loginAccount(
     ].includes(cleanEmail));
 
   if (!isMatch) {
-    return { success: false, error: 'Incorrect password. Please verify and try again.' };
+    return { success: false, error: 'Incorrect password. Please try again.' };
   }
 
   // Automatically upgrade legacy hash if needed

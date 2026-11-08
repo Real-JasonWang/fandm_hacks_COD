@@ -39,10 +39,10 @@ export const FacilitiesView: React.FC<FacilitiesViewProps> = ({
 
       <div>
         <h1 className="text-[27px] font-black tracking-tight text-[var(--ink)]">
-          Facilities Queue 🧽
+          Campus Cleaning Queue 🧽
         </h1>
         <p className="text-[14px] font-semibold text-[var(--ink2)]">
-          Dedicated dispatch console for F&amp;M custodial teams. Aggregated strictly from anonymous restroom reports.
+          Cleaners dashboard for F&amp;M campus. Updated in real time from student reports.
         </p>
       </div>
 
@@ -51,7 +51,7 @@ export const FacilitiesView: React.FC<FacilitiesViewProps> = ({
           <div className="text-[36px] mb-2">✨</div>
           <h3 className="font-black text-[18px]">All clear</h3>
           <p className="text-[13px] text-[var(--ink2)] font-semibold">
-            Zero pending sanitation or supply reports across campus!
+            Zero pending cleaning or supply reports across campus!
           </p>
         </div>
       ) : (

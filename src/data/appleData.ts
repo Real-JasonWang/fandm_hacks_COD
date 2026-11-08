@@ -52,11 +52,11 @@ export const STRESS: [string, string][] = [
 
 export const FACTS: string[] = [
   "Pooping anywhere from 3× a day to 3× a week is considered normal.",
-  "The Bristol Stool Scale was created at Bristol Royal Infirmary in 1997. Clinicians worldwide still use it today.",
-  "Your gut and brain communicate constantly (the gut-brain axis). College exam stress directly impacts gut motility.",
-  "Young adults need 7+ hours of quality sleep. Sleep deprivation is linked to irregular digestion and gut discomfort.",
+  "The Bristol Stool Scale was created at Bristol Royal Infirmary in 1997. Doctors worldwide still use it today.",
+  "Your gut and brain communicate constantly (the gut-brain axis). School exam stress directly affects how fast your gut moves.",
+  "Young adults need 7+ hours of quality sleep. Not getting enough sleep can upset your stomach and digestion.",
   "Most college students eat far less fiber than the recommended ~25-38 grams a day.",
-  "Coffee stimulates colonic motor activity for roughly 30% of people; that's why morning brew sends you running.",
+  "Coffee gets digestion moving fast for about 30% of people; that's why morning brew sends you running.",
 ];
 
 export const RESTROOMS: Restroom[] = [
