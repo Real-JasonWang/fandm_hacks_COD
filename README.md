@@ -59,7 +59,7 @@ In college, life is busy and stressful. Late-night study sessions in Shadek, D-H
 
 ---
 
-## ⚡ System Architecture Flowchart
+## ⚡ Architecture Flowchart
 
 ```mermaid
 flowchart TD
@@ -168,9 +168,7 @@ flowchart TD
 
 ---
 
-## 🔬 AI Precision Vision Pipeline
-
-How our multi-stage computer vision and reasoning engine grades stool shape with clinical accuracy while guarding student privacy:
+## 🔬 AI Precision Pipeline
 
 ```mermaid
 flowchart TD
@@ -227,14 +225,14 @@ flowchart TD
     end
 ```
 
-### 🔬 Why Our AI Accuracy Stands Out
+### 🔬 How the Photo Check Works
 
-1. **Zero-Disk Privacy**: The moment a student takes a photo, it enters device RAM through an HTML5 canvas buffer. All EXIF camera data is stripped, a 40px blur filter is applied immediately to protect privacy on screen, and the image is never written to device disk or remote storage.
-2. **Context-Aware Anti-Spoofing**: Before grading, our model verifies that the photo was taken inside a real toilet bowl. If someone uploads chocolate, peanut butter, pet droppings, or random objects, the engine sets `isValid = false` and politely asks for a genuine photo.
-3. **Multi-Spectral Morphology**: Rather than guessing, the vision pipeline breaks the stool into contour edges and surface patterns. It checks whether the surface is smooth (Type 4), cracked (Type 3), bumpy (Type 2), or broken into nut-like lumps (Type 1).
-4. **Water Dynamics & Dissolution**: Stool behavior in toilet water gives key clues about moisture. The model evaluates whether the sample stays solid with clean edges, floats or sinks, or clouds the bowl water (Type 6 mush vs Type 7 liquid).
-5. **4-Stage Visual Chain-of-Thought (CoT)**: Our prompt forces the AI to write out 4 distinct reasoning stages (Shape, Moisture, Differential Diagnosis, and Transit Speed). By explaining why the sample is Type 4 and *not* Type 3 or Type 5, it eliminates border-case errors.
-6. **Blazing Speed & Zero Quota Worries**: Powered by **Gemini 3.5 Flash-Lite**, full visual classification finishes in just **1.6 seconds** with a generous **500 requests per day** free quota—letting students and hackathon judges test freely without hitting rate limits!
+1. **Temporary image processing**: The photo is read into device memory through an HTML5 canvas. EXIF metadata, such as location and camera information, is removed before analysis. The app also blurs the preview on screen. The image is not saved by this feature.
+2. **Basic image validation**: The vision model first checks whether the image shows a toilet-bowl sample. If the image shows an unrelated object or cannot be checked clearly, it returns `isValid = false` and asks the student to try again.
+3. **Shape and surface analysis**: The model uses image segmentation and morphology to study the sample's outline and texture. It looks for features such as a smooth surface (Type 4), cracks (Type 3), separate lumps (Type 1), or other patterns from the Bristol Stool Scale.
+4. **Moisture clues**: The model also checks visible signs of moisture, such as whether the sample keeps its shape, breaks apart, or makes the water look cloudy. These clues help distinguish formed stool from mushy or liquid stool.
+5. **Structured classification**: The result is compared with the Bristol Stool Scale and returned as structured JSON. The app records the suggested type, confidence score, and basic observations instead of presenting the model's hidden internal reasoning as fact.
+6. **Model and response time**: The feature uses **Gemini 3.5 Flash-Lite** when the optional AI service is enabled. Response time and daily request limits depend on the network, API configuration, and service availability.
 
 ---
 
