@@ -196,7 +196,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
           House Cup 🏆
         </h1>
         <p className="text-[14px] font-semibold text-[var(--ink2)]">
-          Anonymous College House challenge. Only House totals are shown (never names or health logs).
+          Anonymous College House challenge.
         </p>
       </div>
 

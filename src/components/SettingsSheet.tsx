@@ -266,8 +266,8 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
           className="mb-4"
         />
 
-        {/* Google AI Studio API Key & Gemma 4 Panel */}
-        <div className="apple-card p-3.5 space-y-3 mb-4 border-2 border-[var(--peach-l)]">
+        {/* Google AI Studio API Key & Gemma 4 Panel (Hidden as requested, preserved in codebase) */}
+        <div className="hidden apple-card p-3.5 space-y-3 mb-4 border-2 border-[var(--peach-l)]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-[20px]">✨</span>

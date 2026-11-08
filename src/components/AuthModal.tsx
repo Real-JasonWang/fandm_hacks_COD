@@ -111,9 +111,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         <h1 className="text-[24px] font-black tracking-tight text-[var(--ink)]">
           Call of Doodie
         </h1>
-        <p className="text-[13px] font-bold text-[var(--muted)]">
-          Franklin &amp; Marshall College · House Cup &amp; Wellness
-        </p>
       </div>
 
       {/* Tab Switcher */}
@@ -333,47 +330,38 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       <div className="pt-3 border-t border-[var(--line)] space-y-2">
         <div className="flex items-center justify-between">
           <p className="text-[12px] font-extrabold text-[var(--muted)] uppercase tracking-wider">
-            Fast Demo Accounts (F&amp;M Hackathon Judges)
+            Fast Demo Accounts
           </p>
-          <span className="text-[10px] font-extrabold text-[var(--mint-d)] bg-[var(--mint-l)] px-2 py-0.5 rounded-full">
-            1-Click Test
-          </span>
         </div>
 
         <div className="grid grid-cols-1 gap-2">
           {/* Case 1: Healthy Baseline Routine */}
           <button
             type="button"
-            className="w-full text-left p-2.5 rounded-2xl border border-[var(--line)] bg-[var(--card)] hover:border-[var(--brand)] hover:bg-[var(--bg)] transition-all flex items-start gap-2.5 group"
+            className="w-full text-left p-2.5 rounded-2xl border border-[var(--line)] bg-[var(--card)] hover:border-[var(--brand)] hover:bg-[var(--bg)] transition-all flex items-center gap-2.5 group"
             onClick={() => handleQuickDemo('diplomat@fandm.edu')}
           >
-            <span className="text-[22px] flex-none mt-0.5 group-hover:scale-110 transition-transform">🎓</span>
+            <span className="text-[22px] flex-none group-hover:scale-110 transition-transform">🎓</span>
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-center">
                 <b className="text-[13px] font-black text-[var(--ink)]">Case 1: Ware Diplomat (Healthy Routine)</b>
                 <span className="text-[11px] font-black text-[var(--brand)]">Sign In →</span>
               </div>
-              <p className="text-[11.5px] font-semibold text-[var(--ink2)] leading-tight mt-0.5">
-                diplomat@fandm.edu · Ware House · Ideal Type 4 stool, 7.5h sleep, 7 glasses of water.
-              </p>
             </div>
           </button>
 
           {/* Case 2: Academic Exam Stress & Gut-Brain Axis */}
           <button
             type="button"
-            className="w-full text-left p-2.5 rounded-2xl border border-[var(--line)] bg-[var(--card)] hover:border-[var(--brand)] hover:bg-[var(--bg)] transition-all flex items-start gap-2.5 group"
+            className="w-full text-left p-2.5 rounded-2xl border border-[var(--line)] bg-[var(--card)] hover:border-[var(--brand)] hover:bg-[var(--bg)] transition-all flex items-center gap-2.5 group"
             onClick={() => handleQuickDemo('ben@fandm.edu')}
           >
-            <span className="text-[22px] flex-none mt-0.5 group-hover:scale-110 transition-transform">🏛️</span>
+            <span className="text-[22px] flex-none group-hover:scale-110 transition-transform">🏛️</span>
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-center">
                 <b className="text-[13px] font-black text-[var(--ink)]">Case 2: Bonchek Ben (Exam Stress &amp; IBS)</b>
                 <span className="text-[11px] font-black text-[var(--brand)]">Sign In →</span>
               </div>
-              <p className="text-[11.5px] font-semibold text-[var(--ink2)] leading-tight mt-0.5">
-                ben@fandm.edu · Bonchek House · Lack of sleep, high midterm stress, and upset stomach.
-              </p>
             </div>
           </button>
         </div>
@@ -397,9 +385,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* Frosted Glass Floating Login Card */}
         <div className="max-w-[480px] w-full frosted-glass-card rounded-[32px] p-6 sm:p-7 relative z-10 animate-in fade-in zoom-in-95 duration-200">
           {formContent}
-          <p className="text-[11.5px] text-[var(--muted)] font-bold text-center mt-4">
-            🔒 Private student login · Required for House Cup challenges
-          </p>
         </div>
       </div>
     );
