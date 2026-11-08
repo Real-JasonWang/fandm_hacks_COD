@@ -77,25 +77,25 @@ flowchart TD
         A8 --> A9
     end
 
-    %% 2. TRIPLE-TRACK INPUT ENGINE
-    subgraph S2["2. Triple-Track Daily Check-In Engine"]
+    %% 2. 3-WAY INPUT ENGINE
+    subgraph S2["2. 3-Way Daily Check-In Engine"]
         A9 --> B0{"How do you want to check in today?"}
         
-        %% Track A: 10-Second Quick Log
-        B0 -->|"Track A: 10-Sec Quick Log"| B1["Bristol Stool Scale Slider: Tap Type 1 to 7"]
+        %% Option A: 10-Second Quick Log
+        B0 -->|"Option A: 10-Sec Quick Log"| B1["Bristol Stool Scale Slider: Tap Type 1 to 7"]
         B1 --> B2["Sleep Hours Slider (0 to 14 Hours)"]
         B2 --> B3["Water Tracker (1 to 10 Glasses)"]
         B3 --> B4["Dining Hall Veggie Counter (0 to 10 Servings)"]
         B4 --> B5["Daily Stress Level (Calm, Okay, Meh, Stressed, Overwhelmed)"]
         
-        %% Track B: AI Vision Photo Check
-        B0 -->|"Track B: AI Photo Check"| C1["Take or upload photo of toilet bowl"]
+        %% Option B: AI Vision Photo Check
+        B0 -->|"Option B: AI Photo Check"| C1["Take or upload photo of toilet bowl"]
         C1 --> C2["Zero-Disk Shield: Photo is blurred in memory instantly and never written to disk"]
         C2 --> C3["AI Vision Precision Pipeline (See Detailed AI Flowchart Below)"]
         C3 --> C4["Auto-fills Bristol Type, Soiling Level, and Symptoms into Form"]
         
-        %% Track C: Voice & NLP Chat Log
-        B0 -->|"Track C: Voice & Chat Log"| D1["Type or speak what happened in plain English"]
+        %% Option C: Voice & NLP Chat Log
+        B0 -->|"Option C: Voice & Chat Log"| D1["Type or speak what happened in plain English"]
         D1 --> D2["Gemini NLP Parser with Smart Regex Fallback"]
         D2 --> D3["Extracts Sleep, Water, Veggies, Stress, and Digestion details"]
         D3 --> D4["Auto-populates check-in fields for quick student review"]

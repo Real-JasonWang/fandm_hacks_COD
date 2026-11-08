@@ -410,7 +410,7 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
             className="w-10 h-10 object-contain rounded-xl p-0.5 bg-[var(--card)] border border-[var(--line)] mb-2 shadow-xs"
           />
           <p className="text-[12px] text-[var(--muted)] font-bold text-center">
-            Franklin &amp; Marshall College Hackathon (FandMHacks) · Social Good Track
+            Franklin &amp; Marshall College · Diplomats
           </p>
         </div>
       </div>
