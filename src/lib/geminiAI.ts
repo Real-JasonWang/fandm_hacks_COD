@@ -61,10 +61,10 @@ export function setStoredModel(model: string): void {
 }
 
 export interface VisualChainOfThought {
-  morphologyAnalysis: string;    // Stage 1: Specimen Morphology & Edge Consistency
-  moistureAnalysis: string;      // Stage 2: Water Dynamics & Basin Dispersion
-  differentialDiagnosis: string; // Stage 3: Differential Diagnosis & Exclusion Logic
-  clinicalAssessment: string;    // Stage 4: Colonic Motility & Hydration Assessment
+  morphologyAnalysis: string;    // Stage 1: Shape & Edge Consistency
+  moistureAnalysis: string;      // Stage 2: Water Dynamics
+  differentialDiagnosis: string; // Stage 3: Comparison & Type Decision
+  speedAssessment: string;       // Stage 4: Digestion Speed & Hydration
 }
 
 export function generateDefaultChainOfThought(type: BristolNumber): VisualChainOfThought {
@@ -74,42 +74,42 @@ export function generateDefaultChainOfThought(type: BristolNumber): VisualChainO
         morphologyAnalysis: 'Separate, hard little lumps like nuts. Dense and tough to pass.',
         moistureAnalysis: 'Very dry. Sinks right to the bottom with clean water and zero clouding.',
         differentialDiagnosis: 'Not Type 2 because the lumps are separate, not stuck together. Definitely Type 1.',
-        clinicalAssessment: 'Slow digestion. Your body pulled out too much water, usually from dehydration or low fiber.',
+        speedAssessment: 'Slow digestion. Your body pulled out too much water, usually from dehydration or low fiber.',
       };
     case 2:
       return {
         morphologyAnalysis: 'A lumpy sausage made of hard chunks stuck together.',
         moistureAnalysis: 'Pretty dry. Stays solid in the bowl without breaking apart or clouding.',
         differentialDiagnosis: 'Not Type 1 because it is in one log. Not Type 3 because it is bumpy lumps, not surface cracks. Classic Type 2.',
-        clinicalAssessment: 'Moved through a bit too slow. A sign you could use an extra glass of water today.',
+        speedAssessment: 'Moved through a bit too slow. A sign you could use an extra glass of water today.',
       };
     case 3:
       return {
         morphologyAnalysis: 'Sausage-shaped with cracks across the surface.',
         moistureAnalysis: 'Normal moisture balance. Stays intact in the water with clean edges.',
         differentialDiagnosis: 'Not Type 2 because it is not lumpy chunks. Not Type 4 because of the surface cracks. Healthy Type 3.',
-        clinicalAssessment: 'Good, healthy digestion speed. Everything moved through on schedule.',
+        speedAssessment: 'Good, healthy digestion speed. Everything moved through on schedule.',
       };
     case 4:
       return {
         morphologyAnalysis: 'Smooth and soft like a banana or snake. No cracks or bumps.',
         moistureAnalysis: 'Ideal moisture. Rests in the water completely intact without clouding.',
         differentialDiagnosis: 'Not Type 3 because the surface is totally smooth. Not Type 5 because it did not break into pieces. Textbook Type 4.',
-        clinicalAssessment: 'Spot-on digestion speed. Your hydration and food balance are working great.',
+        speedAssessment: 'Spot-on digestion speed. Your hydration and food balance are working great.',
       };
     case 5:
       return {
         morphologyAnalysis: 'Soft, separate blobs with clean-cut edges.',
         moistureAnalysis: 'Has more water than usual. Floats easily but does not dissolve immediately.',
         differentialDiagnosis: 'Not Type 4 because it broke into blobs. Not Type 6 because the edges are clean, not ragged. Type 5.',
-        clinicalAssessment: 'Moved through your colon a bit fast. Adding some soluble fiber like oats or bread will help firm it up.',
+        speedAssessment: 'Moved through your colon a bit fast. Adding some soluble fiber like oats or bread will help firm it up.',
       };
     case 6:
       return {
         morphologyAnalysis: 'Fluffy, mushy pieces with ragged, uneven edges.',
         moistureAnalysis: 'High water content. Breaks apart quickly and clouds the toilet water.',
         differentialDiagnosis: 'Not Type 5 because the edges are ragged and mushy. Not Type 7 because there are still soft solid pieces. Type 6.',
-        clinicalAssessment: 'Gut moved fast today. Often caused by stress, caffeine, or quick-digesting food.',
+        speedAssessment: 'Gut moved fast today. Often caused by stress, caffeine, or quick-digesting food.',
       };
     case 7:
     default:
@@ -117,7 +117,7 @@ export function generateDefaultChainOfThought(type: BristolNumber): VisualChainO
         morphologyAnalysis: 'All liquid with no solid pieces.',
         moistureAnalysis: 'Pure fluid. Immediately spreads through the water.',
         differentialDiagnosis: 'Not Type 6 because there are zero solid chunks left. Pure Type 7 diarrhea.',
-        clinicalAssessment: 'Water rushed straight through without absorbing. Sip water and electrolytes to stay hydrated.',
+        speedAssessment: 'Water rushed straight through without absorbing. Sip water and electrolytes to stay hydrated.',
       };
   }
 }
@@ -130,7 +130,7 @@ export interface VisionAnalysisResult {
   cleanlinessAlert: boolean;
   soilingIndex: number;
   detectedSymptoms: string[];
-  clinicalTip: string;
+  quickTip: string;
   chainOfThought?: VisualChainOfThought;
   reasoningSteps?: string[];
   modelUsed: string;
@@ -241,7 +241,7 @@ IMPORTANT STYLE REQUIREMENT: Use short, plain high school English. NO medical ja
    - morphologyAnalysis: What it looks like (shape, smooth vs lumpy, cracks, chunks).
    - moistureAnalysis: How it looks in the toilet water (holds together, dissolves, clouds the bowl).
    - differentialDiagnosis: Why it is this type and not the next types (e.g. why not Type 3, why not Type 5).
-   - clinicalAssessment: Digestion speed and what it means (moving fast, normal, or slow; simple tip).
+   - speedAssessment: Digestion speed and what it means (moving fast, normal, or slow; simple tip).
 
 Return ONLY a valid JSON object matching this schema with NO markdown code fences or backticks:
 {
@@ -252,12 +252,12 @@ Return ONLY a valid JSON object matching this schema with NO markdown code fence
   "cleanlinessAlert": boolean,
   "soilingIndex": number (0 to 5),
   "detectedSymptoms": string[],
-  "clinicalTip": string (1 short high school english sentence, no clichés),
+  "quickTip": string (1 short high school english sentence, no clichés),
   "chainOfThought": {
     "morphologyAnalysis": string (1-2 short high school english sentences),
     "moistureAnalysis": string (1-2 short high school english sentences),
     "differentialDiagnosis": string (1-2 short high school english sentences),
-    "clinicalAssessment": string (1-2 short high school english sentences)
+    "speedAssessment": string (1-2 short high school english sentences)
   }
 }`;
 
@@ -267,7 +267,7 @@ Return ONLY a valid JSON object matching this schema with NO markdown code fence
 
   for (const modelName of modelsToTry) {
     try {
-      console.log(`[Gemma Vision] Attempting clinical analysis using model: ${modelName}`);
+      console.log(`[Vision Check] Running analysis using: ${modelName}`);
       const response = await ai.models.generateContent({
         model: modelName,
         contents: [
@@ -304,7 +304,7 @@ Return ONLY a valid JSON object matching this schema with NO markdown code fence
           morphologyAnalysis: String(parsed.chainOfThought.morphologyAnalysis || ''),
           moistureAnalysis: String(parsed.chainOfThought.moistureAnalysis || ''),
           differentialDiagnosis: String(parsed.chainOfThought.differentialDiagnosis || ''),
-          clinicalAssessment: String(parsed.chainOfThought.clinicalAssessment || ''),
+          speedAssessment: String(parsed.chainOfThought.speedAssessment || ''),
         };
       }
       if ((!cot || !cot.differentialDiagnosis) && bristolType) {
@@ -313,10 +313,10 @@ Return ONLY a valid JSON object matching this schema with NO markdown code fence
 
       const reasoningSteps = cot
         ? [
-            `Morphology: ${cot.morphologyAnalysis}`,
+            `Shape: ${cot.morphologyAnalysis}`,
             `Moisture: ${cot.moistureAnalysis}`,
-            `Differential: ${cot.differentialDiagnosis}`,
-            `Clinical: ${cot.clinicalAssessment}`,
+            `Why this type: ${cot.differentialDiagnosis}`,
+            `Digestion speed: ${cot.speedAssessment}`,
           ]
         : [];
 
@@ -328,7 +328,7 @@ Return ONLY a valid JSON object matching this schema with NO markdown code fence
         cleanlinessAlert: Boolean(parsed.cleanlinessAlert),
         soilingIndex: typeof parsed.soilingIndex === 'number' ? parsed.soilingIndex : 0,
         detectedSymptoms: Array.isArray(parsed.detectedSymptoms) ? parsed.detectedSymptoms : [],
-        clinicalTip: parsed.clinicalTip || 'Clinical visual evaluation completed.',
+        quickTip: parsed.quickTip || 'Looking good! Keep staying hydrated.',
         chainOfThought: cot,
         reasoningSteps,
         modelUsed: modelName,

@@ -79,7 +79,7 @@ export const RedFlagModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         <p className="text-[11.5px] text-[var(--muted)] font-bold mb-4">
-          This advisory is a clinical safeguard protocol based on AGA guidelines.
+          This health reminder is based on American Gastroenterological Association guidelines.
         </p>
 
         <button className="apple-btn" onClick={onClose}>
@@ -204,7 +204,7 @@ export const AIInfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
         <div className="apple-banner text-[13px] leading-snug">
           <span>ℹ️</span>
           <div>
-            <b>Engine Architecture:</b> Pattern detection runs locally using deterministic statistics and calibrated clinical thresholds. Zero third-party analytics.
+            <b>Engine Architecture:</b> Pattern detection runs locally using standard stats and health benchmarks. Zero third-party analytics.
           </div>
         </div>
       </div>
@@ -223,7 +223,7 @@ export const ScienceModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
         <div className="apple-grab" />
         <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2">
           <h2 className="text-[21px] font-black tracking-tight text-[var(--ink)]">
-            📚 The clinical science
+            📚 The science behind it
           </h2>
           <button
             onClick={onClose}
@@ -243,7 +243,7 @@ export const ScienceModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 Bristol Stool Form Scale (BSFS)
               </b>
               <p className="text-[12.5px] text-[var(--ink2)] font-semibold">
-                Classifies bowel movements into 7 distinct types (Lewis &amp; Heaton, <i>Scand. J. Gastroenterology</i>, 1997). Gold standard utilized worldwide by gastroenterologists.
+                Classifies bowel movements into 7 distinct types (Lewis &amp; Heaton, <i>Scand. J. Gastroenterology</i>, 1997). Gold standard utilized worldwide by doctors.
               </p>
             </div>
           </div>
@@ -257,7 +257,7 @@ export const ScienceModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 Normal Bowel Frequency
               </b>
               <p className="text-[12.5px] text-[var(--ink2)] font-semibold">
-                Any frequency ranging from 3 times a day to 3 times a week is clinically standard for healthy adults.
+                Any frequency from 3 times a day to 3 times a week is completely normal for healthy adults.
               </p>
             </div>
           </div>

@@ -188,7 +188,7 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
             <div className="flex items-center gap-2">
               <span className="text-[20px]">✨</span>
               <b className="text-[14.5px] font-black text-[var(--ink)]">
-                Google Gemma 4 &amp; Gemini Engine
+                Google AI Studio API Key
               </b>
             </div>
             <span
@@ -196,12 +196,12 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
                 apiKey ? 'bg-[var(--mint-l)] text-[#11634C]' : 'bg-[var(--sun-l)] text-[#7A5300]'
               }`}
             >
-              {apiKey ? 'Pre-configured ✓' : 'Optional'}
+              {apiKey ? 'Configured ✓' : 'Optional'}
             </span>
           </div>
 
           <p className="text-[12px] text-[var(--ink2)] font-semibold">
-            Powers Gemma 4 Multimodal Vision and natural language logging. Features automatic real-time fallback cascade across Gemma 4 31B/26B, Gemini 3.5 Flash, and Gemini 3.8 Flash.
+            Powers the optional camera scanner and voice/chat logging. Stored locally on your device.
           </p>
 
           <div className="space-y-2">
@@ -290,7 +290,7 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
               onOpenScience();
             }}
           >
-            📚 The clinical science
+            📚 The science behind it
           </button>
           <button
             className="apple-btn ghost"

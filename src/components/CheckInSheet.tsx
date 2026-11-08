@@ -116,7 +116,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
       const hasApiKey = Boolean(getStoredApiKey());
       if (!hasApiKey) {
-        setVisionError('Please configure your Google Gemini / Gemma API key in Settings.');
+        setVisionError('Please configure your AI key in Settings.');
         return;
       }
 
@@ -146,7 +146,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
     setNlpError(null);
     const hasApiKey = Boolean(getStoredApiKey());
     if (!hasApiKey) {
-      setNlpError('Please configure your Google Gemini API key in Settings first.');
+      setNlpError('Please configure your AI key in Settings first.');
       return;
     }
 
@@ -223,30 +223,30 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
           </button>
         </div>
 
-        {/* OPTION B: Gemma 4 Vision Tab (Opt-in) */}
+        {/* OPTION B: AI Photo Check (Optional) */}
         {activeTab === 'vision' && (
           <div className="apple-card p-4 space-y-3 my-2 border-2 border-[var(--peach-l)]">
             <div className="flex items-center gap-2">
               <span className="text-[22px]">🤖</span>
               <div>
                 <b className="text-[15px] font-black text-[var(--ink)] block">
-                  Gemma 4 Multimodal Vision (Opt-in)
+                  AI Photo Check (Optional)
                 </b>
                 <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                  Zero-Disk in-memory stream. Analyzes Bristol morphology and auto-populates telemetry.
+                  Take a photo to check your stool type. Quick, private, and not saved.
                 </p>
               </div>
             </div>
 
             {!getStoredApiKey() && (
               <div className="p-3 bg-[var(--sun-l)] rounded-xl text-[12.5px] font-bold text-[#7A5300] flex justify-between items-center">
-                <span>⚠️ Google AI Studio API key not configured</span>
+                <span>⚠️ AI key not configured</span>
                 <button
                   type="button"
                   className="underline ml-2 flex-none font-black"
                   onClick={onOpenSettings}
                 >
-                  Configure in Settings →
+                  Set up in Settings →
                 </button>
               </div>
             )}
@@ -254,33 +254,32 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
             <div className="bg-white rounded-[24px] p-5 text-center border-2 border-[#E8E0D5] shadow-sm">
               {selectedImage ? (
                 <div className="space-y-3">
-                  {/* Clean Medical-Grade Privacy Shield (Warm Frosted Aesthetics) */}
                   <div className="relative max-w-[340px] mx-auto rounded-2xl overflow-hidden border-2 border-[#E5DFD5] shadow-xs bg-[#FAF7F2]">
                     <img
                       src={selectedImage}
-                      alt="Stool Specimen"
+                      alt="Photo"
                       className="max-h-[190px] w-full object-cover filter blur-[40px] scale-120 opacity-20 contrast-50 brightness-95"
                     />
 
-                    {/* Warm Frosted Clinical Privacy Shield Overlay */}
+                    {/* Privacy Shield Overlay */}
                     <div className="absolute inset-0 bg-[#FFFDF9]/85 backdrop-blur-md flex flex-col items-center justify-center p-4 text-center select-none">
                       <div className="w-11 h-11 rounded-2xl bg-white border border-[#E5DFD5] flex items-center justify-center text-[22px] mb-2 shadow-xs">
                         🛡️
                       </div>
                       <b className="text-[14px] font-black text-[var(--ink)] block tracking-tight">
-                        Specimen Privacy Shielded
+                        Photo Shielded
                       </b>
                       <p className="text-[11.5px] text-[var(--ink2)] font-semibold max-w-[250px] mt-0.5 leading-snug">
-                        Zero disk footprint · Evaluated entirely in RAM with morphology telemetry extracted
+                        Blurred right away. Never saved to your phone or cloud.
                       </p>
                       <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--mint-l)] text-[#11634C] text-[11px] font-black rounded-full">
-                        <span>✓</span> Morphology Telemetry Recorded
+                        <span>✓</span> Type Detected
                       </div>
                     </div>
                   </div>
 
                   <label className="apple-chip cursor-pointer text-[12.5px] font-extrabold inline-flex items-center gap-1.5">
-                    <span>🔄</span> Retake Photo / Replace Specimen
+                    <span>🔄</span> Retake Photo
                     <input
                       type="file"
                       accept="image/*"
@@ -294,10 +293,10 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                 <label className="cursor-pointer block py-3">
                   <div className="text-[34px] mb-1.5">📸</div>
                   <b className="text-[15px] font-black text-[var(--ink)] block">
-                    Take or upload toilet bowl specimen photo
+                    Take or upload a photo
                   </b>
                   <p className="text-[12.5px] text-[var(--muted)] font-semibold mt-1 max-w-[280px] mx-auto">
-                    Streamed in RAM only; automatically shielded with a privacy blur upon grading.
+                    Blurred right away for privacy. Nothing is saved to disk.
                   </p>
                   <input
                     type="file"
@@ -312,7 +311,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
             {isVisionLoading && (
               <div className="text-center py-3 text-[14px] font-black text-[var(--peach-d)] animate-pulse">
-                ⏳ AI performing 4-stage clinical morphological grading &amp; anti-spoof checks...
+                ⏳ Checking shape and texture...
               </div>
             )}
 
@@ -332,10 +331,10 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     </span>
                     <div>
                       <b className="text-[15px] font-black text-[#11634C] block leading-snug">
-                        Clinical BSFS Conclusion: Bristol Type {visionResult.bristolType || '-'}
+                        Bristol Type {visionResult.bristolType || '-'}
                       </b>
                       <span className="text-[11.5px] font-extrabold text-[var(--ink2)]">
-                        Confidence: {(visionResult.confidenceScore * 100).toFixed(0)}% · Model Engine: {visionResult.modelUsed}
+                        Match: {(visionResult.confidenceScore * 100).toFixed(0)}%
                       </span>
                     </div>
                   </div>
@@ -344,62 +343,62 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                   </span>
                 </div>
 
-                {/* Clinical Summary Tip */}
+                {/* Tip */}
                 <div className="p-3 bg-white rounded-xl border border-[var(--line)] text-[12.5px] font-bold text-[var(--ink)] leading-relaxed">
-                  💡 <b>Quick Take:</b> {visionResult.clinicalTip}
+                  💡 <b>Tip:</b> {visionResult.quickTip}
                 </div>
 
-                {/* Structured Chain-of-Thought */}
+                {/* Reasoning */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <b className="text-[13px] font-black text-[var(--ink)] flex items-center gap-1.5">
-                      <span>🧠</span> AI Chain-of-Thought &amp; Reasoning
+                      <span>🧠</span> How the AI Decided
                     </b>
-                    <span className="text-[10.5px] font-bold text-[var(--muted)]">4-Stage Breakdown</span>
+                    <span className="text-[10.5px] font-bold text-[var(--muted)]">Quick Breakdown</span>
                   </div>
 
                   <div className="space-y-2 text-[12.5px]">
-                    {/* Stage 1 */}
+                    {/* Step 1 */}
                     <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
                       <div className="flex items-center gap-1.5 font-black text-[#2A2238]">
                         <span className="text-[14px]">🔍</span>
-                        <span>Stage 1 · Shape &amp; Texture</span>
+                        <span>Step 1 · Shape &amp; Texture</span>
                       </div>
                       <p className="text-[12px] font-semibold text-[var(--ink2)] leading-relaxed pl-5">
                         {visionResult.chainOfThought?.morphologyAnalysis}
                       </p>
                     </div>
 
-                    {/* Stage 2 */}
+                    {/* Step 2 */}
                     <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
                       <div className="flex items-center gap-1.5 font-black text-[#2A2238]">
                         <span className="text-[14px]">💧</span>
-                        <span>Stage 2 · Water Consistency</span>
+                        <span>Step 2 · Moisture</span>
                       </div>
                       <p className="text-[12px] font-semibold text-[var(--ink2)] leading-relaxed pl-5">
                         {visionResult.chainOfThought?.moistureAnalysis}
                       </p>
                     </div>
 
-                    {/* Stage 3 */}
+                    {/* Step 3 */}
                     <div className="p-3 bg-[#FFFDF9] rounded-xl border-2 border-[var(--peach-l)] shadow-sm space-y-1">
                       <div className="flex items-center gap-1.5 font-black text-[var(--peach-d)]">
                         <span className="text-[14px]">⚖️</span>
-                        <span>Stage 3 · Why this Bristol Type?</span>
+                        <span>Step 3 · Why this Type?</span>
                       </div>
                       <p className="text-[12px] font-bold text-[var(--ink)] leading-relaxed pl-5">
                         {visionResult.chainOfThought?.differentialDiagnosis}
                       </p>
                     </div>
 
-                    {/* Stage 4 */}
+                    {/* Step 4 */}
                     <div className="p-3 bg-white rounded-xl border border-[var(--line)] shadow-sm space-y-1">
                       <div className="flex items-center gap-1.5 font-black text-[#11634C]">
                         <span className="text-[14px]">🩺</span>
-                        <span>Stage 4 · Digestion &amp; Gut Speed</span>
+                        <span>Step 4 · Digestion Speed</span>
                       </div>
                       <p className="text-[12px] font-semibold text-[var(--ink2)] leading-relaxed pl-5">
-                        {visionResult.chainOfThought?.clinicalAssessment}
+                        {visionResult.chainOfThought?.speedAssessment}
                       </p>
                     </div>
                   </div>
@@ -411,7 +410,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                   className="apple-btn text-[14px] mt-1"
                   onClick={() => setActiveTab('manual')}
                 >
-                  Review and Confirm Form Values →
+                  Confirm and Use →
                 </button>
               </div>
             )}
@@ -425,10 +424,10 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
               <span className="text-[22px]">💬</span>
               <div>
                 <b className="text-[15px] font-black text-[var(--ink)] block">
-                  Natural Language Smart Log (Gemini)
+                  Voice &amp; Chat Log
                 </b>
                 <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                  Describe your sleep, water, and stool in one sentence. AI automatically extracts the parameters.
+                  Type or speak how you feel to fill out today's check-in.
                 </p>
               </div>
             </div>

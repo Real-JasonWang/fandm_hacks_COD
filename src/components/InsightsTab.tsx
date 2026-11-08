@@ -98,7 +98,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
 
     const patterns: PatternItem[] = [];
 
-    // 1. Sleep patterns (realistic clinical comparisons, never rigid 100% vs 0%)
+    // 1. Sleep patterns (realistic health comparisons, never rigid 100% vs 0%)
     const lowSleep = withB.filter((d) => d.sleep < 6);
     const goodSleep = withB.filter((d) => d.sleep >= 7);
     if (lowSleep.length >= 2 && goodSleep.length >= 2) {
@@ -289,12 +289,12 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
             </>
           ) : (
             <>
-              No bowel movement telemetry recorded in the last 7 days yet. Complete your first daily check-in to generate your baseline and start tracking your Bristol stool trends!
+              No check-ins recorded in the last 7 days yet. Complete your first check-in to see your trends!
             </>
           )}
         </p>
         <p className="text-[11.5px] text-[var(--muted)] font-bold mt-2">
-          Generated entirely on-device from your logs using deterministic clinical heuristics & local statistical pattern mining.
+          Calculated on your device from your logs. Completely private.
         </p>
       </div>
 
@@ -310,7 +310,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
             viewBox={`0 0 ${W} ${H}`}
             className="w-full h-auto block select-none"
             role="region"
-            aria-label="14-Day Stool Motility Telemetry Chart"
+            aria-label="14-Day Stool Chart"
           >
             {/* Ideal zone green ribbon */}
             <rect
@@ -521,7 +521,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
         </div>
 
         <p className="text-[11.5px] text-[var(--muted)] font-bold mt-2">
-          Tap any dot to inspect day telemetry. Gaps indicate days with no check-in.
+          Tap any dot to see that day's check-in. Gaps mean no check-in was logged.
         </p>
       </div>
 
@@ -638,7 +638,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
       </div>
 
       <button className="apple-btn ghost" onClick={onOpenScience}>
-        📚 The science behind gut telemetry
+        📚 The science behind gut health
       </button>
     </div>
   );

@@ -106,7 +106,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           </button>
           <p className="text-[12px] text-[var(--muted)] font-bold text-center mt-3 leading-normal">
             🔒 Private by design · zero photos · anonymous House Cup<br />
-            100% Real authentic personal health telemetry.
+            100% real personal health logs.
           </p>
         </div>
       </div>
