@@ -1153,15 +1153,6 @@ html[data-theme="dark"] .rainbow-aurora-orb {
   mix-blend-mode: screen;
 }
 
-/* ========================================================= */
-/* Concept3D Map Dark Night Vision Filter */
-/* ========================================================= */
-.campus-dark-map {
-  filter: invert(0.92) hue-rotate(180deg) brightness(0.88) contrast(1.12);
-  background: #14101A;
-  transition: filter 0.3s ease;
-}
-
 /* 7 Colors Spectrum: Pink, Orange, Yellow, Green, Cyan, Blue, Violet */
 .rainbow-orb-1 {
   width: 460px;

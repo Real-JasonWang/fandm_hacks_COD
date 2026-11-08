@@ -125,6 +125,7 @@ export function App() {
 
     setSettings((prev) => ({
       ...prev,
+      onboarded: true,
       house: user.houseId as HouseId,
       themeMode: userThemeMode,
       colorScheme: userColorScheme,
@@ -132,6 +133,17 @@ export function App() {
     }));
 
     applyTheme(userThemeMode, userColorScheme);
+
+    // Directly land on the Today home page and ensure all sheets/modals are closed
+    setActiveTab('today');
+    setIsSettingsOpen(false);
+    setIsCheckInOpen(false);
+    setIsAnalysisOpen(false);
+    setIsRedFlagOpen(false);
+    setIsAIOpen(false);
+    setIsScienceOpen(false);
+    setSelectedRestroom(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if (settings.mode === 'playful') {
       confetti({ particleCount: 50, spread: 55 });

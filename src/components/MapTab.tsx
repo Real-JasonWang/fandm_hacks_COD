@@ -37,25 +37,6 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
   const [filterStartX, setFilterStartX] = useState<number>(0);
   const [filterScrollLeft, setFilterScrollLeft] = useState<number>(0);
 
-  // Concept3D Map Night Vision Filter (defaults to app dark mode, toggleable)
-  const [isNightMap, setIsNightMap] = useState<boolean>(() => {
-    if (typeof document !== 'undefined') {
-      return document.documentElement.getAttribute('data-theme') === 'dark';
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    if (typeof MutationObserver !== 'undefined' && typeof document !== 'undefined') {
-      const observer = new MutationObserver(() => {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        setIsNightMap(isDark);
-      });
-      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-      return () => observer.disconnect();
-    }
-  }, []);
-
   // User GPS Location State
   const [userLocation, setUserLocation] = useState<UserLocation>({
     lat: FM_CAMPUS_DEFAULT.lat,
@@ -267,12 +248,12 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[10.5px] font-black px-2 py-0.5 rounded-full bg-[var(--mint-l)] text-[#166E53] uppercase tracking-wide">
+                <span className="text-[10.5px] font-black px-2 py-0.5 rounded-full bg-[var(--mint-l)] text-[#166E53] dark:text-[#34D399] uppercase tracking-wide">
                   Recommended Nearest
                 </span>
                 <span className="text-[11.5px] font-extrabold text-[var(--muted)]">
                   {nearestRestroom.isHere ? (
-                    <span className="text-[#166E53] font-black">📍 In this building (&lt;25m)</span>
+                    <span className="text-[#166E53] dark:text-[#34D399] font-black">📍 In this building (&lt;25m)</span>
                   ) : (
                     <span>📍 {nearestRestroom.distMeters}m ({nearestRestroom.walkMins} min walk)</span>
                   )}
@@ -303,9 +284,9 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
       )}
 
       {/* Official F&M Concept3D Interactive Campus Map (Iframe Embed) */}
-      <div className="apple-card p-0 overflow-hidden border border-[var(--line)] shadow-[var(--shadow)] bg-[var(--card)]">
+      <div className="apple-card p-0 overflow-hidden border border-[var(--line)] shadow-[var(--shadow)] bg-[var(--card)] rounded-[26px]">
         {/* Map Header Bar */}
-        <div className="p-3 bg-[var(--card)] border-b border-[var(--line)] flex items-center justify-between gap-2 flex-wrap">
+        <div className="p-3.5 bg-[var(--card)] border-b border-[var(--line)] flex items-center justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-2.5 min-w-0">
             <span className="text-[20px] flex-none">🗺️</span>
             <div className="min-w-0">
@@ -319,20 +300,6 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
           </div>
 
           <div className="flex items-center gap-2 flex-none">
-            {/* Night / Day Map Filter Toggle */}
-            <button
-              type="button"
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-full border text-[11px] font-black cursor-pointer transition-all ${
-                isNightMap
-                  ? 'bg-[var(--brand)] text-white border-[var(--brand)] shadow-xs'
-                  : 'bg-[var(--card)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--bg)]'
-              }`}
-              onClick={() => setIsNightMap(!isNightMap)}
-              title="Toggle Night Vision filter for external map"
-            >
-              <span>{isNightMap ? '🌙 Dark Map' : '☀️ Day Map'}</span>
-            </button>
-
             {/* GPS Simulation / Location Switcher */}
             <button
               type="button"
@@ -399,17 +366,17 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
           </div>
         )}
 
-        {/* Official F&M Concept3D Iframe */}
-        <div className="relative w-full h-[480px] sm:h-[550px] bg-[var(--card)] overflow-hidden">
-          <iframe
-            src="https://map.concept3d.com/?id=1202#!ct/32461,57938?s/"
-            title="Franklin & Marshall College Restroom Map"
-            className={`w-full h-full border-0 block transition-all duration-300 ${
-              isNightMap ? 'campus-dark-map' : ''
-            }`}
-            loading="lazy"
-            allow="geolocation; fullscreen"
-          />
+        {/* Official F&M Concept3D Iframe with Rounded Inner Frame */}
+        <div className="p-2 sm:p-2.5 bg-[var(--card)]">
+          <div className="relative w-full h-[480px] sm:h-[550px] bg-[var(--bg)] overflow-hidden rounded-[20px] border border-[var(--line)] shadow-inner">
+            <iframe
+              src="https://map.concept3d.com/?id=1202#!ct/32461,57938?s/"
+              title="Franklin & Marshall College Restroom Map"
+              className="w-full h-full border-0 block rounded-[20px]"
+              loading="lazy"
+              allow="geolocation; fullscreen"
+            />
+          </div>
         </div>
       </div>
 
@@ -465,12 +432,15 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div className="flex flex-col items-center flex-none">
                     <div
-                      className="w-12 h-12 rounded-2xl grid place-items-center text-[22px] shadow-sm transition-transform group-hover:scale-105"
-                      style={{ background: r.all ? 'var(--lav-l)' : '#F5EBE1' }}
+                      className={`w-12 h-12 rounded-2xl grid place-items-center text-[22px] shadow-sm transition-transform group-hover:scale-105 border ${
+                        r.all
+                          ? 'bg-[var(--lav-l)] border-[var(--lav-l)]'
+                          : 'bg-[var(--bg)] border-[var(--line)]'
+                      }`}
                     >
                       {r.all ? '⚧' : '🚻'}
                     </div>
-                    <span className="text-[10.5px] font-black mt-1 px-1.5 py-0.5 rounded-md bg-[#F2EDE4] text-[var(--ink2)] whitespace-nowrap">
+                    <span className="text-[10.5px] font-black mt-1 px-1.5 py-0.5 rounded-md bg-[var(--bg)] border border-[var(--line)] text-[var(--ink2)] whitespace-nowrap">
                       {r.isHere ? 'In building' : `${r.distMeters}m · ${r.walkMins}m`}
                     </span>
                   </div>

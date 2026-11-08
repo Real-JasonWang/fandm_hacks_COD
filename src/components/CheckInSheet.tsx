@@ -132,12 +132,12 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
       try {
         const res = await analyzeStoolImageWithGemma(base64, file.type || 'image/jpeg');
         setVisionResult(res);
-        if (res.isValid && res.bristolType) {
+        if (res.bristolType) {
           setPooped(true);
           setBristol(res.bristolType);
-          if (res.detectedSymptoms?.length) {
-            setSymptoms((prev) => Array.from(new Set([...prev, ...res.detectedSymptoms])));
-          }
+        }
+        if (res.detectedSymptoms?.length) {
+          setSymptoms((prev) => Array.from(new Set([...prev, ...res.detectedSymptoms])));
         }
       } catch (err: unknown) {
         setVisionError(formatAiErrorMessage(err));
@@ -425,7 +425,22 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                 <button
                   type="button"
                   className="apple-btn text-[14px] mt-1"
-                  onClick={() => setActiveTab('manual')}
+                  onClick={() => {
+                    const predictedType = visionResult.bristolType || 4;
+                    setPooped(true);
+                    setBristol(predictedType);
+                    if (visionResult.detectedSymptoms?.length) {
+                      setSymptoms((prev) => Array.from(new Set([...prev, ...visionResult.detectedSymptoms])));
+                    }
+                    setFormError(null);
+                    setActiveTab('manual');
+                    setTimeout(() => {
+                      const el = document.getElementById('bristol-scale-section');
+                      if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }, 60);
+                  }}
                 >
                   Confirm and Use →
                 </button>
@@ -510,7 +525,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
 
         {/* Bristol Scale Selector */}
         {pooped && (
-          <div className="mt-3">
+          <div id="bristol-scale-section" className="mt-3 scroll-mt-6">
             <div className="text-[15px] font-black text-[var(--ink)] mb-2">
               {isPlayful ? 'What did it look like?' : 'Stool shape & consistency'}{' '}
               <span className="text-[12px] text-[var(--muted)] font-bold">

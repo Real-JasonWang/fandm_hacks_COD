@@ -493,25 +493,25 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
 
             return (
               <div
-                className={`absolute z-10 bg-[var(--ink)] text-white text-[12px] p-2.5 rounded-xl shadow-lg leading-snug pointer-events-auto transform ${transformClass} max-w-[220px] w-max`}
+                className={`absolute z-20 bg-[var(--card)] text-[var(--ink)] border border-[var(--line)] text-[12px] p-3 rounded-2xl shadow-xl leading-snug pointer-events-auto transform ${transformClass} max-w-[220px] w-max`}
                 style={{
                   left: `${pctX}%`,
                   top: `${pctY}%`,
                 }}
               >
                 <div className="flex justify-between items-center gap-2 mb-1">
-                  <b className="font-extrabold">{activeTooltip.dateStr}</b>
+                  <b className="font-extrabold text-[var(--ink)]">{activeTooltip.dateStr}</b>
                   <button
                     onClick={() => setActiveTooltip(null)}
-                    className="text-white/70 hover:text-white px-1 text-[11px]"
+                    className="text-[var(--muted)] hover:text-[var(--ink)] px-1 text-[11px] font-bold cursor-pointer"
                   >
                     ✕
                   </button>
                 </div>
-                <div>
+                <div className="font-bold text-[var(--ink)]">
                   Type {activeTooltip.bristol} · {BRISTOL[activeTooltip.bristol]?.fun || BRISTOL[activeTooltip.bristol]?.name}
                 </div>
-                <div className="text-[11px] text-white/80 mt-1">
+                <div className="text-[11px] text-[var(--muted)] font-semibold mt-1">
                   😴 {activeTooltip.sleep} h · 💧 {activeTooltip.water} glasses · 🧠 {STRESS[activeTooltip.stress]?.[1]}
                   {activeTooltip.count && activeTooltip.count > 1 ? ` · 📝 ${activeTooltip.count} check-ins` : ''}
                 </div>
