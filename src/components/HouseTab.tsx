@@ -191,11 +191,11 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
 
   return (
     <div className="apple-view space-y-3">
-      <div>
-        <h1 className="text-[27px] font-black tracking-tight text-[var(--ink)]">
+      <div className="select-none">
+        <h1 className="text-[27px] font-black tracking-tight text-[var(--ink)] select-none">
           House Cup 🏆
         </h1>
-        <p className="text-[14px] font-semibold text-[var(--ink2)]">
+        <p className="text-[14px] font-semibold text-[var(--ink2)] select-none">
           Anonymous College House challenge.
         </p>
       </div>

@@ -36,11 +36,11 @@ export const AppleTopBar: React.FC<AppleTopBarProps> = ({
             style={isPlayful ? undefined : { filter: 'grayscale(1)', opacity: 0.7 }}
           />
         )}
-        <div className="min-w-0">
-          <b className="text-[18px] font-black tracking-tight block leading-tight text-[var(--ink)] truncate">
+        <div className="min-w-0 select-none">
+          <b className="text-[18px] font-black tracking-tight block leading-tight text-[var(--ink)] truncate select-none">
             {currentUser ? `Welcome, ${currentUser.displayName}!` : isPlayful ? 'Call of Doodie' : 'Gut Log'}
           </b>
-          <small className="text-[11.5px] text-[var(--muted)] font-bold block truncate">
+          <small className="text-[11.5px] text-[var(--muted)] font-bold block truncate select-none">
             {currentUser
               ? `${houseName} · Active Contributor`
               : isPlayful

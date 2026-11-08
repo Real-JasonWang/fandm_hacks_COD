@@ -103,11 +103,11 @@ export const TodayTab: React.FC<TodayTabProps> = ({
 
   return (
     <div className="apple-view space-y-3">
-      <div>
-        <h1 className="text-[27px] font-black tracking-tight text-[var(--ink)]">
+      <div className="select-none">
+        <h1 className="text-[27px] font-black tracking-tight text-[var(--ink)] select-none">
           {greeting} 👋
         </h1>
-        <p className="text-[14px] font-semibold text-[var(--ink2)]">{dateStr}</p>
+        <p className="text-[14px] font-semibold text-[var(--ink2)] select-none">{dateStr}</p>
       </div>
 
       {isFlagged && (

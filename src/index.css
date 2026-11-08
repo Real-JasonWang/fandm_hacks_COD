@@ -196,6 +196,57 @@ svg text {
   font-family: var(--font) !important;
 }
 
+/* ========================================================= */
+/* Native Mobile App User-Select & Accessibility (Screen Reader Safe) */
+/* ========================================================= */
+/* 
+ * Headings, UI labels, buttons, navigation, and badges cannot be selected via mouse/touch drag,
+ * giving the web app a crisp, polished native mobile feel without accidental text highlight boxes.
+ * 
+ * Screen Reader Safety Note:
+ * 'user-select: none' only disables visual drag-selection in the browser renderer.
+ * Screen readers (VoiceOver, TalkBack, NVDA, JAWS) read the semantic DOM tree directly 
+ * and continue reading all headings, text, and labels without any interference.
+ */
+h1, h2, h3, h4, h5, h6,
+header,
+nav,
+button,
+label,
+.apple-tab,
+.apple-nav,
+.apple-nb,
+.apple-plus,
+.apple-bottom-nav,
+.apple-topbar,
+.apple-seg,
+.apple-chip,
+.apple-tag,
+.apple-badge,
+.apple-btn,
+.apple-btn-primary,
+.apple-grab,
+.apple-banner,
+.apple-app-title,
+.select-none,
+.app-unselectable {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Ensure all form inputs, textareas, and user log entries remain freely selectable */
+input,
+textarea,
+[contenteditable="true"],
+.selectable-text {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
 .apple-btn-primary {
   display: inline-flex;
   align-items: center;
