@@ -289,9 +289,23 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                       <p className="text-[11.5px] text-[var(--ink2)] font-semibold max-w-[250px] mt-0.5 leading-snug">
                         Blurred right away. Never saved to your phone or cloud.
                       </p>
-                      <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--mint-l)] text-[#11634C] text-[11px] font-black rounded-full">
-                        <span>✓</span> Type Detected
-                      </div>
+                      {isVisionLoading ? (
+                        <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--peach-l)] text-[var(--brand)] text-[11px] font-black rounded-full animate-pulse">
+                          <span>🔍</span> Analyzing photo...
+                        </div>
+                      ) : visionResult ? (
+                        <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--mint-l)] text-[#11634C] text-[11px] font-black rounded-full">
+                          <span>✓</span> {visionResult.isValid !== false ? `Type ${visionResult.bristolType || 4} Detected` : 'Photo Unclear'}
+                        </div>
+                      ) : visionError ? (
+                        <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--danger-l)] text-[var(--danger)] text-[11px] font-black rounded-full">
+                          <span>✕</span> Check Failed
+                        </div>
+                      ) : (
+                        <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--card)] text-[var(--ink2)] text-[11px] font-black rounded-full border border-[var(--line)]">
+                          <span>🛡️</span> Shield Active
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -302,6 +316,9 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                       accept="image/*"
                       capture="environment"
                       className="hidden"
+                      onClick={(e) => {
+                        (e.target as HTMLInputElement).value = '';
+                      }}
                       onChange={handleImageFileChange}
                     />
                   </label>
@@ -320,6 +337,9 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     accept="image/*"
                     capture="environment"
                     className="hidden"
+                    onClick={(e) => {
+                      (e.target as HTMLInputElement).value = '';
+                    }}
                     onChange={handleImageFileChange}
                   />
                 </label>

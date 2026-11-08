@@ -8,26 +8,20 @@ export const GEMINI_MODEL_STORAGE = 'cod_gemini_model';
 export const PRELOADED_API_KEY = (import.meta.env.VITE_GEMINI_API_KEY as string) || '';
 
 // Default and Cascade Models
-export const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
+export const DEFAULT_GEMINI_MODEL = 'gemini-3.5-flash-lite';
 
 export const SUPPORTED_AI_MODELS = [
-  { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash (Production Flash & Vision)', tag: 'Recommended' },
-  { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (High Speed & Efficiency)', tag: 'Fast' },
-  { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (Next-Gen Multimodal)', tag: 'Next-Gen' },
-  { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash (Experimental Flash Vision)', tag: 'Experimental' },
-  { id: 'gemma-4-31b-it', name: 'Gemma 4 31B Dense (Multimodal Vision)', tag: 'Dense' },
-  { id: 'gemma-4-26b-a4b-it', name: 'Gemma 4 26B/4B MoE (Multimodal Vision)', tag: 'MoE' },
+  { id: 'gemini-3.5-flash-lite', name: 'Gemini 3.5 Flash-Lite (Fast & Multimodal)', tag: 'Recommended' },
+  { id: 'gemini-3.5-flash', name: 'Gemini 3.5 Flash (Balanced Vision & Logic)', tag: 'Accurate' },
+  { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash-Lite (High Speed)', tag: 'Fast' },
+  { id: 'gemini-flash-lite-latest', name: 'Gemini Flash-Lite Latest (Always Current)', tag: 'Latest' },
 ];
 
 export const FALLBACK_CASCADE = [
-  'gemini-2.5-flash',
-  'gemini-1.5-flash',
-  'gemini-2.0-flash',
-  'gemini-3.8-flash',
-  'gemini-3.5-flash',
   'gemini-3.5-flash-lite',
-  'gemma-4-31b-it',
-  'gemma-4-26b-a4b-it',
+  'gemini-3.5-flash',
+  'gemini-3.1-flash-lite',
+  'gemini-flash-lite-latest',
 ];
 
 export function getStoredApiKey(): string {
@@ -51,7 +45,11 @@ export function setStoredApiKey(key: string): void {
 
 export function getStoredModel(): string {
   if (typeof window === 'undefined') return DEFAULT_GEMINI_MODEL;
-  return localStorage.getItem(GEMINI_MODEL_STORAGE) || DEFAULT_GEMINI_MODEL;
+  const stored = localStorage.getItem(GEMINI_MODEL_STORAGE);
+  if (stored && SUPPORTED_AI_MODELS.some((m) => m.id === stored)) {
+    return stored;
+  }
+  return DEFAULT_GEMINI_MODEL;
 }
 
 export function setStoredModel(model: string): void {
@@ -188,16 +186,20 @@ export async function testGeminiApiKey(apiKey: string): Promise<{ success: boole
     const userModel = getStoredModel();
     const modelsToTry = [
       userModel,
-      'gemini-2.5-flash',
-      'gemini-1.5-flash',
+      'gemini-3.5-flash-lite',
+      'gemini-3.5-flash',
     ].filter((v, i, arr) => arr.indexOf(v) === i);
     let lastError: unknown = null;
     for (const m of modelsToTry) {
       try {
-        const response = await ai.models.generateContent({
+        const pingPromise = ai.models.generateContent({
           model: m,
           contents: 'Ping: Reply with "OK" if connected.',
         });
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error(`${m} ping timed out after 8s`)), 8000)
+        );
+        const response = await Promise.race([pingPromise, timeoutPromise]);
         if (response.text) {
           return { success: true, message: `Google Gemini API connection verified (${m})!` };
         }
@@ -268,7 +270,7 @@ Return ONLY a valid JSON object matching this schema with NO markdown code fence
   for (const modelName of modelsToTry) {
     try {
       console.log(`[Vision Check] Running analysis using: ${modelName}`);
-      const response = await ai.models.generateContent({
+      const generatePromise = ai.models.generateContent({
         model: modelName,
         contents: [
           {
@@ -285,6 +287,10 @@ Return ONLY a valid JSON object matching this schema with NO markdown code fence
           },
         ],
       });
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error(`${modelName} vision request timed out after 12s`)), 12000)
+      );
+      const response = await Promise.race([generatePromise, timeoutPromise]);
 
       const text = response.text || '';
       const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -360,9 +366,7 @@ export async function parseNaturalLanguageLogWithGemini(
   const preferredModel = getStoredModel();
   const modelsToTry = [
     preferredModel,
-    ...['gemini-3.5-flash', 'gemini-3.8-flash', 'gemma-4-31b-it', 'gemma-4-26b-a4b-it', 'gemini-3.5-flash-lite'].filter(
-      (m) => m !== preferredModel
-    ),
+    ...FALLBACK_CASCADE.filter((m) => m !== preferredModel),
   ];
 
   const prompt = `You are an AI wellness logging assistant for Call of Doodie.
@@ -402,10 +406,14 @@ Return ONLY a valid JSON object strictly matching this schema with NO markdown b
   for (const modelName of modelsToTry) {
     try {
       console.log(`[Gemini NLP] Parsing user log with model: ${modelName}`);
-      const response = await ai.models.generateContent({
+      const generatePromise = ai.models.generateContent({
         model: modelName,
         contents: prompt,
       });
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error(`${modelName} NLP request timed out after 10s`)), 10000)
+      );
+      const response = await Promise.race([generatePromise, timeoutPromise]);
 
       const text = response.text || '';
       const jsonMatch = text.match(/\{[\s\S]*\}/);
