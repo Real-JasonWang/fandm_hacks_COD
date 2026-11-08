@@ -15,14 +15,14 @@ export const SUPPORTED_UNIVERSITIES: UniversityDef[] = [
     shortName: 'F&M',
     requiredDomain: '@fandm.edu',
     houses: [
-      { id: 'Bonchek', name: 'Bonchek College House', color: '#3D6FE0' },
-      { id: 'Brooks', name: 'Brooks College House', color: '#D9483F' },
-      { id: 'Roschel', name: 'Roschel College House', color: '#2A9A72' },
-      { id: 'Ware', name: 'Ware College House', color: '#8E5CE0' },
-      { id: 'Weis', name: 'Weis College House', color: '#D48A0F' },
-      { id: 'Schnader', name: 'Schnader Hall', color: '#2563EB' },
-      { id: 'Thomas', name: 'Thomas Hall', color: '#059669' },
-      { id: 'Dietz', name: 'Dietz Hall', color: '#D97706' },
+      { id: 'Roschel', name: 'Roschel College House', color: '#7C3AED' },
+      { id: 'Bonchek', name: 'Bonchek College House', color: '#DC2626' },
+      { id: 'Brooks', name: 'Brooks College House', color: '#F59E0B' },
+      { id: 'Ware', name: 'Ware College House', color: '#2563EB' },
+      { id: 'Weis', name: 'Weis College House', color: '#10B981' },
+      { id: 'Schnader', name: 'Schnader Hall', color: '#3B82F6' },
+      { id: 'Thomas', name: 'Thomas Hall', color: '#0D9488' },
+      { id: 'Dietz', name: 'Dietz Hall', color: '#EA580C' },
     ],
   },
 ];
@@ -40,6 +40,7 @@ export interface UserAccount {
   streak: number;
   totalPoints: number;
   isDemo?: boolean;
+  avatar?: string;
 }
 
 export interface UserCredentialRecord {
@@ -524,6 +525,7 @@ function getSeedUsers(): UserAccount[] {
       streak: 14,
       totalPoints: 620,
       isDemo: true,
+      avatar: '🧑‍🎓',
     },
     {
       id: 'user_fandm_ben',
@@ -538,6 +540,7 @@ function getSeedUsers(): UserAccount[] {
       streak: 14,
       totalPoints: 540,
       isDemo: true,
+      avatar: '🎓',
     },
     {
       id: 'user_fandm_david',
@@ -552,6 +555,7 @@ function getSeedUsers(): UserAccount[] {
       streak: 3,
       totalPoints: 55,
       isDemo: true,
+      avatar: '🦁',
     },
     {
       id: 'user_fandm_leo',
@@ -566,6 +570,7 @@ function getSeedUsers(): UserAccount[] {
       streak: 4,
       totalPoints: 75,
       isDemo: true,
+      avatar: '🦊',
     },
     {
       id: 'user_fandm_maya',
@@ -577,9 +582,10 @@ function getSeedUsers(): UserAccount[] {
       passwordHash: SEED_PBKDF2_HASH,
       createdAt: Date.now() - 4 * 864e5,
       logs: createRoschelStudentLogs(),
-      streak: 2,
-      totalPoints: 35,
+      streak: 4,
+      totalPoints: 70,
       isDemo: true,
+      avatar: '🦉',
     },
   ];
 }
@@ -845,6 +851,21 @@ export function updateUserHouse(userId: string, houseId: string): void {
   const index = users.findIndex((u) => u.id === userId);
   if (index !== -1) {
     users[index].houseId = houseId;
+    saveAllUsers(users);
+
+    const activeSession = getCurrentSession();
+    if (activeSession && activeSession.id === userId) {
+      setCurrentSession(users[index]);
+    }
+  }
+}
+
+// Update current user's avatar icon
+export function updateUserAvatar(userId: string, avatar: string): void {
+  const users = getAllUsers();
+  const index = users.findIndex((u) => u.id === userId);
+  if (index !== -1) {
+    users[index].avatar = avatar;
     saveAllUsers(users);
 
     const activeSession = getCurrentSession();

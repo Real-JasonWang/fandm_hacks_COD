@@ -409,7 +409,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
               }`}
               onClick={() => setSortBy('name')}
             >
-              A–Z
+              A-Z
             </button>
           </div>
         </div>

@@ -33,7 +33,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
         </h1>
 
         <p className="text-[14.5px] font-semibold text-[var(--ink2)] leading-relaxed">
-          {userName ? `Welcome, ${userName}! ` : ''}Everyone does it, almost nobody tracks it — but stool motility and consistency are two of the clearest biometric indicators of student stress and recovery.
+          {userName ? `Welcome, ${userName}! ` : ''}Everyone does it, almost nobody tracks it: but stool motility and consistency are two of the clearest biometric indicators of student stress and recovery.
         </p>
 
         {/* 3 Icons Trio */}

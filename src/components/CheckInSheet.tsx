@@ -332,7 +332,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
                     </span>
                     <div>
                       <b className="text-[15px] font-black text-[#11634C] block leading-snug">
-                        Clinical BSFS Conclusion: Bristol Type {visionResult.bristolType || '—'}
+                        Clinical BSFS Conclusion: Bristol Type {visionResult.bristolType || '-'}
                       </b>
                       <span className="text-[11.5px] font-extrabold text-[var(--ink2)]">
                         Confidence: {(visionResult.confidenceScore * 100).toFixed(0)}% · Model Engine: {visionResult.modelUsed}

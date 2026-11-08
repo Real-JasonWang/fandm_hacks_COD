@@ -1,16 +1,16 @@
 import type { House, BristolInfo, BristolNumber, Restroom, RestroomReport, CheckInEntry, SymptomDef, AppSettings } from '../types';
 
 export const HOUSES: House[] = [
-  // F&M College Houses
-  { id: "Ware",     name: "Ware College House",    color: "#8E5CE0", part: 74, checks: 462, residents: 260, category: 'house' },
-  { id: "Bonchek",  name: "Bonchek College House", color: "#3D6FE0", part: 72, checks: 435, residents: 220, category: 'house' },
-  { id: "Weis",     name: "Weis College House",    color: "#D48A0F", part: 71, checks: 418, residents: 210, category: 'house' },
-  { id: "Brooks",   name: "Brooks College House",  color: "#D9483F", part: 69, checks: 442, residents: 240, category: 'house' },
-  { id: "Roschel",  name: "Roschel College House", color: "#2A9A72", part: 68, checks: 425, residents: 230, category: 'house' },
+  // F&M College Houses (Official Colors: Roschel = Purple, Bonchek = Red, Brooks = Yellow, Ware = Blue, Weis = Green)
+  { id: "Roschel",  name: "Roschel College House", color: "#7C3AED", part: 74, checks: 462, residents: 230, category: 'house' },
+  { id: "Bonchek",  name: "Bonchek College House", color: "#DC2626", part: 72, checks: 435, residents: 220, category: 'house' },
+  { id: "Brooks",   name: "Brooks College House",  color: "#F59E0B", part: 71, checks: 442, residents: 240, category: 'house' },
+  { id: "Ware",     name: "Ware College House",    color: "#2563EB", part: 70, checks: 430, residents: 260, category: 'house' },
+  { id: "Weis",     name: "Weis College House",    color: "#10B981", part: 69, checks: 418, residents: 210, category: 'house' },
   // Traditional F&M Residence Halls
-  { id: "Schnader", name: "Schnader Hall",         color: "#2563EB", part: 70, checks: 358, residents: 185, category: 'hall' },
-  { id: "Thomas",   name: "Thomas Hall",           color: "#059669", part: 67, checks: 334, residents: 175, category: 'hall' },
-  { id: "Dietz",    name: "Dietz Hall",            color: "#D97706", part: 68, checks: 68,  residents: 40,  category: 'hall' },
+  { id: "Schnader", name: "Schnader Hall",         color: "#3B82F6", part: 70, checks: 358, residents: 185, category: 'hall' },
+  { id: "Thomas",   name: "Thomas Hall",           color: "#0D9488", part: 67, checks: 334, residents: 175, category: 'hall' },
+  { id: "Dietz",    name: "Dietz Hall",            color: "#EA580C", part: 68, checks: 68,  residents: 40,  category: 'hall' },
 ];
 
 export const BRISTOL: Record<BristolNumber, BristolInfo> = {
@@ -24,10 +24,10 @@ export const BRISTOL: Record<BristolNumber, BristolInfo> = {
 };
 
 export const ZONE = {
-  hard: { label: "Hard side", tag: "t-sun", tip: "Leaning constipated — water, fiber and movement usually help." },
+  hard: { label: "Hard side", tag: "t-sun", tip: "Leaning constipated: water, fiber and movement usually help." },
   ideal: { label: "Ideal zone", tag: "t-mint", tip: "Right where doctors like to see it." },
-  soft: { label: "A bit soft", tag: "t-lav", tip: "Often a sign of low fiber — usually not a worry." },
-  loose: { label: "Loose side", tag: "t-peach", tip: "Diarrhea — sip fluids. If it lasts more than 2 days, check in with Health Services." },
+  soft: { label: "A bit soft", tag: "t-lav", tip: "Often a sign of low fiber; usually not a worry." },
+  loose: { label: "Loose side", tag: "t-peach", tip: "Diarrhea: sip fluids. If it lasts more than 2 days, check in with Health Services." },
 };
 
 export const SYMPTOMS: SymptomDef[] = [
@@ -52,11 +52,11 @@ export const STRESS: [string, string][] = [
 
 export const FACTS: string[] = [
   "Pooping anywhere from 3× a day to 3× a week is considered normal.",
-  "The Bristol Stool Scale was created at Bristol Royal Infirmary in 1997 — clinicians worldwide still use it today.",
-  "Your gut and brain communicate constantly (the gut–brain axis). College exam stress directly impacts gut motility.",
+  "The Bristol Stool Scale was created at Bristol Royal Infirmary in 1997. Clinicians worldwide still use it today.",
+  "Your gut and brain communicate constantly (the gut-brain axis). College exam stress directly impacts gut motility.",
   "Young adults need 7+ hours of quality sleep. Sleep deprivation is linked to irregular digestion and gut discomfort.",
-  "Most college students eat far less fiber than the recommended ~25–38 grams a day.",
-  "Coffee stimulates colonic motor activity for roughly 30% of people — that's why morning brew sends you running.",
+  "Most college students eat far less fiber than the recommended ~25-38 grams a day.",
+  "Coffee stimulates colonic motor activity for roughly 30% of people; that's why morning brew sends you running.",
 ];
 
 export const RESTROOMS: Restroom[] = [

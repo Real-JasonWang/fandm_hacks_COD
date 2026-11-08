@@ -18,6 +18,7 @@ interface SettingsSheetProps {
   onClose: () => void;
   onUpdateMode: (mode: ModeType) => void;
   onUpdateHouse: (house: HouseId) => void;
+  onUpdateAvatar?: (avatar: string) => void;
   onOpenAI: () => void;
   onOpenScience: () => void;
   onOpenFacilities: () => void;
@@ -32,6 +33,7 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
   onClose,
   onUpdateMode,
   onUpdateHouse,
+  onUpdateAvatar,
   onOpenAI,
   onOpenScience,
   onOpenFacilities,
@@ -94,27 +96,55 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
           </button>
         </div>
 
-        {/* User Account Bar */}
-        <div className="apple-card p-3 my-0 mb-3 bg-[#FAF8F5] border border-[var(--line)] flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <span className="text-[22px]">🎓</span>
-            <div>
-              <b className="text-[14px] font-black text-[var(--ink)] block truncate">
-                {currentUser ? currentUser.displayName : 'F&M Student'}
-              </b>
-              <p className="text-[12px] text-[var(--muted)] font-bold truncate">
-                {currentUser ? currentUser.email : 'Local Session · @fandm.edu'}
-              </p>
+        {/* User Account Bar with Avatar Picker */}
+        <div className="apple-card p-3 my-0 mb-3 bg-[#FAF8F5] border border-[var(--line)]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <span className="w-10 h-10 rounded-xl bg-white shadow-xs border border-[var(--line)] grid place-items-center text-[22px] flex-none">
+                {currentUser?.avatar || '🧑‍🎓'}
+              </span>
+              <div className="min-w-0">
+                <b className="text-[14px] font-black text-[var(--ink)] block truncate">
+                  {currentUser ? currentUser.displayName : 'F&M Student'}
+                </b>
+                <p className="text-[12px] text-[var(--muted)] font-bold truncate">
+                  {currentUser ? currentUser.email : 'Local Session · @fandm.edu'}
+                </p>
+              </div>
             </div>
+            {currentUser && (
+              <button
+                type="button"
+                className="apple-chip text-[11px] py-1 text-[var(--danger)] border-[var(--danger-l)] hover:bg-[var(--danger-l)] flex-none ml-2"
+                onClick={onLogout}
+              >
+                Sign Out
+              </button>
+            )}
           </div>
-          {currentUser && (
-            <button
-              type="button"
-              className="apple-chip text-[11px] py-1 text-[var(--danger)] border-[var(--danger-l)] hover:bg-[var(--danger-l)]"
-              onClick={onLogout}
-            >
-              Sign Out
-            </button>
+
+          {/* Quick Avatar Chooser for users */}
+          {currentUser && onUpdateAvatar && (
+            <div className="mt-2.5 pt-2 border-t border-[var(--line)] flex items-center justify-between">
+              <span className="text-[11px] font-extrabold text-[var(--muted)]">Your Avatar:</span>
+              <div className="flex items-center gap-1.5">
+                {['🧑‍🎓', '🦊', '🎓', '🦉', '🦁', '🐻', '🌟', '⚡'].map((emoji) => (
+                  <button
+                    key={emoji}
+                    type="button"
+                    className={`w-7 h-7 rounded-lg text-[15px] flex items-center justify-center transition-all cursor-pointer ${
+                      (currentUser.avatar || '🧑‍🎓') === emoji
+                        ? 'bg-white shadow-xs border border-[var(--brand)] scale-110'
+                        : 'opacity-70 hover:opacity-100 hover:scale-105'
+                    }`}
+                    onClick={() => onUpdateAvatar(emoji)}
+                    title={`Select ${emoji} avatar`}
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
         </div>
 

@@ -27,37 +27,25 @@ export const HouseSelector: React.FC<HouseSelectorProps> = ({
 
   return (
     <div className={`space-y-2.5 ${className}`} role="radiogroup" aria-label="F&M Residential Community Selection">
-      {/* Segmented iOS Tab Switcher */}
-      <div className="flex p-1 bg-[#EFE9DE] rounded-xl border border-[var(--line)]">
+      {/* Segmented iOS Tab Switcher - Apple chunky segmented control matching Interface Vibe */}
+      <div className="apple-seg tri mb-3">
         <button
           type="button"
-          className={`flex-1 py-1.5 text-[11.5px] font-black rounded-lg transition-all cursor-pointer ${
-            activeCategory === 'all'
-              ? 'bg-white text-[var(--ink)] shadow-xs'
-              : 'text-[var(--muted)] hover:text-[var(--ink)]'
-          }`}
+          className={activeCategory === 'all' ? 'on' : ''}
           onClick={() => setActiveCategory('all')}
         >
           All ({HOUSES.length})
         </button>
         <button
           type="button"
-          className={`flex-1 py-1.5 text-[11.5px] font-black rounded-lg transition-all cursor-pointer ${
-            activeCategory === 'house'
-              ? 'bg-white text-[var(--ink)] shadow-xs'
-              : 'text-[var(--muted)] hover:text-[var(--ink)]'
-          }`}
+          className={activeCategory === 'house' ? 'on' : ''}
           onClick={() => setActiveCategory('house')}
         >
           Houses ({collegeHouses.length})
         </button>
         <button
           type="button"
-          className={`flex-1 py-1.5 text-[11.5px] font-black rounded-lg transition-all cursor-pointer ${
-            activeCategory === 'hall'
-              ? 'bg-white text-[var(--ink)] shadow-xs'
-              : 'text-[var(--muted)] hover:text-[var(--ink)]'
-          }`}
+          className={activeCategory === 'hall' ? 'on' : ''}
           onClick={() => setActiveCategory('hall')}
         >
           Halls ({residenceHalls.length})

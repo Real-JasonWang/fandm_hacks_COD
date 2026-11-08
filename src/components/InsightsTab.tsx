@@ -145,7 +145,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
           em: "💧",
           bg: "#E3F1FF",
           title: "Low water days = constipation days",
-          text: `On days with fewer than 4 glasses, ${a}% of logs were hard (Type 1–2), vs ${b}% on 6+ glass days.`,
+          text: `On days with fewer than 4 glasses, ${a}% of logs were hard (Type 1-2), vs ${b}% on 6+ glass days.`,
           a,
           b,
           la: "< 4 glasses",
@@ -181,7 +181,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
           em: "🧠",
           bg: "var(--peach-l)",
           title: "Stress shows up in your gut",
-          text: `On stressed days, ${a}% of logs shifted off baseline (hard or loose), vs only ${b}% on calm days. That's the gut–brain axis in real time.`,
+          text: `On stressed days, ${a}% of logs shifted off baseline (hard or loose), vs only ${b}% on calm days. That's the gut-brain axis in real time.`,
           a,
           b,
           la: "Stressed days (off-baseline)",
@@ -211,10 +211,10 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
     const idealPct7 = share(last7Days.filter((d) => d.rec?.bristol !== null).map((d) => d.rec!), isIdeal);
     const avgSleep7 = daysLogged7
       ? (last7Days.reduce((acc, cur) => acc + cur.rec!.sleep, 0) / daysLogged7).toFixed(1)
-      : "—";
+      : "-";
     const avgWater7 = daysLogged7
       ? (last7Days.reduce((acc, cur) => acc + cur.rec!.water, 0) / daysLogged7).toFixed(1)
-      : "—";
+      : "-";
 
     return {
       last14Days,
@@ -282,7 +282,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
         <p className="text-[14px] text-[var(--ink2)] font-semibold leading-relaxed">
           {daysLogged7 > 0 ? (
             <>
-              You checked in <b>{daysLogged7} of 7 days</b> this week. <b>{idealPct7}%</b> of your bowel movements were in the <b>ideal zone</b> (Type 3–4). You averaged <b>{avgSleep7} h</b> of sleep and <b>{avgWater7} glasses</b> of water a day.
+              You checked in <b>{daysLogged7} of 7 days</b> this week. <b>{idealPct7}%</b> of your bowel movements were in the <b>ideal zone</b> (Type 3-4). You averaged <b>{avgSleep7} h</b> of sleep and <b>{avgWater7} glasses</b> of water a day.
               {patterns.length > 0 && (
                 <span> The strongest physiological correlation: <b>{patterns[0].title.toLowerCase()}</b>.</span>
               )}
@@ -302,7 +302,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
       <div className="apple-card relative">
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-black text-[15px]">Stool Type · Last 14 Days</h3>
-          <span className="apple-tag t-mint">ideal 3–4</span>
+          <span className="apple-tag t-mint">ideal 3-4</span>
         </div>
 
         <div className="relative">
@@ -532,7 +532,7 @@ export const InsightsTab: React.FC<InsightsTabProps> = ({
         </h2>
         {patterns.length === 0 ? (
           <p className="text-[14px] text-[var(--ink2)] font-semibold">
-            No strong physiological correlations yet — keep logging daily check-ins!
+            No strong physiological correlations yet: keep logging daily check-ins!
           </p>
         ) : (
           <div className="space-y-2.5">

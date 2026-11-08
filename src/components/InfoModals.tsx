@@ -38,7 +38,7 @@ export const RedFlagModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         <p className="text-[14px] text-[var(--ink2)] font-semibold leading-relaxed mb-3">
-          Blood in your stool, black or tarry stool, or acute severe abdominal pain can stem from various causes — most are treatable, but they should be promptly evaluated by a licensed clinician, not a smartphone app.
+          Blood in your stool, black or tarry stool, or acute severe abdominal pain can stem from various causes: most are treatable, but they should be promptly evaluated by a licensed clinician, not a smartphone app.
         </p>
 
         <div className="apple-card space-y-3 mb-3">
@@ -296,7 +296,7 @@ export const ScienceModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div>
               <b className="text-[14px] font-black text-[var(--ink)] block">
-                The Gut–Brain Axis
+                The Gut-Brain Axis
               </b>
               <p className="text-[12.5px] text-[var(--ink2)] font-semibold">
                 Psychological stress stimulates autonomic corticotropin-releasing factor (CRF), accelerating or stalling intestinal transit.

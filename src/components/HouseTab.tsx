@@ -9,6 +9,7 @@ interface HouseTabProps {
 
 export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
   const currentHouse = HOUSES.find((h) => h.id === settings.house) || HOUSES[0];
+  const session = getCurrentSession();
 
   const {
     userLoggedDays,
@@ -195,7 +196,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
           House Cup 🏆
         </h1>
         <p className="text-[14px] font-semibold text-[var(--ink2)]">
-          Anonymous College House challenge. Only House totals are shown — never names or health logs.
+          Anonymous College House challenge. Only House totals are shown (never names or health logs).
         </p>
       </div>
 
@@ -207,14 +208,24 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
         }}
       >
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <span
-              className="w-4 h-4 rounded-full flex-none"
-              style={{ background: currentHouse.color }}
-            />
-            <h3 className="font-black text-[17px] text-[var(--ink)]">
-              {currentHouse.name}
-            </h3>
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-[19px] flex-none shadow-xs border"
+              style={{
+                background: `${currentHouse.color}25`,
+                borderColor: `${currentHouse.color}50`,
+              }}
+            >
+              {session?.avatar || '🧑‍🎓'}
+            </span>
+            <div>
+              <h3 className="font-black text-[16px] text-[var(--ink)] leading-tight">
+                {currentHouse.name}
+              </h3>
+              <span className="text-[11.5px] font-bold text-[var(--muted)]">
+                {session ? `${session.displayName} · Active Contributor` : 'Your Residence'}
+              </span>
+            </div>
           </div>
           <span className="apple-tag t-sun font-extrabold">
             #{rank} of {HOUSES.length}
@@ -284,7 +295,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
           <span className="apple-tag t-lav font-bold">Sub-Linear Handicap</span>
         </div>
         <p className="text-[12px] text-[var(--muted)] font-bold mt-0.5 mb-3">
-          % of residents who checked in 3+ days this week — balanced mathematically by dorm size (N).
+          % of residents who checked in 3+ days this week: balanced mathematically by dorm size (N).
         </p>
 
         <div className="space-y-2.5">
@@ -293,9 +304,13 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
             return (
               <div key={h.id} className="space-y-0.5">
                 <div className="flex items-center gap-2.5 text-[14px]">
-                  <span className="w-[84px] font-extrabold text-[var(--ink)] truncate">
-                    {h.id}
-                  </span>
+                  <div className="w-[84px] flex items-center gap-1.5 font-extrabold text-[var(--ink)] truncate">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full flex-none"
+                      style={{ background: h.color }}
+                    />
+                    <span className="truncate">{h.id}</span>
+                  </div>
                   <div className="flex-1 h-[22px] bg-[#F6EEE4] rounded-[6px] relative overflow-hidden">
                     <div
                       className="absolute left-0 top-0 bottom-0 rounded-r-[4px] transition-all duration-500"

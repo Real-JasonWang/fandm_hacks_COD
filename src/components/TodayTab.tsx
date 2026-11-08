@@ -142,7 +142,7 @@ export const TodayTab: React.FC<TodayTabProps> = ({
         {todayLogs.length > 0 ? (
           <div>
             <div className="big">
-              {isPlayful ? 'Logged today — nice! 🎉' : "Today's check-in is done ✓"}
+              {isPlayful ? 'Logged today! Nice! 🎉' : "Today's check-in is done ✓"}
             </div>
             <p className="text-[13px] text-[var(--ink2)] font-semibold mb-3">
               {todayLogs.length} check-in{todayLogs.length > 1 ? 's' : ''} · +
@@ -184,7 +184,7 @@ export const TodayTab: React.FC<TodayTabProps> = ({
             )}
           </div>
           <div className="lb">{isPlayful ? 'Poop' : 'Digestion'}</div>
-          <div className="v">{lastBM && lastBM.bristol ? `Type ${lastBM.bristol}` : '—'}</div>
+          <div className="v">{lastBM && lastBM.bristol ? `Type ${lastBM.bristol}` : '-'}</div>
           <div className="s">
             {lastZone ? (
               <span className={`apple-tag ${lastZone.tag}`}>{lastZone.label}</span>
@@ -197,7 +197,7 @@ export const TodayTab: React.FC<TodayTabProps> = ({
         <button className="apple-pillar" onClick={onOpenCheckIn}>
           <div className="ic">😴</div>
           <div className="lb">Sleep</div>
-          <div className="v">{last ? `${last.sleep} h` : '—'}</div>
+          <div className="v">{last ? `${last.sleep} h` : '-'}</div>
           <div className="s">
             {last ? (last.sleep >= 7 ? '✓ 7h goal' : 'Goal: 7+ h') : 'No sleep data'}
           </div>
@@ -206,7 +206,7 @@ export const TodayTab: React.FC<TodayTabProps> = ({
         <button className="apple-pillar" onClick={onOpenCheckIn}>
           <div className="ic">💧</div>
           <div className="lb">Hydration</div>
-          <div className="v">{last ? `${last.water} 💧` : '—'}</div>
+          <div className="v">{last ? `${last.water} 💧` : '-'}</div>
           <div className="s">
             {last ? `${last.veg} fruit/veg` : 'No diet data'}
           </div>
@@ -230,7 +230,7 @@ export const TodayTab: React.FC<TodayTabProps> = ({
           </button>
         </div>
         <p className="text-[12px] text-[var(--muted)] font-bold mt-2.5 leading-normal">
-          Points come from checking in, sleep, and hydration — <b>never</b> from stool shape or medical conditions.
+          Points come from checking in, sleep, and hydration (never from stool shape or medical conditions).
         </p>
       </div>
 

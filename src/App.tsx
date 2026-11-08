@@ -16,6 +16,7 @@ import {
   updateUserLogs,
   replaceUserLogs,
   updateUserHouse,
+  updateUserAvatar,
   type UserAccount,
 } from './lib/authDatabase';
 
@@ -234,7 +235,7 @@ export function App() {
       },
     }));
 
-    showToast('Marked clean & restocked ✓ — campus map updated');
+    showToast('Marked clean & restocked ✓: campus map updated');
   };
 
   // Strict Auth Gate: If user is not logged in, render only the F&M login/registration screen
@@ -385,6 +386,14 @@ export function App() {
             setCurrentUser((prev) => (prev ? { ...prev, houseId: house } : null));
           }
           showToast(`Switched to ${house} College House!`);
+        }}
+        onUpdateAvatar={(avatar) => {
+          triggerHaptic();
+          if (currentUser) {
+            updateUserAvatar(currentUser.id, avatar);
+            setCurrentUser((prev) => (prev ? { ...prev, avatar } : null));
+            showToast(`Avatar updated! ${avatar}`);
+          }
         }}
         onOpenAI={() => setIsAIOpen(true)}
         onOpenScience={() => setIsScienceOpen(true)}
