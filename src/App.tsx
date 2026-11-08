@@ -352,6 +352,14 @@ export function App() {
               setIsCheckInOpen(true);
             }}
             onOpenRedFlag={() => setIsRedFlagOpen(true)}
+            onDismissWarning={() => {
+              triggerHaptic();
+              setSettings((prev) => ({
+                ...prev,
+                warningDismissedTs: Date.now(),
+              }));
+              showToast('Warning acknowledged & dismissed ✓');
+            }}
             onGoToHouse={() => handleTabChange('house')}
             onHideInstall={() => {
               setSettings((prev) => ({ ...prev, installHidden: true }));
@@ -520,6 +528,14 @@ export function App() {
       <RedFlagModal
         isOpen={isRedFlagOpen}
         onClose={() => setIsRedFlagOpen(false)}
+        onDismissWarning={() => {
+          triggerHaptic();
+          setSettings((prev) => ({
+            ...prev,
+            warningDismissedTs: Date.now(),
+          }));
+          showToast('Warning acknowledged & dismissed ✓');
+        }}
       />
 
       <AIInfoModal isOpen={isAIOpen} onClose={() => setIsAIOpen(false)} />

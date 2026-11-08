@@ -7,6 +7,7 @@ interface TodayTabProps {
   settings: AppSettings;
   onOpenCheckIn: () => void;
   onOpenRedFlag: () => void;
+  onDismissWarning?: () => void;
   onGoToHouse: () => void;
   onHideInstall?: () => void;
 }
@@ -15,6 +16,7 @@ export const TodayTab: React.FC<TodayTabProps> = ({
   settings,
   onOpenCheckIn,
   onOpenRedFlag,
+  onDismissWarning,
   onGoToHouse,
 }) => {
   const isPlayful = settings.mode === 'playful';
@@ -73,8 +75,12 @@ export const TodayTab: React.FC<TodayTabProps> = ({
     const recent = settings.logs.filter((l) => l.ts >= sevenDaysAgo);
     const weekPoints = recent.reduce((acc, cur) => acc + calculateCheckInPoints(cur), 0);
 
+    const lastDismissedTs = settings.warningDismissedTs || 0;
     const isFlagged = settings.logs.some(
-      (l) => now.getTime() - l.ts < 14 * 864e5 && (l.symptoms || []).some((sym) => ['blood', 'black', 'pain'].includes(sym))
+      (l) =>
+        now.getTime() - l.ts < 14 * 864e5 &&
+        l.ts > lastDismissedTs &&
+        (l.symptoms || []).some((sym) => ['blood', 'black', 'pain'].includes(sym))
     );
 
     const fact = FACTS[now.getDate() % FACTS.length];
@@ -93,7 +99,7 @@ export const TodayTab: React.FC<TodayTabProps> = ({
       fact,
       currentHouse,
     };
-  }, [settings.logs, settings.house]);
+  }, [settings.logs, settings.house, settings.warningDismissedTs]);
 
   return (
     <div className="apple-view space-y-3">
@@ -105,17 +111,30 @@ export const TodayTab: React.FC<TodayTabProps> = ({
       </div>
 
       {isFlagged && (
-        <div className="apple-banner red">
-          <span className="text-[20px]">❗</span>
-          <div className="flex-1 text-[13.5px] leading-snug">
-            <b>Warning sign logged recently.</b> Blood, black stool, or bad stomach pain should be checked by a doctor or nurse.{' '}
-            <button
-              onClick={onOpenRedFlag}
-              className="underline font-bold hover:opacity-80"
-            >
-              What to do →
-            </button>
+        <div className="apple-banner red flex items-start justify-between gap-3 relative">
+          <div className="flex items-start gap-2.5 min-w-0 flex-1">
+            <span className="text-[20px] flex-none">❗</span>
+            <div className="text-[13.5px] leading-snug">
+              <b>Warning sign logged recently.</b> Blood, black stool, or bad stomach pain should be checked by a doctor or nurse.{' '}
+              <button
+                type="button"
+                onClick={onOpenRedFlag}
+                className="underline font-bold hover:opacity-80 cursor-pointer"
+              >
+                What to do →
+              </button>
+            </div>
           </div>
+          {onDismissWarning && (
+            <button
+              type="button"
+              onClick={onDismissWarning}
+              className="px-2.5 py-1 text-[11.5px] font-black rounded-lg bg-red-900/10 hover:bg-red-900/20 text-[var(--danger)] cursor-pointer flex-none transition-colors border border-red-500/20"
+              title="Dismiss warning"
+            >
+              Dismiss ✕
+            </button>
+          )}
         </div>
       )}
 

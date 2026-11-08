@@ -17,7 +17,11 @@ function useEscapeKey(isOpen: boolean, onClose: () => void) {
   }, [isOpen, onClose]);
 }
 
-export const RedFlagModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
+interface RedFlagModalProps extends InfoModalProps {
+  onDismissWarning?: () => void;
+}
+
+export const RedFlagModal: React.FC<RedFlagModalProps> = ({ isOpen, onClose, onDismissWarning }) => {
   const { sheetRef, dragHandleProps } = useSheetDrag(onClose);
   useEscapeKey(isOpen, onClose);
   if (!isOpen) return null;
@@ -84,9 +88,25 @@ export const RedFlagModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
           This health reminder is based on American Gastroenterological Association guidelines.
         </p>
 
-        <button className="apple-btn" onClick={onClose}>
-          Understood
-        </button>
+        <div className="space-y-2">
+          <button
+            type="button"
+            className="apple-btn"
+            onClick={() => {
+              if (onDismissWarning) onDismissWarning();
+              onClose();
+            }}
+          >
+            I Understand &amp; Dismiss Warning
+          </button>
+          <button
+            type="button"
+            className="apple-btn ghost text-[13.5px] py-2.5"
+            onClick={onClose}
+          >
+            Keep Warning Active
+          </button>
+        </div>
       </div>
     </>
   );

@@ -96,6 +96,7 @@ export interface AppSettings {
   logs: CheckInEntry[];
   reports: Record<string, RestroomReport>;
   installHidden: boolean;
+  warningDismissedTs?: number;
   demo?: boolean;
 }
 
