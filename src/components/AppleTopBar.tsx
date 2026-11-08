@@ -21,19 +21,28 @@ export const AppleTopBar: React.FC<AppleTopBarProps> = ({
   return (
     <div className="flex items-center justify-between py-2 mb-3">
       <div className="flex items-center gap-2.5 min-w-0">
-        <img
-          src="/icon-192.png"
-          alt="Call of Doodie Logo"
-          className="w-[38px] h-[38px] rounded-[11px] shadow-sm object-cover flex-none"
-          style={isPlayful ? undefined : { filter: 'grayscale(1)', opacity: 0.7 }}
-        />
+        {currentUser ? (
+          <span
+            className="w-[38px] h-[38px] rounded-[12px] shadow-xs flex items-center justify-center text-[22px] flex-none border border-[var(--line)] bg-[var(--card)]"
+            title={`${currentUser.displayName}'s Avatar`}
+          >
+            {currentUser.avatar || '🧑‍🎓'}
+          </span>
+        ) : (
+          <img
+            src="/icon-192.png"
+            alt="Call of Doodie Logo"
+            className="w-[38px] h-[38px] rounded-[12px] shadow-sm object-cover flex-none"
+            style={isPlayful ? undefined : { filter: 'grayscale(1)', opacity: 0.7 }}
+          />
+        )}
         <div className="min-w-0">
           <b className="text-[18px] font-black tracking-tight block leading-tight text-[var(--ink)] truncate">
-            {isPlayful ? 'Call of Doodie' : 'Gut Log'}
+            {currentUser ? `Welcome, ${currentUser.displayName}!` : isPlayful ? 'Call of Doodie' : 'Gut Log'}
           </b>
           <small className="text-[11.5px] text-[var(--muted)] font-bold block truncate">
             {currentUser
-              ? `${currentUser.displayName} · ${houseName}`
+              ? `${houseName} · Active Contributor`
               : isPlayful
               ? 'F&M Gut Health & House Cup 💩'
               : 'F&M Wellness Check-in'}

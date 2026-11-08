@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Restroom, RestroomReport, RestroomReportType } from '../types';
+import { useSheetDrag } from '../lib/useSheetDrag';
 
 interface RestroomSheetProps {
   restroom: Restroom | null;
@@ -21,6 +22,8 @@ export const RestroomSheet: React.FC<RestroomSheetProps> = ({
   onClose,
   onReport,
 }) => {
+  const { sheetRef, dragHandleProps } = useSheetDrag(onClose);
+
   React.useEffect(() => {
     if (!restroom) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -62,16 +65,16 @@ export const RestroomSheet: React.FC<RestroomSheetProps> = ({
   return (
     <>
       <div className="apple-scrim on" onClick={onClose} />
-      <div className="apple-sheet on" role="dialog" aria-modal="true">
-        <div className="apple-grab" />
+      <div ref={sheetRef} className="apple-sheet on" role="dialog" aria-modal="true">
+        <div className="apple-grab" {...dragHandleProps} />
 
-        <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2">
+        <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2" {...dragHandleProps}>
           <h2 className="text-[20px] font-black tracking-tight text-[var(--ink)] truncate pr-2">
             {restroom.b}
           </h2>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[#FFFDF9] flex-none"
+            className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[var(--card)] flex-none"
             aria-label="Close"
           >
             ×
@@ -98,7 +101,7 @@ export const RestroomSheet: React.FC<RestroomSheetProps> = ({
 
         {/* Status Callout Banner */}
         {statusStr ? (
-          <div className="apple-banner bg-[#FFF3E8] text-[#8A4317] mb-4">
+          <div className="apple-banner bg-[var(--sun-l)] text-[var(--ink)] mb-4">
             <span className="text-[18px]">📣</span>
             <div className="text-[13px] font-bold">{statusStr}</div>
           </div>

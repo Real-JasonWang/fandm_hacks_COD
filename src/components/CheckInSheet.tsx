@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { BristolNumber, CheckInEntry, ModeType } from '../types';
 import { BRISTOL, ZONE, SYMPTOMS, STRESS, calculateCheckInPoints } from '../data/appleData';
 import { AppleBristolSVG } from './AppleBristolSVG';
+import { useSheetDrag } from '../lib/useSheetDrag';
 import {
   analyzeStoolImageWithGemma,
   parseNaturalLanguageLogWithGemini,
@@ -36,6 +37,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
   onOpenSettings,
 }) => {
   const isPlayful = mode === 'playful';
+  const { sheetRef, dragHandleProps } = useSheetDrag(onClose);
 
   // Active check-in modality: manual (default), vision (opt-in), nlp (opt-in)
   const [activeTab, setActiveTab] = useState<CheckInTab>('manual');
@@ -182,11 +184,11 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
   return (
     <>
       <div className="apple-scrim on" onClick={onClose} />
-      <div className="apple-sheet on" role="dialog" aria-modal="true">
-        <div className="apple-grab" />
+      <div ref={sheetRef} className="apple-sheet on" role="dialog" aria-modal="true">
+        <div className="apple-grab" {...dragHandleProps} />
 
         {/* Sheet Header */}
-        <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2">
+        <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2" {...dragHandleProps}>
           <div>
             <h2 className="text-[21px] font-black tracking-tight text-[var(--ink)]">
               {isPlayful ? 'Daily Check-in 💩' : 'Wellness Check-in'}
@@ -197,7 +199,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[#FFFDF9]"
+            className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[var(--card)]"
             aria-label="Close"
           >
             ×

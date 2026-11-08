@@ -1,6 +1,7 @@
 import React from 'react';
 import type { CheckInEntry, ModeType, HouseId } from '../types';
 import { HOUSES } from '../data/appleData';
+import { useSheetDrag } from '../lib/useSheetDrag';
 
 export interface PostCheckInModalProps {
   isOpen: boolean;
@@ -21,6 +22,8 @@ export const PostCheckInModal: React.FC<PostCheckInModalProps> = ({
   onClose,
   onOpenRedFlag,
 }) => {
+  const { sheetRef, dragHandleProps } = useSheetDrag(onClose);
+
   if (!isOpen || !entry) return null;
 
   const isPlayful = mode === 'playful';
@@ -146,15 +149,16 @@ export const PostCheckInModal: React.FC<PostCheckInModalProps> = ({
     <>
       <div className="apple-scrim on" onClick={onClose} />
       <div
+        ref={sheetRef}
         className="apple-sheet on"
         role="dialog"
         aria-modal="true"
         aria-label="Daily Check-in Health Analysis"
       >
-        <div className="apple-grab" />
+        <div className="apple-grab" {...dragHandleProps} />
 
         {/* Modal Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-[var(--line)] mb-4">
+        <div className="flex items-center justify-between pb-2 border-b border-[var(--line)] mb-4" {...dragHandleProps}>
           <div>
             <h2 className="text-[20px] font-black tracking-tight text-[var(--ink)]">
               {isPlayful ? 'Daily Gut Health Analysis 📊' : 'Daily Health Summary'}

@@ -344,14 +344,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {/* Case 1: Healthy Baseline Routine */}
           <button
             type="button"
-            className="w-full text-left p-2.5 rounded-2xl border border-[var(--line)] bg-[#FAF8FE] hover:border-[var(--lav)] hover:bg-[#F4EFFD] transition-all flex items-start gap-2.5 group"
+            className="w-full text-left p-2.5 rounded-2xl border border-[var(--line)] bg-[var(--card)] hover:border-[var(--brand)] hover:bg-[var(--bg)] transition-all flex items-start gap-2.5 group"
             onClick={() => handleQuickDemo('diplomat@fandm.edu')}
           >
             <span className="text-[22px] flex-none mt-0.5 group-hover:scale-110 transition-transform">🎓</span>
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-center">
                 <b className="text-[13px] font-black text-[var(--ink)]">Case 1: Ware Diplomat (Healthy Routine)</b>
-                <span className="text-[11px] font-black text-[#5040C0]">Sign In →</span>
+                <span className="text-[11px] font-black text-[var(--brand)]">Sign In →</span>
               </div>
               <p className="text-[11.5px] font-semibold text-[var(--ink2)] leading-tight mt-0.5">
                 diplomat@fandm.edu · Ware House · Ideal Type 4 stool, 7.5h sleep, 7 glasses of water.
@@ -362,14 +362,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {/* Case 2: Academic Exam Stress & Gut-Brain Axis */}
           <button
             type="button"
-            className="w-full text-left p-2.5 rounded-2xl border border-[var(--line)] bg-[#FFF9F5] hover:border-[var(--peach)] hover:bg-[#FFF3EC] transition-all flex items-start gap-2.5 group"
+            className="w-full text-left p-2.5 rounded-2xl border border-[var(--line)] bg-[var(--card)] hover:border-[var(--brand)] hover:bg-[var(--bg)] transition-all flex items-start gap-2.5 group"
             onClick={() => handleQuickDemo('ben@fandm.edu')}
           >
             <span className="text-[22px] flex-none mt-0.5 group-hover:scale-110 transition-transform">🏛️</span>
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-center">
                 <b className="text-[13px] font-black text-[var(--ink)]">Case 2: Bonchek Ben (Exam Stress &amp; IBS)</b>
-                <span className="text-[11px] font-black text-[var(--peach-d)]">Sign In →</span>
+                <span className="text-[11px] font-black text-[var(--brand)]">Sign In →</span>
               </div>
               <p className="text-[11.5px] font-semibold text-[var(--ink2)] leading-tight mt-0.5">
                 ben@fandm.edu · Bonchek House · Lack of sleep, high midterm stress, and upset stomach.
@@ -385,7 +385,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   if (isFullScreen) {
     return (
       <div className="rainbow-diffuse-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden py-10">
-        {/* Multi-layer 7-Color Diffuse Fusion Mesh Aurora Orbs (七彩弥散融合) */}
+        {/* Multi-layer 7-Color Diffuse Fusion Mesh Aurora Orbs */}
         <div className="rainbow-aurora-orb rainbow-orb-1" />
         <div className="rainbow-aurora-orb rainbow-orb-2" />
         <div className="rainbow-aurora-orb rainbow-orb-3" />
@@ -418,7 +418,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {onClose && (
             <button
               onClick={onClose}
-              className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[#FFFDF9]"
+              className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[var(--card)]"
             >
               ×
             </button>

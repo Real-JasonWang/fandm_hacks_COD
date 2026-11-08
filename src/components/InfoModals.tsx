@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSheetDrag } from '../lib/useSheetDrag';
 
 interface InfoModalProps {
   isOpen: boolean;
@@ -17,21 +18,22 @@ function useEscapeKey(isOpen: boolean, onClose: () => void) {
 }
 
 export const RedFlagModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
+  const { sheetRef, dragHandleProps } = useSheetDrag(onClose);
   useEscapeKey(isOpen, onClose);
   if (!isOpen) return null;
 
   return (
     <>
       <div className="apple-scrim on" onClick={onClose} />
-      <div className="apple-sheet on" role="dialog" aria-modal="true">
-        <div className="apple-grab" />
-        <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2">
+      <div ref={sheetRef} className="apple-sheet on" role="dialog" aria-modal="true">
+        <div className="apple-grab" {...dragHandleProps} />
+        <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2" {...dragHandleProps}>
           <h2 className="text-[21px] font-black tracking-tight text-[var(--danger)]">
             ❗ Please get this checked
           </h2>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[#FFFDF9]"
+            className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[var(--card)]"
           >
             ×
           </button>
@@ -91,21 +93,22 @@ export const RedFlagModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
 };
 
 export const AIInfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
+  const { sheetRef, dragHandleProps } = useSheetDrag(onClose);
   useEscapeKey(isOpen, onClose);
   if (!isOpen) return null;
 
   return (
     <>
       <div className="apple-scrim on" onClick={onClose} />
-      <div className="apple-sheet on" role="dialog" aria-modal="true">
-        <div className="apple-grab" />
-        <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2">
+      <div ref={sheetRef} className="apple-sheet on" role="dialog" aria-modal="true">
+        <div className="apple-grab" {...dragHandleProps} />
+        <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2" {...dragHandleProps}>
           <h2 className="text-[21px] font-black tracking-tight text-[var(--ink)]">
             ✨ How the AI works
           </h2>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[#FFFDF9]"
+            className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[var(--card)]"
           >
             ×
           </button>
@@ -213,21 +216,22 @@ export const AIInfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
 };
 
 export const ScienceModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
+  const { sheetRef, dragHandleProps } = useSheetDrag(onClose);
   useEscapeKey(isOpen, onClose);
   if (!isOpen) return null;
 
   return (
     <>
       <div className="apple-scrim on" onClick={onClose} />
-      <div className="apple-sheet on" role="dialog" aria-modal="true">
-        <div className="apple-grab" />
-        <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2">
+      <div ref={sheetRef} className="apple-sheet on" role="dialog" aria-modal="true">
+        <div className="apple-grab" {...dragHandleProps} />
+        <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2" {...dragHandleProps}>
           <h2 className="text-[21px] font-black tracking-tight text-[var(--ink)]">
             📚 The science behind it
           </h2>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[#FFFDF9]"
+            className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[var(--card)]"
           >
             ×
           </button>

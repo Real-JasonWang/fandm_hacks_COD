@@ -401,7 +401,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
           </div>
         </div>
 
-        <div className="apple-banner mt-3 bg-[#FFF3E8] text-[#8A4317]">
+        <div className="apple-banner mt-3 bg-[var(--sun-l)] text-[var(--ink)]">
           <span>🤝</span>
           <div className="text-[13px] leading-snug">
             We reward <b>healthy habits, not perfect digestion</b>. Your stool type never loses points, so everyone competes fairly even with stomach conditions or stress.

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { AppSettings, HouseId, ModeType, ThemeMode, ColorSchemeId } from '../types';
 import { HouseSelector } from './HouseSelector';
 import { COLOR_SCHEMES } from '../data/appleData';
+import { useSheetDrag } from '../lib/useSheetDrag';
 import {
   getStoredApiKey,
   setStoredApiKey,
@@ -51,6 +52,7 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
   const [isTestingKey, setIsTestingKey] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
   const [showKey, setShowKey] = useState(false);
+  const { sheetRef, dragHandleProps } = useSheetDrag(onClose);
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -85,16 +87,16 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
   return (
     <>
       <div className="apple-scrim on" onClick={onClose} />
-      <div className="apple-sheet on" role="dialog" aria-modal="true">
-        <div className="apple-grab" />
+      <div ref={sheetRef} className="apple-sheet on" role="dialog" aria-modal="true">
+        <div className="apple-grab" {...dragHandleProps} />
 
-        <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2">
+        <div className="flex items-center justify-between pb-2 mb-2 sticky top-[-10px] bg-[var(--bg)] z-10 pt-2" {...dragHandleProps}>
           <h2 className="text-[21px] font-black tracking-tight text-[var(--ink)]">
             Settings &amp; Preferences
           </h2>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[#FFFDF9]"
+            className="w-9 h-9 rounded-xl bg-[var(--card)] shadow-[var(--shadow)] font-black text-[18px] grid place-items-center hover:bg-[var(--card)]"
             aria-label="Close"
           >
             ×
@@ -102,10 +104,10 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
         </div>
 
         {/* User Account Bar with Avatar Picker */}
-        <div className="apple-card p-3 my-0 mb-3 bg-[#FAF8F5] border border-[var(--line)]">
+        <div className="apple-card p-3 my-0 mb-3 bg-[var(--bg)] border border-[var(--line)]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <span className="w-10 h-10 rounded-xl bg-white shadow-xs border border-[var(--line)] grid place-items-center text-[22px] flex-none">
+              <span className="w-10 h-10 rounded-xl bg-[var(--card)] shadow-xs border border-[var(--line)] grid place-items-center text-[22px] flex-none">
                 {currentUser?.avatar || '🧑‍🎓'}
               </span>
               <div className="min-w-0">
@@ -297,7 +299,7 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
             <div className="relative">
               <input
                 type={showKey ? 'text' : 'password'}
-                className="w-full py-2 px-3 pr-10 text-[13px] font-mono bg-[#FFFDF9] border border-[var(--line)] rounded-xl focus:outline-none focus:border-[var(--peach)]"
+                className="w-full py-2 px-3 pr-10 text-[13px] font-mono bg-[var(--card)] border border-[var(--line)] rounded-xl focus:outline-none focus:border-[var(--peach)]"
                 placeholder="Google AI Studio API Key (AQ.Ab8...)"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
@@ -316,7 +318,7 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
                 Preferred AI Model:
               </label>
               <select
-                className="w-full py-2 px-2.5 text-[12.5px] font-extrabold bg-[#FFFDF9] border border-[var(--line)] rounded-xl text-[var(--ink)] focus:outline-none"
+                className="w-full py-2 px-2.5 text-[12.5px] font-extrabold bg-[var(--card)] border border-[var(--line)] rounded-xl text-[var(--ink)] focus:outline-none"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
               >

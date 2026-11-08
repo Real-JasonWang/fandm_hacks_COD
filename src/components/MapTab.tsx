@@ -37,6 +37,25 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
   const [filterStartX, setFilterStartX] = useState<number>(0);
   const [filterScrollLeft, setFilterScrollLeft] = useState<number>(0);
 
+  // Concept3D Map Night Vision Filter (defaults to app dark mode, toggleable)
+  const [isNightMap, setIsNightMap] = useState<boolean>(() => {
+    if (typeof document !== 'undefined') {
+      return document.documentElement.getAttribute('data-theme') === 'dark';
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (typeof MutationObserver !== 'undefined' && typeof document !== 'undefined') {
+      const observer = new MutationObserver(() => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        setIsNightMap(isDark);
+      });
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      return () => observer.disconnect();
+    }
+  }, []);
+
   // User GPS Location State
   const [userLocation, setUserLocation] = useState<UserLocation>({
     lat: FM_CAMPUS_DEFAULT.lat,
@@ -193,7 +212,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
       <div className="relative flex items-center">
         <button
           type="button"
-          className="w-7 h-7 rounded-full bg-white shadow-xs border border-[var(--line)] text-[14px] font-black grid place-items-center flex-none mr-1.5 cursor-pointer hover:bg-[#FAF7F0] text-[var(--ink)] select-none"
+          className="w-7 h-7 rounded-full bg-[var(--card)] shadow-xs border border-[var(--line)] text-[14px] font-black grid place-items-center flex-none mr-1.5 cursor-pointer hover:bg-[var(--bg)] text-[var(--ink)] select-none"
           onClick={() => {
             if (filterScrollRef.current) filterScrollRef.current.scrollBy({ left: -140, behavior: 'smooth' });
           }}
@@ -226,7 +245,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
 
         <button
           type="button"
-          className="w-7 h-7 rounded-full bg-white shadow-xs border border-[var(--line)] text-[14px] font-black grid place-items-center flex-none ml-1.5 cursor-pointer hover:bg-[#FAF7F0] text-[var(--ink)] select-none"
+          className="w-7 h-7 rounded-full bg-[var(--card)] shadow-xs border border-[var(--line)] text-[14px] font-black grid place-items-center flex-none ml-1.5 cursor-pointer hover:bg-[var(--bg)] text-[var(--ink)] select-none"
           onClick={() => {
             if (filterScrollRef.current) filterScrollRef.current.scrollBy({ left: 140, behavior: 'smooth' });
           }}
@@ -239,7 +258,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
       {/* Recommended Nearest Restroom Hero Card (Dynamic GPS Driven) */}
       {nearestRestroom && (
         <div
-          className="apple-card my-0 p-4 border border-[var(--mint-d)]/30 bg-gradient-to-r from-[#F0FAF5] to-[#FFFDF9] shadow-[var(--shadow)] flex items-center justify-between gap-3 cursor-pointer hover:scale-[1.01] transition-transform"
+          className="apple-card my-0 p-4 border border-[var(--mint-d)]/30 bg-gradient-to-r from-[var(--mint-l)]/40 to-[var(--card)] shadow-[var(--shadow)] flex items-center justify-between gap-3 cursor-pointer hover:scale-[1.01] transition-transform"
           onClick={() => onOpenRestroom(nearestRestroom)}
         >
           <div className="flex items-center gap-3.5 min-w-0">
@@ -284,9 +303,9 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
       )}
 
       {/* Official F&M Concept3D Interactive Campus Map (Iframe Embed) */}
-      <div className="apple-card p-0 overflow-hidden border border-[var(--line)] shadow-[var(--shadow)] bg-[#F8F5EE]">
+      <div className="apple-card p-0 overflow-hidden border border-[var(--line)] shadow-[var(--shadow)] bg-[var(--card)]">
         {/* Map Header Bar */}
-        <div className="p-3 bg-[#FFFDF9] border-b border-[var(--line)] flex items-center justify-between gap-2 flex-wrap">
+        <div className="p-3 bg-[var(--card)] border-b border-[var(--line)] flex items-center justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-2.5 min-w-0">
             <span className="text-[20px] flex-none">🗺️</span>
             <div className="min-w-0">
@@ -300,10 +319,24 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
           </div>
 
           <div className="flex items-center gap-2 flex-none">
+            {/* Night / Day Map Filter Toggle */}
+            <button
+              type="button"
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-full border text-[11px] font-black cursor-pointer transition-all ${
+                isNightMap
+                  ? 'bg-[var(--brand)] text-white border-[var(--brand)] shadow-xs'
+                  : 'bg-[var(--card)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--bg)]'
+              }`}
+              onClick={() => setIsNightMap(!isNightMap)}
+              title="Toggle Night Vision filter for external map"
+            >
+              <span>{isNightMap ? '🌙 Dark Map' : '☀️ Day Map'}</span>
+            </button>
+
             {/* GPS Simulation / Location Switcher */}
             <button
               type="button"
-              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--card)] border border-[var(--line)] text-[11.5px] font-extrabold text-[var(--ink)] shadow-xs hover:bg-[#FAF7F0] cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--card)] border border-[var(--line)] text-[11.5px] font-extrabold text-[var(--ink)] shadow-xs hover:bg-[var(--bg)] cursor-pointer"
               onClick={() => setShowLocationPicker(!showLocationPicker)}
               title="Change simulated location"
             >
@@ -327,7 +360,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
 
         {/* Location Simulator Dropdown Picker */}
         {showLocationPicker && (
-          <div className="p-3 bg-[#FFFDF8] border-b border-[var(--line)] text-[12px] animate-in fade-in duration-150">
+          <div className="p-3 bg-[var(--card)] border-b border-[var(--line)] text-[12px] animate-in fade-in duration-150">
             <div className="flex items-center justify-between mb-2">
               <span className="font-black text-[var(--ink)]">Simulate Current Location:</span>
               <button
@@ -346,7 +379,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
                   className={`px-2.5 py-1 rounded-xl text-[11px] font-extrabold border transition-all cursor-pointer ${
                     userLocation.presetName === preset.name
                       ? 'bg-[var(--brand)] text-white border-[var(--brand)] shadow-xs'
-                      : 'bg-white border-[var(--line)] text-[var(--ink2)] hover:border-[var(--brand)]'
+                      : 'bg-[var(--bg)] border-[var(--line)] text-[var(--ink2)] hover:border-[var(--brand)]'
                   }`}
                   onClick={() => {
                     setUserLocation({
@@ -367,18 +400,20 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
         )}
 
         {/* Official F&M Concept3D Iframe */}
-        <div className="relative w-full h-[480px] sm:h-[550px] bg-[#FAF8F5]">
+        <div className="relative w-full h-[480px] sm:h-[550px] bg-[var(--card)] overflow-hidden">
           <iframe
             src="https://map.concept3d.com/?id=1202#!ct/32461,57938?s/"
             title="Franklin & Marshall College Restroom Map"
-            className="w-full h-full border-0 block"
+            className={`w-full h-full border-0 block transition-all duration-300 ${
+              isNightMap ? 'campus-dark-map' : ''
+            }`}
             loading="lazy"
             allow="geolocation; fullscreen"
           />
         </div>
       </div>
 
-      {/* Restroom Horizontal Cards List Header with Compact Segmented Control (Never Overflows!) */}
+      {/* Restroom Horizontal Cards List Header with Compact Segmented Control */}
       <div className="pt-2">
         <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
           <div className="min-w-0">
@@ -387,13 +422,13 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
             </h2>
           </div>
 
-          {/* Compact Segmented Control - Fixed Overflow */}
-          <div className="flex items-center bg-[#F2EDE4] p-0.5 rounded-xl border border-[var(--line)] flex-none">
+          {/* Compact Segmented Control */}
+          <div className="flex items-center bg-[var(--bg)] p-0.5 rounded-xl border border-[var(--line)] flex-none">
             <button
               type="button"
               className={`px-3 py-1 rounded-lg text-[11.5px] font-black transition-all cursor-pointer ${
                 sortBy === 'distance'
-                  ? 'bg-white text-[var(--ink)] shadow-xs'
+                  ? 'bg-[var(--card)] text-[var(--ink)] shadow-xs border border-[var(--line)]'
                   : 'text-[var(--muted)] hover:text-[var(--ink)]'
               }`}
               onClick={() => setSortBy('distance')}
@@ -404,7 +439,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
               type="button"
               className={`px-3 py-1 rounded-lg text-[11.5px] font-black transition-all cursor-pointer ${
                 sortBy === 'name'
-                  ? 'bg-white text-[var(--ink)] shadow-xs'
+                  ? 'bg-[var(--card)] text-[var(--ink)] shadow-xs border border-[var(--line)]'
                   : 'text-[var(--muted)] hover:text-[var(--ink)]'
               }`}
               onClick={() => setSortBy('name')}
@@ -454,27 +489,27 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
                     {/* Amenity Pills in a Clean Row */}
                     <div className="flex flex-wrap gap-1.5">
                       {r.all && (
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[var(--lav-l)] text-[#5040C0]">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[var(--lav-l)] text-[#4334B8] dark:text-[#C4B5FD]">
                           ⚧ All-Gender
                         </span>
                       )}
                       {r.acc && (
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[var(--mint-l)] text-[#11634C]">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[var(--mint-l)] text-[#11634C] dark:text-[#34D399]">
                           ♿ ADA
                         </span>
                       )}
                       {r.per && (
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[var(--peach-l)] text-[var(--peach-d)]">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[var(--peach-l)] text-[var(--peach-d)] dark:text-[#FDBA74]">
                           🌸 Period Products
                         </span>
                       )}
                       {r.single && (
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[#FFF2DE] text-[#B87000]">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[var(--sun-l)] text-[#7A5300] dark:text-[#FCD34D]">
                           🚪 Single-Stall
                         </span>
                       )}
                       {r.baby && (
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[#EBF6FF] text-[#1E6AC4]">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[var(--mint-l)] text-[#11634C] dark:text-[#34D399]">
                           🍼 Changing Table
                         </span>
                       )}
