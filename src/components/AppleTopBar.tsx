@@ -32,7 +32,7 @@ export const AppleTopBar: React.FC<AppleTopBarProps> = ({
           <img
             src="/icon-192.png"
             alt="Call of Doodie Logo"
-            className="w-[38px] h-[38px] rounded-[12px] shadow-sm object-cover flex-none"
+            className="w-[38px] h-[38px] rounded-[12px] shadow-xs object-contain p-0.5 bg-[var(--card)] border border-[var(--line)] flex-none"
             style={isPlayful ? undefined : { filter: 'grayscale(1)', opacity: 0.7 }}
           />
         )}

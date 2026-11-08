@@ -23,8 +23,8 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
       <div className="max-w-[440px] w-full mx-auto space-y-4">
         <img
           src="/icon-192.png"
-          alt="App Icon"
-          className="w-[76px] h-[76px] rounded-[22px] shadow-[var(--shadow)] object-cover mb-2"
+          alt="Call of Doodie Icon"
+          className="w-[76px] h-[76px] rounded-[22px] shadow-[var(--shadow)] object-contain p-2 bg-[var(--card)] border border-[var(--line)] mb-2"
         />
 
         <h1 className="text-[34px] font-black leading-[1.05] tracking-tight text-[var(--ink)]">

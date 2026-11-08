@@ -1,6 +1,20 @@
 // Offline cache so the app opens without internet (e.g., in a basement bathroom).
-const CACHE = "doodie-v1";
-const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
+const CACHE = "doodie-v2";
+const ASSETS = [
+  "./",
+  "./index.html",
+  "./manifest.webmanifest",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./icon-maskable-512.png",
+  "./apple-touch-icon.png",
+  "./favicon.svg",
+  "./favicon-32x32.png",
+  "./favicon-16x16.png",
+  "./favicon.ico",
+  "./logo-banner.png",
+  "./logo-horizontal.png"
+];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));

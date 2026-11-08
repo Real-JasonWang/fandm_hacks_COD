@@ -403,9 +403,16 @@ const SettingsModalContent: React.FC<Omit<SettingsSheetProps, 'isOpen'>> = ({
           </button>
         </div>
 
-        <p className="text-[12px] text-[var(--muted)] font-bold text-center mt-4">
-          Franklin &amp; Marshall College Hackathon (FandMHacks) · Social Good Track
-        </p>
+        <div className="flex flex-col items-center justify-center pt-3 pb-1">
+          <img
+            src="/icon-192.png"
+            alt="Call of Doodie"
+            className="w-10 h-10 object-contain rounded-xl p-0.5 bg-[var(--card)] border border-[var(--line)] mb-2 shadow-xs"
+          />
+          <p className="text-[12px] text-[var(--muted)] font-bold text-center">
+            Franklin &amp; Marshall College Hackathon (FandMHacks) · Social Good Track
+          </p>
+        </div>
       </div>
     </>
   );

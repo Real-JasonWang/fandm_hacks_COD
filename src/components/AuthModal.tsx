@@ -106,7 +106,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         <img
           src="/icon-192.png"
           alt="Call of Doodie Logo"
-          className="w-16 h-16 rounded-2xl mx-auto mb-2.5 shadow-md object-cover"
+          className="w-16 h-16 rounded-2xl mx-auto mb-2.5 shadow-md object-contain p-1.5 bg-[var(--card)] border border-[var(--line)]"
         />
         <h1 className="text-[24px] font-black tracking-tight text-[var(--ink)]">
           Call of Doodie
