@@ -323,3 +323,64 @@ npm run build
 - 🔷 **Schnader Hall**  
 - 🟢 **Thomas Hall**  
 - 🍊 **Dietz Hall**
+
+---
+
+## ❓ Frequently Asked Questions (Judge Q&A)
+
+### 1. "Why is this built local-first instead of saving all user data to a central cloud backend?"
+**Because privacy comes first.** Digestive health, bathroom habits, and photos are deeply personal. If we asked college students to upload their bathroom logs to a remote database on day one, nobody would feel safe using the app. By using a **Local-First, Zero-Knowledge architecture** with browser IndexedDB and Web Crypto (PBKDF2-HMAC-SHA256), your health logs never leave your phone or laptop. 
+
+For our upcoming V2 campus sync, we already planned out a Supabase backend using Row-Level Security (RLS). The key difference is that **only anonymized house points** (like `+10 points to Ware House`) will be sent to the cloud leaderboard via edge functions. Personal notes, photos, and time logs will stay encrypted on-device.
+
+---
+
+### 2. "Isn't turning bathroom habits into a dorm competition a little weird or gross?"
+**That taboo is exactly why so many students have stomach issues.** When freshmen come to college, changes in cafeteria food, late-night study snacks, dehydration, and exam stress mess up their digestive system. But because nobody talks about it, people ignore problems until they get sick. By giving it a lighthearted Apple-style design and friendly dorm pride, we take away the awkwardness and turn daily hydration and gut health into a fun, healthy routine.
+
+---
+
+### 3. "Won't big dorms like Ware always beat smaller dorms because they have more students?"
+**Nope, our math prevents that.** The House Cup does not just add up raw points. We built a fair-share weighting formula that divides total house points by the number of active participants, plus a consistency bonus for daily streaks. A smaller dorm where 80% of residents log their water and meals regularly can easily beat a giant dorm where only a few people remember to check in.
+
+---
+
+### 4. "What if the AI vision model hallucinates or gives incorrect medical advice?"
+**The AI never acts as a doctor or gives medical prescriptions.** It only looks for visual texture and consistency to suggest an approximate Bristol Stool Form Scale score (Types 1 to 7)—a standard chart created by medical researchers and used in hospitals worldwide. 
+
+AI photo scanning is also completely optional; students can always slide the slider with one touch in two seconds. If someone reports red-flag symptoms like severe stomach pain or bleeding, the app skips AI advice and immediately displays direct one-tap buttons to call F&M Student Wellness (Diplomat Center) or 911.
+
+---
+
+### 5. "Isn't calling an AI vision model on images slow and expensive?"
+**Not the way we built it.** We use Google's latest `gemini-3.5-flash-lite`, which responds in under 1.6 seconds and comes with a 500-requests-per-day free tier. Before any image is sent, client-side HTML5 canvas compresses it down to 600px width at 0.6 JPEG quality, making the upload lightweight. We also wrap every call in a 12-second safety timeout, so the app never hangs even on spotty dorm Wi-Fi.
+
+---
+
+### 6. "What if a student wants to check in during a crowded lecture or the library? Isn't the screen embarrassing?"
+**We built Discreet Mode specifically for this.** With one tap in Settings, the app switches into "Classroom Privacy Shield." The poop character, funny badges, and bathroom terms disappear, turning the UI into a clean, minimalist pastel "Daily Hydration & Energy Log." Anyone sitting next to you will just think you are tracking your study goals or daily water intake.
+
+---
+
+### 7. "Why build a Progressive Web App (PWA) instead of a native iOS or Android app?"
+**Friction kills student adoption.** If you stick a poster on a bathroom stall door saying "Download an 80MB app from the App Store and create an account," 90% of students will walk away. With our PWA, a student scans a QR code, the web page loads in under one second on any phone, and they can tap "Add to Home Screen" right away. No app store waiting, no installation barrier, and zero device lock-in.
+
+---
+
+### 8. "Are the 23 campus restrooms real, or did you make up the map data?"
+**Every single bathroom is real and mapped directly from Franklin & Marshall grounds.** We walked through and verified locations across the Quad, Martin Science Center, Stager Hall, the library, and residential buildings. Each spot lists real floor numbers, single-stall privacy status, wheelchair accessibility, and gender-neutral labels, all embedded alongside the official F&M Concept3D campus interactive map.
+
+---
+
+### 9. "Can someone cheat the House Cup by spamming hundreds of check-ins in five minutes?"
+**No, there is a biological cooldown limit.** The scoring system only awards House Cup points for up to 3 check-ins per day (Morning, Afternoon, and Evening). If you try to submit ten check-ins in an hour, the app saves your health log for your personal record but awards 0 extra house points. Real habits beat spamming every time.
+
+---
+
+### 10. "Is this just a 24-hour hackathon joke, or can this actually keep running at F&M?"
+**The architecture was designed for real-world campus life.** The code is modular, fully typed in TypeScript, and runs cleanly with high-speed Vite bundling. 
+
+Our roadmap after the hackathon includes:
+1. **Physical NFC tags** placed on dorm bathroom mirrors for instant one-tap check-in.
+2. **Supabase Realtime backend** for live campus Quad scoreboards.
+3. **Dining Hall collaboration**, sharing anonymous, high-level digestion trends (e.g., "70% of students experienced dehydration during finals week") with F&M Dining to encourage more water stations and fresh greens.
