@@ -37,6 +37,7 @@ import { SettingsSheet } from './components/SettingsSheet';
 import { RedFlagModal, AIInfoModal, ScienceModal } from './components/InfoModals';
 import { OnboardingModal } from './components/OnboardingModal';
 import { AuthModal } from './components/AuthModal';
+import { PostCheckInModal } from './components/PostCheckInModal';
 
 export function App() {
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(() => getCurrentSession());
@@ -60,6 +61,11 @@ export function App() {
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [isScienceOpen, setIsScienceOpen] = useState(false);
   const [selectedRestroom, setSelectedRestroom] = useState<Restroom | null>(null);
+
+  // Post Check-in Health Analysis Modal
+  const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
+  const [latestSavedEntry, setLatestSavedEntry] = useState<CheckInEntry | null>(null);
+  const [earnedPoints, setEarnedPoints] = useState(0);
 
   // Toast Notification
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -170,6 +176,9 @@ export function App() {
     setIsCheckInOpen(false);
 
     const pts = calculateCheckInPoints(newEntry);
+    setEarnedPoints(pts);
+    setLatestSavedEntry(newEntry);
+    setIsAnalysisOpen(true);
 
     // Confetti celebration only in playful mode
     if (settings.mode === 'playful') {
@@ -484,6 +493,16 @@ export function App() {
             showToast('Personal check-ins deleted.');
           }
         }}
+      />
+
+      <PostCheckInModal
+        isOpen={isAnalysisOpen}
+        entry={latestSavedEntry}
+        mode={settings.mode}
+        houseId={settings.house}
+        pointsEarned={earnedPoints}
+        onClose={() => setIsAnalysisOpen(false)}
+        onOpenRedFlag={() => setIsRedFlagOpen(true)}
       />
 
       <RedFlagModal
