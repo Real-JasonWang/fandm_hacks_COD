@@ -469,6 +469,7 @@ export const CheckInSheet: React.FC<CheckInSheetProps> = ({
               placeholder="e.g. Slept 7.5 hours last night, drank 6 glasses of water today, smooth stool like a banana, slight bloating, mild exam stress..."
               value={nlpText}
               onChange={(e) => setNlpText(e.target.value)}
+              onInput={(e) => setNlpText((e.target as HTMLTextAreaElement).value)}
             />
 
             <button

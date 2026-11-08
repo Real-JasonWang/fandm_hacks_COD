@@ -77,18 +77,18 @@ export const PostCheckInModal: React.FC<PostCheckInModalProps> = ({
   const sleepGood = entry.sleep >= 7;
   const sleepAdvice = sleepGood
     ? `You got ${entry.sleep} hours of sleep last night. Good rest protects healthy gut rhythms.`
-    : `You logged ${entry.sleep} hours of sleep. Sleeping under 7 hours can slow down morning gut motility. Plan for an earlier bedtime tonight.`;
+    : `You logged ${entry.sleep} hours of sleep. Sleeping under 7 hours can slow down morning digestion. Plan for an earlier bedtime tonight.`;
 
   // 4. Fiber / Veggie Insight & Action
   const vegGood = entry.veg >= 3;
   const vegAdvice = vegGood
-    ? `You had ${entry.veg} servings of vegetables. Excellent fiber intake to keep your digestive tract moving.`
+    ? `You had ${entry.veg} servings of vegetables. Great job getting enough fiber to keep your digestion smooth.`
     : `You logged ${entry.veg} servings of vegetables. Try to grab a bowl of salad, broccoli, or an apple at the dining hall today.`;
 
   // 5. Stress Insight & Action
   const stressElevated = entry.stress >= 2;
   const stressAdvice = stressElevated
-    ? 'Your stress level was marked elevated. The brain and stomach communicate closely; stress can trigger stomach knots or sudden cramps. Take a 5-minute deep-breathing break.'
+    ? 'Your stress level was high today. Stress can cause stomach cramps. Take a 5-minute break to breathe.'
     : 'Low stress logged today. A relaxed nervous system helps your stomach digest meals comfortably.';
 
   // Build 3 actionable next steps

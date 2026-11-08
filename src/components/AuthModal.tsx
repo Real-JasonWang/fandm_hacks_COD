@@ -121,6 +121,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           onClick={() => {
             setTab('login');
             setErrorMessage(null);
+            if (!email) {
+              setEmail('diplomat@fandm.edu');
+              setPassword('admin123');
+            }
           }}
         >
           Sign In
@@ -131,8 +135,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           onClick={() => {
             setTab('register');
             setErrorMessage(null);
-            if (!email.includes('@fandm.edu')) {
-              setEmail('newstudent@fandm.edu');
+            if (email === 'diplomat@fandm.edu') {
+              setEmail('');
+              setPassword('');
             }
           }}
         >

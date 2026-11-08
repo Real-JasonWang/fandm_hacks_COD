@@ -295,7 +295,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
           <span className="apple-tag t-lav font-bold">Adjusted for Dorm Size</span>
         </div>
         <p className="text-[12px] text-[var(--muted)] font-bold mt-0.5 mb-3">
-          % of students logging 3+ days this week, balanced fairly for dorm size.
+          Log 3+ days this week to activate your house score. Balanced for dorm size.
         </p>
 
         <div className="space-y-2.5">
@@ -394,7 +394,7 @@ export const HouseTab: React.FC<HouseTabProps> = ({ settings }) => {
                 Daily Consistency
               </b>
               <p className="text-[12px] text-[var(--ink2)] font-semibold">
-                Boosts your House participation % and unlocks weekly badges
+                Boosts your House score and earns weekly badges
               </p>
             </div>
             <b className="text-[14px] font-black text-[var(--ink)]">Active</b>

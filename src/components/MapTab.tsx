@@ -368,7 +368,7 @@ export const MapTab: React.FC<MapTabProps> = ({ settings, onOpenRestroom }) => {
 
         {/* Official F&M Concept3D Iframe with Rounded Inner Frame */}
         <div className="p-2 sm:p-2.5 bg-[var(--card)]">
-          <div className="relative w-full h-[480px] sm:h-[550px] bg-[var(--bg)] overflow-hidden rounded-[20px] border border-[var(--line)] shadow-inner">
+          <div className="relative w-full h-[320px] sm:h-[480px] bg-[var(--bg)] overflow-hidden rounded-[20px] border border-[var(--line)] shadow-inner">
             <iframe
               src="https://map.concept3d.com/?id=1202#!ct/32461,57938?s/"
               title="Franklin & Marshall College Restroom Map"

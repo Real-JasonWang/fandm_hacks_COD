@@ -27,9 +27,9 @@ Poop is a big part of our daily life and well being.
 
 How easily and regularly your body digests food is one of the clearest signs of how well you're resting and drinking water. It tells doctors about our overall health, and you probably remember how good you felt after a good poop day. So why don't we talk about it? 
 
-In college, life is very stressful. It gets easy to forget about the essentials. Late-night study sessions in Shadek, D-Hall food, and midterm crunch times can mess with your sleep, hydration, and digestion. 
+In college, life is busy and stressful. Late-night study sessions in Shadek, D-Hall food, and midterm crunch times can mess with your sleep, water habits, and digestion. 
 
-**Call of Doodie** will turn bathroom habits into a useful & fun, private & social experience for F\&M. Easily track your routine, compete anonymously for your college house, and find the cleanest, nearest restroom anywhere on campus\! 
+**Call of Doodie** makes tracking your routine simple, private, and fun for F&M students. Check in daily, compete anonymously for your college house, and find the cleanest, nearest restroom anywhere on campus! 
 
 ---
 
@@ -72,26 +72,25 @@ We know you might be checking in while sitting with roommates in Hartman Green, 
 
 ## Palettes & Dark Mode
 
-Pick your favorite visual style in **Settings & Preferences**\! The entire UI dynamically updates with tactile Apple physics and bouncy 3D buttons:
+Pick your favorite color in **Settings & Preferences**! The app updates cleanly with smooth Apple styling:
 
 - 🍑 **Warm Peach** · Cozy, energetic sunset orange  
-- 🎓 **Diplomat Blue** · Proud F\&M True Blue  
+- 🎓 **Diplomat Blue** · Proud F&M True Blue  
 - 🍵 **Fresh Matcha** · Calm soothing sage green  
 - 💜 **Royal Lavender** · Elegant iris purple  
 - 🍯 **Sunset Amber** · Golden hour warm honey  
 - 🌸 **Cherry Blossom** · Soft strawberry rose pink  
 - 🌊 **Ocean Teal** · Crisp Pacific breeze cyan
 
->   
-> **Dynamic Dark Mode:** Supports **Auto (Matches Device)**, **Light Mode** (with pure white diffuse aurora glass), and **Dark Mode** (deep charcoal neon).
+> **Dark Mode:** Supports **Auto (Matches Device)**, **Light Mode**, and **Dark Mode**.
 
 ---
 
 ## Privacy & Safety First
 
-1. **Zero-Disk Photo Stream**: Camera checks analyze images purely in temporary device memory (RAM). Photos are blurred instantly on review and deleted immediately after grading.  
+1. **Zero-Disk Photo Stream**: Camera checks analyze images purely in temporary device memory (RAM). Photos are blurred right away and deleted immediately after grading.  
 2. **Local Session Protection**: Personal health logs stay private in your local browser storage.  
-3. **Red Flag Health Alerts**: If you log warning signs like extreme pain or unexpected symptoms, the app immediately surfaces helpful information and direct contact buttons for F\&M Student Wellness (Diplomat Center) and 911\.
+3. **Red Flag Health Alerts**: If you log warning signs like bad stomach pain or unusual symptoms, the app shows helpful tips and one-tap contact buttons for F&M Student Wellness (Diplomat Center) and 911.
 
 ---
 
