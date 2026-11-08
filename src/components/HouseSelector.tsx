@@ -52,8 +52,8 @@ export const HouseSelector: React.FC<HouseSelectorProps> = ({
         </button>
       </div>
 
-      {/* Grid of Residential Communities - Clean Tactile Apple Selection Cards */}
-      <div className="grid grid-cols-2 gap-2.5">
+      {/* Grid of Residential Communities - Clean Borderless List */}
+      <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 py-1">
         {displayedHouses.map((h) => {
           const isSelected = selectedHouse === h.id;
 
@@ -64,11 +64,7 @@ export const HouseSelector: React.FC<HouseSelectorProps> = ({
               role="radio"
               aria-checked={isSelected}
               onClick={() => onSelect(h.id)}
-              className={`p-3 rounded-2xl text-left transition-all duration-150 cursor-pointer select-none flex items-center justify-between min-w-0 border ${
-                isSelected
-                  ? 'border-2 border-[var(--brand)] bg-[#FFF6EE] shadow-[0_2px_8px_rgba(235,114,59,0.12)] ring-1 ring-[var(--brand)]/20'
-                  : 'border border-[#E4DDD3] bg-white hover:border-[#CFC3B3] hover:bg-[#FFFCF8] shadow-[0_1px_3px_rgba(42,34,56,0.04)]'
-              }`}
+              className="p-2 text-left transition-opacity duration-150 cursor-pointer select-none flex items-center justify-between min-w-0 border-0 bg-transparent shadow-none hover:opacity-75 focus:outline-none"
             >
               <div className="min-w-0 pr-1.5 flex-1">
                 <span className="text-[14px] font-black text-[var(--ink)] block leading-snug truncate">
@@ -96,7 +92,7 @@ export const HouseSelector: React.FC<HouseSelectorProps> = ({
                     ✓
                   </span>
                 ) : (
-                  <span className="w-5 h-5 rounded-full border-2 border-[#D8CFC3] bg-[#FAF8F5] block" />
+                  <span className="w-5 h-5 rounded-full border-2 border-[#D8CFC3] bg-transparent block" />
                 )}
               </div>
             </button>
